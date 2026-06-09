@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakura Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Outfit',sans-serif}
+
+:root{
+  --void:#060105;
+  --plum:#100810;
+  --surface:#170c16;
+  --card:#1e1020;
+  --glass:rgba(255,255,255,.05);
+  --glass-b:rgba(255,255,255,.09);
+  --blossom:#f4b4c8;
+  --blossom-d:#e07898;
+  --blossom-v:#c03368;
+  --gold:#d4a574;
+  --gold-bg:rgba(212,165,116,.12);
+  --green:#34d399;
+  --green-bg:rgba(52,211,153,.1);
+  --yellow:#fbbf24;
+  --yellow-bg:rgba(251,191,36,.1);
+  --red:#f87171;
+  --red-bg:rgba(248,113,113,.1);
+  --text:#fdf0f6;
+  --text-d:rgba(253,240,246,.55);
+  --text-g:rgba(253,240,246,.25);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --sidebar-w:224px;
+}
+
+body{background:var(--void);color:var(--text);overflow:hidden}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--glass-b);border-radius:99px}
+
+/* ══════ LOGIN SCREEN ══════ */
+#loginScreen{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 80% 70% at 60% 40%,#1e0418 0%,var(--void) 70%);
+}
+.login-card{
+  width:100%;max-width:400px;padding:2.8rem 2.4rem;
+  background:var(--surface);border:1px solid var(--glass-b);
+  border-radius:24px;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+}
+.login-logo{
+  display:flex;align-items:center;gap:.65rem;
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.35rem;font-weight:600;color:var(--text);
+  margin-bottom:2rem;justify-content:center;
+}
+.login-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.7rem;font-weight:600;color:var(--text);
+  text-align:center;margin-bottom:.4rem;
+}
+.login-sub{font-size:.82rem;color:var(--text-d);text-align:center;margin-bottom:2rem}
+.login-tabs{display:flex;gap:0;margin-bottom:1.8rem;border-bottom:1px solid var(--glass-b)}
+.ltab{
+  flex:1;padding:.65rem;text-align:center;
+  font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-g);cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;
+  margin-bottom:-1px;
+}
+.ltab.active{color:var(--blossom);border-color:var(--blossom-v)}
+.lfield{
+  width:100%;padding:.82rem 1.1rem;border-radius:10px;
+  background:var(--glass);border:1px solid var(--glass-b);
+  color:var(--text);font-family:'Outfit',sans-serif;
+  font-size:.88rem;outline:none;margin-bottom:.75rem;
+  transition:border-color .2s;
+}
+.lfield:focus{border-color:rgba(244,180,200,.4);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
+.lfield::placeholder{color:var(--text-g)}
+.lbtn{
+  width:100%;padding:.88rem;border-radius:10px;
+  background:linear-gradient(135deg,var(--blossom-v),#e0507a);
+  color:#fff;border:none;font-family:'Outfit',sans-serif;
+  font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:500;cursor:pointer;
+  box-shadow:0 4px 24px rgba(192,51,104,.35);
+  transition:transform .2s,box-shadow .2s;
+}
+.lbtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(192,51,104,.45)}
+.lerr{
+  font-size:.78rem;color:var(--red);text-align:center;
+  min-height:1.2rem;margin-top:.5rem;
+}
+
+/* ══════ APP SHELL ══════ */
+#app{display:none;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;
+  width:var(--sidebar-w);
+  background:var(--plum);
+  border-right:1px solid var(--glass-b);
+  display:flex;flex-direction:column;
+  padding:1.5rem 0;
+  z-index:100;
+}
+.sb-logo{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.2rem;font-weight:600;color:var(--text);
+  padding:0 1.4rem 1.5rem;
+  border-bottom:1px solid var(--glass-b);
+}
+.sb-section{
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--text-g);padding:.9rem 1.4rem .4rem;
+}
+.sb-item{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.72rem 1.4rem;
+  font-size:.85rem;color:var(--text-d);
+  cursor:pointer;border-left:2px solid transparent;
+  transition:background .15s,color .15s,border-color .15s;
+  text-decoration:none;
+}
+.sb-item:hover{background:var(--glass);color:var(--text)}
+.sb-item.active{
+  background:rgba(244,180,200,.06);
+  color:var(--blossom);
+  border-color:var(--blossom-v);
+}
+.sb-icon{width:18px;text-align:center;font-size:.95rem;opacity:.8}
+.sb-spacer{flex:1}
+.sb-user{
+  padding:.9rem 1.4rem;
+  border-top:1px solid var(--glass-b);
+  font-size:.78rem;color:var(--text-d);
+}
+.sb-email{
+  display:block;font-size:.72rem;color:var(--text-g);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  margin-top:.15rem;
+}
+.sb-logout{
+  display:flex;align-items:center;gap:.5rem;
+  margin-top:.7rem;font-size:.75rem;color:var(--text-g);
+  cursor:pointer;transition:color .2s;
+}
+.sb-logout:hover{color:var(--red)}
+
+/* ── MAIN CONTENT ── */
+.main{
+  margin-left:var(--sidebar-w);
+  height:100vh;overflow-y:auto;
+  background:var(--void);
+}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  padding:1.1rem 2rem;
+  background:rgba(6,1,5,.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--glass-b);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.topbar-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.1rem;font-weight:600;color:var(--text);
+}
+.topbar-date{font-size:.78rem;color:var(--text-g)}
+
+/* ── PAGE SECTIONS ── */
+.page{display:none;padding:2rem}
+.page.active{display:block}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.8rem}
+.stat-card{
+  background:var(--card);border:1px solid var(--glass-b);
+  border-radius:14px;padding:1.4rem 1.2rem;
+  transition:border-color .2s;
+}
+.stat-card:hover{border-color:rgba(244,180,200,.15)}
+.sc-label{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-g);margin-bottom:.6rem}
+.sc-value{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:2rem;font-weight:600;line-height:1;color:var(--gold);
+}
+.sc-sub{font-size:.72rem;color:var(--text-g);margin-top:.35rem}
+.sc-diff-up{color:var(--green);font-size:.7rem}
+.sc-diff-dn{color:var(--red);font-size:.7rem}
+
+/* ── GRID 2 COLS ── */
+.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:1.2rem;margin-bottom:1.8rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.8rem}
+.panel{
+  background:var(--card);border:1px solid var(--glass-b);
+  border-radius:14px;overflow:hidden;
+}
+.panel-hd{
+  padding:1rem 1.2rem;border-bottom:1px solid var(--glass-b);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.panel-hd-title{font-size:.82rem;font-weight:500;color:var(--text)}
+.panel-hd-action{
+  font-size:.7rem;color:var(--blossom-d);cursor:pointer;
+  text-decoration:none;transition:color .2s;
+}
+.panel-hd-action:hover{color:var(--blossom)}
+.panel-body{padding:1.2rem}
+
+/* ── APPOINTMENT MINI CARDS (dashboard) ── */
+.appt-mini{
+  padding:.75rem 0;border-bottom:1px solid var(--glass-b);
+  display:flex;align-items:center;gap:.8rem;
+}
+.appt-mini:last-child{border-bottom:none;padding-bottom:0}
+.appt-time{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:.95rem;font-weight:600;color:var(--blossom);
+  min-width:44px;text-align:center;
+}
+.appt-info{flex:1;min-width:0}
+.appt-name{font-size:.82rem;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appt-svc{font-size:.72rem;color:var(--text-g)}
+.appt-empty{font-size:.82rem;color:var(--text-g);text-align:center;padding:1.2rem 0}
+
+/* ── STATUS BADGES ── */
+.badge{
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.22rem .65rem;border-radius:100px;
+  font-size:.67rem;letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+}
+.badge-pending{background:var(--yellow-bg);color:var(--yellow)}
+.badge-confirmed{background:rgba(96,165,250,.12);color:#60a5fa}
+.badge-completed{background:var(--green-bg);color:var(--green)}
+.badge-cancelled{background:var(--red-bg);color:var(--red)}
+
+/* ── SERVICE POPULARITY ── */
+.svc-pop-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem}
+.svc-pop-row:last-child{margin-bottom:0}
+.svc-pop-name{font-size:.78rem;color:var(--text-d);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.svc-pop-bar-wrap{flex:1;height:6px;background:var(--glass-b);border-radius:99px;overflow:hidden}
+.svc-pop-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blossom-v),var(--blossom-d));transition:width .8s var(--ease)}
+.svc-pop-pct{font-size:.72rem;color:var(--text-g);width:32px;text-align:right}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  display:flex;align-items:center;gap:.7rem;
+  margin-bottom:1.2rem;flex-wrap:wrap;
+}
+.filter-input{
+  padding:.6rem 1rem;border-radius:8px;
+  background:var(--card);border:1px solid var(--glass-b);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.82rem;
+  outline:none;transition:border-color .2s;
+}
+.filter-input:focus{border-color:rgba(244,180,200,.35)}
+.filter-input::placeholder{color:var(--text-g)}
+.filter-input option{background:#170c16}
+.filter-spacer{flex:1}
+.btn-sm{
+  padding:.6rem 1.2rem;border-radius:8px;
+  background:var(--blossom-v);color:#fff;border:none;
+  font-family:'Outfit',sans-serif;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:500;cursor:pointer;transition:background .2s,transform .15s;
+}
+.btn-sm:hover{background:#a02858;transform:translateY(-1px)}
+.btn-sm-ghost{
+  padding:.6rem 1.2rem;border-radius:8px;
+  background:transparent;color:var(--text-d);
+  border:1px solid var(--glass-b);
+  font-family:'Outfit',sans-serif;font-size:.78rem;
+  cursor:pointer;transition:border-color .2s,color .2s;
+}
+.btn-sm-ghost:hover{border-color:rgba(244,180,200,.3);color:var(--blossom)}
+
+/* ── APPOINTMENT CARDS (full list) ── */
+#apptList,#cobroList{display:flex;flex-direction:column;gap:.8rem}
+.appt-card{
+  background:var(--card);border:1px solid var(--glass-b);
+  border-radius:12px;padding:1.1rem 1.3rem;
+  display:grid;grid-template-columns:1fr auto;
+  gap:.6rem;align-items:start;
+  transition:border-color .2s;
+}
+.appt-card:hover{border-color:rgba(244,180,200,.15)}
+.ac-top{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.ac-name{font-size:.9rem;font-weight:500;color:var(--text)}
+.ac-phone{font-size:.75rem;color:var(--text-g)}
+.ac-mid{display:flex;gap:1.2rem;margin-top:.4rem;flex-wrap:wrap}
+.ac-svc{font-size:.8rem;color:var(--blossom-d);font-weight:500}
+.ac-date{font-size:.78rem;color:var(--text-d)}
+.ac-price{font-size:.78rem;color:var(--gold)}
+.ac-actions{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.btn-action{
+  padding:.38rem .85rem;border-radius:7px;
+  font-family:'Outfit',sans-serif;font-size:.72rem;
+  border:1px solid var(--glass-b);background:transparent;
+  color:var(--text-d);cursor:pointer;transition:all .15s;
+}
+.btn-action:hover{border-color:rgba(244,180,200,.3);color:var(--blossom);background:rgba(244,180,200,.05)}
+.btn-action.confirm{border-color:rgba(96,165,250,.3);color:#60a5fa}
+.btn-action.confirm:hover{background:rgba(96,165,250,.08)}
+.btn-action.complete{border-color:rgba(52,211,153,.3);color:var(--green)}
+.btn-action.complete:hover{background:var(--green-bg)}
+.btn-action.pay{border-color:rgba(212,165,116,.3);color:var(--gold)}
+.btn-action.pay:hover{background:var(--gold-bg)}
+.btn-action.cancel{border-color:rgba(248,113,113,.2);color:var(--red)}
+.btn-action.cancel:hover{background:var(--red-bg)}
+.list-empty{
+  text-align:center;padding:3rem 1rem;
+  font-size:.88rem;color:var(--text-g);
+  border:1px dashed var(--glass-b);border-radius:12px;
+}
+
+/* ── COBRO ROWS ── */
+.cobro-card{
+  background:var(--card);border:1px solid var(--glass-b);
+  border-radius:10px;padding:.9rem 1.2rem;
+  display:grid;grid-template-columns:1fr 1fr 1fr auto;
+  gap:.5rem 1rem;align-items:center;
+}
+.cobro-card:hover{border-color:rgba(244,180,200,.12)}
+.cc-name{font-size:.85rem;font-weight:500;color:var(--text)}
+.cc-svc{font-size:.76rem;color:var(--text-d)}
+.cc-date{font-size:.74rem;color:var(--text-g)}
+.cc-amount{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.1rem;color:var(--gold);text-align:right;
+}
+.cc-method{
+  font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-g);text-align:right;
+}
+
+/* ── SERVICES EDITOR ── */
+#svcList{display:flex;flex-direction:column;gap:.8rem}
+.svc-edit-card{
+  background:var(--card);border:1px solid var(--glass-b);
+  border-radius:12px;padding:1.1rem 1.3rem;
+  display:grid;grid-template-columns:auto 1fr auto auto;
+  gap:.8rem 1rem;align-items:center;
+  transition:border-color .2s;
+}
+.svc-edit-card:hover{border-color:rgba(244,180,200,.15)}
+.svc-icon-box{
+  width:40px;height:40px;border-radius:9px;
+  border:1px solid var(--glass-b);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+}
+.svc-info{}
+.svc-edit-name{font-size:.9rem;font-weight:500;color:var(--text)}
+.svc-edit-desc{font-size:.75rem;color:var(--text-g);margin-top:.15rem}
+.svc-price-wrap{display:flex;align-items:center;gap:.5rem}
+.svc-price-input{
+  width:100px;padding:.5rem .7rem;border-radius:7px;
+  background:var(--glass);border:1px solid var(--glass-b);
+  color:var(--gold);font-family:'Shippori Mincho B1',serif;
+  font-size:1rem;font-weight:600;text-align:right;outline:none;
+  transition:border-color .2s;
+}
+.svc-price-input:focus{border-color:rgba(212,165,116,.4)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(6,1,5,.8);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border:1px solid var(--glass-b);
+  border-radius:20px;padding:2rem;width:100%;max-width:440px;
+  box-shadow:0 24px 64px rgba(0,0,0,.5);
+  transform:translateY(16px);transition:transform .3s var(--ease);
+}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-title{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.2rem;font-weight:600;color:var(--text);
+  margin-bottom:1.5rem;
+}
+.mfield-group{margin-bottom:1rem}
+.mfield-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-g);margin-bottom:.4rem;display:block}
+.mfield{
+  width:100%;padding:.75rem 1rem;border-radius:9px;
+  background:var(--glass);border:1px solid var(--glass-b);
+  color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;
+  outline:none;transition:border-color .2s;
+}
+.mfield:focus{border-color:rgba(244,180,200,.4);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
+.mfield option{background:#170c16}
+.modal-actions{display:flex;gap:.7rem;margin-top:1.6rem;justify-content:flex-end}
+.modal-amount-preview{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:2.2rem;font-weight:600;color:var(--gold);
+  text-align:center;padding:.8rem 0;letter-spacing:.02em;
+}
+
+/* ── NEW APPOINTMENT MODAL extras ── */
+.modal-subtitle{font-size:.78rem;color:var(--text-g);margin-bottom:1.4rem}
+
+/* ── CHART CANVAS ── */
+.chart-wrap{position:relative;height:200px;padding:.5rem 0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .grid2{grid-template-columns:1fr}
+  .cobro-card{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
+  .svc-edit-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
+}
+@media(max-width:640px){
+  :root{--sidebar-w:0px}
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .stats-row{grid-template-columns:1fr 1fr}
+}
+/* ── GALERÍA ── */
+.gal-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-top:.4rem}
+.gal-item{border-radius:12px;overflow:hidden;position:relative;aspect-ratio:1;background:var(--glass)}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-item-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
+.gal-item:hover .gal-item-overlay{opacity:1}
+.gal-item-title{font-size:.7rem;color:#fff;text-align:center;padding:0 .5rem;word-break:break-word;max-width:100%}
+.gal-del-btn{background:rgba(239,68,68,.8);border:none;color:#fff;border-radius:8px;padding:.35rem .8rem;font-size:.72rem;cursor:pointer;transition:background .15s}
+.gal-del-btn:hover{background:#dc2626}
+.gal-url-hint{font-size:.71rem;color:var(--text-g);margin-bottom:1.1rem;line-height:1.55}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="14" r="13.5" fill="#1a0614" stroke="rgba(244,180,200,.2)" stroke-width="1"/>
+        <g transform="translate(14,14)">
+          <ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#f4b4c8" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#e07898" transform="rotate(72)"/>
+          <ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#f4b4c8" transform="rotate(144)"/>
+          <ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#e07898" transform="rotate(216)"/>
+          <ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#f4b4c8" transform="rotate(288)"/>
+          <circle r="3" fill="#100810" stroke="rgba(192,51,104,.4)" stroke-width=".7"/>
+          <circle r="1.2" fill="#c03368"/>
+        </g>
+      </svg>
+      Sakura Admin
+    </div>
+    <div class="login-tabs">
+      <div class="ltab active" data-tab="login" onclick="switchTab('login')">Iniciar sesión</div>
+      <div class="ltab" data-tab="register" onclick="switchTab('register')">Crear cuenta</div>
+    </div>
+
+    <!-- Login form -->
+    <div id="loginForm">
+      <input class="lfield" id="loginEmail" type="email" placeholder="Correo electrónico" autocomplete="username">
+      <input class="lfield" id="loginPass"  type="password" placeholder="Contraseña" autocomplete="current-password">
+      <button class="lbtn" onclick="doLogin()">Entrar</button>
+    </div>
+
+    <!-- Register form -->
+    <div id="registerForm" style="display:none">
+      <input class="lfield" id="regEmail" type="email" placeholder="Correo electrónico" autocomplete="username">
+      <input class="lfield" id="regPass"  type="password" placeholder="Contraseña (mín. 6 caracteres)" autocomplete="new-password">
+      <input class="lfield" id="regPass2" type="password" placeholder="Confirmar contraseña" autocomplete="new-password">
+      <button class="lbtn" onclick="doRegister()">Crear cuenta admin</button>
+    </div>
+    <div class="lerr" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ══════════════ APP SHELL ══════════════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="11.5" fill="#1a0614" stroke="rgba(244,180,200,.2)" stroke-width="1"/>
+        <g transform="translate(12,12)">
+          <ellipse cx="0" cy="-5.5" rx="2.4" ry="4.2" fill="#f4b4c8" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.4" ry="4.2" fill="#e07898" transform="rotate(72)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.4" ry="4.2" fill="#f4b4c8" transform="rotate(144)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.4" ry="4.2" fill="#e07898" transform="rotate(216)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.4" ry="4.2" fill="#f4b4c8" transform="rotate(288)"/>
+          <circle r="2.5" fill="#100810"/>
+          <circle r="1" fill="#c03368"/>
+        </g>
+      </svg>
+      Sakura Nails
+    </div>
+    <div class="sb-section">Menú</div>
+    <a class="sb-item active" data-page="dashboard" onclick="navTo('dashboard')">
+      <span class="sb-icon">◈</span> Dashboard
+    </a>
+    <a class="sb-item" data-page="citas" onclick="navTo('citas')">
+      <span class="sb-icon">◷</span> Citas
+    </a>
+    <a class="sb-item" data-page="cobros" onclick="navTo('cobros')">
+      <span class="sb-icon">◈</span> Cobros
+    </a>
+    <a class="sb-item" data-page="servicios" onclick="navTo('servicios')">
+      <span class="sb-icon">✦</span> Servicios
+    </a>
+    <a class="sb-item" data-page="galeria" onclick="navTo('galeria')">
+      <span class="sb-icon">🖼</span> Galería
+    </a>
+    <div class="sb-spacer"></div>
+    <div class="sb-user">
+      <span>Administrador</span>
+      <span class="sb-email" id="sbEmail">–</span>
+      <div class="sb-logout" onclick="doLogout()">
+        <span>⏏</span> Cerrar sesión
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      <span class="topbar-date" id="topbarDate"></span>
+    </div>
+
+    <!-- ── DASHBOARD PAGE ── -->
+    <section class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="sc-label">Ingresos hoy</div>
+          <div class="sc-value" id="sc-hoy">$0</div>
+          <div class="sc-sub" id="sc-hoy-n">0 cobros</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Esta semana</div>
+          <div class="sc-value" id="sc-sem">$0</div>
+          <div class="sc-sub" id="sc-sem-n">0 cobros</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Este mes</div>
+          <div class="sc-value" id="sc-mes">$0</div>
+          <div class="sc-sub" id="sc-mes-n">0 cobros</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Citas pendientes</div>
+          <div class="sc-value" id="sc-pend" style="color:var(--blossom)">0</div>
+          <div class="sc-sub">Para hoy y próximas</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <!-- Revenue chart -->
+        <div class="panel">
+          <div class="panel-hd">
+            <span class="panel-hd-title">Ingresos — últimos 7 días</span>
+          </div>
+          <div class="panel-body">
+            <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+          </div>
+        </div>
+        <!-- Upcoming appointments -->
+        <div class="panel">
+          <div class="panel-hd">
+            <span class="panel-hd-title">Próximas citas</span>
+            <a class="panel-hd-action" onclick="navTo('citas')">Ver todas →</a>
+          </div>
+          <div class="panel-body" id="dash-appts">
+            <div class="appt-empty">Sin citas para hoy</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Service popularity -->
+      <div class="panel">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Servicios más solicitados</span>
+        </div>
+        <div class="panel-body" id="svc-popularity">
+          <div class="appt-empty">Sin datos aún</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CITAS PAGE ── -->
+    <section class="page" id="page-citas">
+      <div class="filter-bar">
+        <input class="filter-input" type="date" id="fDate" onchange="renderAppts()">
+        <select class="filter-input" id="fStatus" onchange="renderAppts()" style="min-width:140px">
+          <option value="">Todos los estados</option>
+          <option value="pending">Pendiente</option>
+          <option value="confirmed">Confirmada</option>
+          <option value="completed">Completada</option>
+          <option value="cancelled">Cancelada</option>
+        </select>
+        <input class="filter-input" id="fSearch" placeholder="Buscar clienta…" oninput="renderAppts()" style="min-width:180px">
+        <span class="filter-spacer"></span>
+        <button class="btn-sm" onclick="openNewApptModal()">+ Nueva cita</button>
+      </div>
+      <div id="apptList"><div class="list-empty">Cargando citas…</div></div>
+    </section>
+
+    <!-- ── COBROS PAGE ── -->
+    <section class="page" id="page-cobros">
+      <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.4rem">
+        <div class="stat-card">
+          <div class="sc-label">Total cobrado</div>
+          <div class="sc-value" id="ct-total">$0</div>
+          <div class="sc-sub" id="ct-total-n">0 transacciones</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Efectivo</div>
+          <div class="sc-value" id="ct-cash" style="color:var(--green)">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="sc-label">Transferencia / Tarjeta</div>
+          <div class="sc-value" id="ct-digital" style="color:#60a5fa">$0</div>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input class="filter-input" type="date" id="cfDate" onchange="renderCobros()">
+        <select class="filter-input" id="cfMethod" onchange="renderCobros()" style="min-width:160px">
+          <option value="">Todos los métodos</option>
+          <option value="efectivo">Efectivo</option>
+          <option value="transferencia">Transferencia</option>
+          <option value="tarjeta">Tarjeta</option>
+        </select>
+        <span class="filter-spacer"></span>
+        <button class="btn-sm" onclick="openDirectCobroModal()">⚡ Cobro rápido</button>
+      </div>
+      <div id="cobroList"><div class="list-empty">Cargando cobros…</div></div>
+    </section>
+
+    <!-- ── SERVICIOS PAGE ── -->
+    <section class="page" id="page-servicios">
+      <div class="filter-bar">
+        <span style="font-size:.82rem;color:var(--text-d)">Edita los precios directamente — se guardan automáticamente.</span>
+        <span class="filter-spacer"></span>
+        <button class="btn-sm" onclick="openNewSvcModal()">+ Agregar servicio</button>
+      </div>
+      <div id="svcList"><div class="list-empty">Cargando servicios…</div></div>
+    </section>
+
+    <!-- ── GALERÍA PAGE ── -->
+    <section class="page" id="page-galeria">
+      <div class="panel">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Galería de imágenes</span>
+          <span style="font-size:.72rem;color:var(--text-g)">Las fotos aparecen en la landing page automáticamente</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;gap:.6rem;margin-bottom:.8rem;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:2;min-width:200px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">URL de la imagen</div>
+              <input class="filter-input" id="galUrlInput" type="url" placeholder="https://i.imgur.com/..." style="width:100%">
+            </div>
+            <div style="flex:1;min-width:140px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">Título (opcional)</div>
+              <input class="filter-input" id="galTitleInput" type="text" placeholder="Sakura Art · 2026">
+            </div>
+            <button class="btn-sm" onclick="addGalleryUrl()">+ Agregar</button>
+          </div>
+          <p class="gal-url-hint">
+            Sube tu foto a <strong>Imgur.com</strong> (gratis, sin cuenta) → clic derecho en la imagen → "Copiar dirección de imagen" y pégala aquí.
+            También funciona con Google Drive, Dropbox o cualquier URL pública.
+          </p>
+          <div class="gal-admin-grid" id="galGrid">
+            <div class="appt-empty">Sin imágenes aún.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══════════════ MODAL COBRO ══════════════ -->
+<div class="modal-overlay" id="modalCobro">
+  <div class="modal">
+    <div class="modal-title" id="mc-title">Registrar cobro</div>
+
+    <!-- Nombre clienta (visible solo en cobro directo) -->
+    <div class="mfield-group" id="mc-name-group" style="display:none">
+      <label class="mfield-label">Nombre de la clienta</label>
+      <input class="mfield" id="mc-client-name" type="text" placeholder="Ana Laura M.">
+    </div>
+
+    <!-- Info de cita (visible cuando viene de una cita) -->
+    <div id="mc-appt-info" style="font-size:.82rem;color:var(--text-d);margin-bottom:1rem;padding:.7rem .9rem;background:var(--glass);border-radius:8px;border:1px solid var(--glass-b);display:none"></div>
+
+    <!-- Selector de servicio -->
+    <div class="mfield-group">
+      <label class="mfield-label">Servicio realizado</label>
+      <select class="mfield" id="mc-service" onchange="onCobroServiceChange()">
+        <option value="">Selecciona un servicio…</option>
+      </select>
+    </div>
+
+    <!-- Precio sugerido -->
+    <div id="mc-price-hint" style="display:none;margin:-0.5rem 0 .9rem;font-size:.75rem;color:var(--gold);padding:0 .2rem">
+      Precio sugerido: <span id="mc-price-hint-val"></span>
+    </div>
+
+    <!-- Monto -->
+    <div class="mfield-group">
+      <label class="mfield-label">Monto cobrado ($)</label>
+      <input class="mfield" id="mc-amount" type="number" min="0" step="10" placeholder="0"
+        style="font-family:'Shippori Mincho B1',serif;font-size:1.2rem;color:var(--gold)">
+    </div>
+
+    <div class="mfield-group">
+      <label class="mfield-label">Método de pago</label>
+      <select class="mfield" id="mc-method">
+        <option value="efectivo">💵 Efectivo</option>
+        <option value="transferencia">📱 Transferencia</option>
+        <option value="tarjeta">💳 Tarjeta</option>
+      </select>
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Notas (opcional)</label>
+      <input class="mfield" id="mc-notes" type="text" placeholder="Propina, descuento, observaciones…">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm-ghost" onclick="closeModal('modalCobro')">Cancelar</button>
+      <button class="btn-sm" onclick="saveCobro()">Guardar cobro</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL NUEVA CITA ══════════════ -->
+<div class="modal-overlay" id="modalNewAppt">
+  <div class="modal">
+    <div class="modal-title">Nueva cita</div>
+    <p class="modal-subtitle">Agrega una cita manualmente para la agenda.</p>
+    <div class="mfield-group">
+      <label class="mfield-label">Nombre de la clienta</label>
+      <input class="mfield" id="na-name" type="text" placeholder="Ana Laura M.">
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">WhatsApp</label>
+      <input class="mfield" id="na-phone" type="tel" placeholder="55 1234 5678">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+      <div class="mfield-group">
+        <label class="mfield-label">Fecha</label>
+        <input class="mfield" id="na-date" type="date">
+      </div>
+      <div class="mfield-group">
+        <label class="mfield-label">Hora</label>
+        <input class="mfield" id="na-time" type="time">
+      </div>
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Servicio</label>
+      <select class="mfield" id="na-service"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm-ghost" onclick="closeModal('modalNewAppt')">Cancelar</button>
+      <button class="btn-sm" onclick="saveNewAppt()">Guardar cita</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL NUEVO SERVICIO ══════════════ -->
+<div class="modal-overlay" id="modalNewSvc">
+  <div class="modal">
+    <div class="modal-title">Nuevo servicio</div>
+    <div class="mfield-group">
+      <label class="mfield-label">Emoji / Ícono</label>
+      <input class="mfield" id="ns-icon" type="text" placeholder="🌸" maxlength="4" style="font-size:1.4rem;text-align:center">
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Nombre del servicio</label>
+      <input class="mfield" id="ns-name" type="text" placeholder="Ej. Nail Wraps">
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Descripción corta</label>
+      <input class="mfield" id="ns-desc" type="text" placeholder="Descripción breve…">
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Precio base ($)</label>
+      <input class="mfield" id="ns-price" type="number" min="0" step="10" placeholder="0">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm-ghost" onclick="closeModal('modalNewSvc')">Cancelar</button>
+      <button class="btn-sm" onclick="saveNewSvc()">Crear servicio</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════ FIREBASE INIT (config desde firebase-config.js) ══════════════ */
+if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+const db      = firebase.firestore();
+const auth    = firebase.auth();
+
+/* ── SERVICES DEFAULT DATA ── */
+const DEFAULT_SERVICES = [
+  {name:'Sakura Art',       price:650, description:'Cerezos pintados a mano, técnica japonesa',   icon:'🌸', order:1},
+  {name:'Gel Premium',      price:450, description:'Gel larga duración, espejo/mate/glitter',      icon:'💅', order:2},
+  {name:'Escultura Acrílica',price:780,description:'Extensiones modeladas a mano',                icon:'✨', order:3},
+  {name:'Manicura Spa',     price:380, description:'Exfoliación, hidratación y masaje',            icon:'🛁', order:4},
+  {name:'Nail Art 3D',      price:900, description:'Flores, cristales Swarovski y figuras',       icon:'🦋', order:5},
+  {name:'Pedicura de Lujo', price:520, description:'Sales, masaje y esmaltado semipermanente',    icon:'🌿', order:6},
+];
+
+/* ══════════════ GLOBAL STATE ══════════════ */
+let appointments = [];
+let cobros       = [];
+let services     = [];
+let currentPage  = 'dashboard';
+let pendingCobroAppt = null;
+let revenueChart  = null;
+
+/* ══════════════ AUTH ══════════════ */
+function switchTab(tab) {
+  document.querySelectorAll('.ltab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('loginForm').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('loginErr').textContent = '';
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  document.getElementById('loginErr').textContent = '';
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch(e) {
+    document.getElementById('loginErr').textContent = friendlyAuthError(e.code);
+  }
+}
+
+async function doRegister() {
+  const email = document.getElementById('regEmail').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+  document.getElementById('loginErr').textContent = '';
+  if (pass !== pass2) { document.getElementById('loginErr').textContent = 'Las contraseñas no coinciden.'; return; }
+  if (pass.length < 6) { document.getElementById('loginErr').textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+  try {
+    await auth.createUserWithEmailAndPassword(email, pass);
+  } catch(e) {
+    document.getElementById('loginErr').textContent = friendlyAuthError(e.code);
+  }
+}
+
+async function doLogout() {
+  await auth.signOut();
+}
+
+function friendlyAuthError(code) {
+  const map = {
+    'auth/user-not-found':    'Correo no registrado.',
+    'auth/wrong-password':    'Contraseña incorrecta.',
+    'auth/invalid-email':     'Correo inválido.',
+    'auth/email-already-in-use': 'Este correo ya está registrado.',
+    'auth/too-many-requests': 'Demasiados intentos. Intenta más tarde.',
+    'auth/invalid-credential':'Correo o contraseña incorrectos.',
+  };
+  return map[code] || 'Error: ' + code;
+}
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('sbEmail').textContent = user.email;
+    initApp();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+/* ══════════════ INIT APP ══════════════ */
+async function initApp() {
+  setTopbarDate();
+  await ensureDefaultServices();
+  listenAppointments();
+  listenCobros();
+  listenServices();
+  listenGallery();
+  navTo('dashboard');
+}
+
+function setTopbarDate() {
+  const d = new Date();
+  document.getElementById('topbarDate').textContent =
+    d.toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+}
+
+async function ensureDefaultServices() {
+  const snap = await db.collection('services').limit(1).get();
+  if (snap.empty) {
+    const batch = db.batch();
+    DEFAULT_SERVICES.forEach(s => batch.set(db.collection('services').doc(), s));
+    await batch.commit();
+  }
+}
+
+/* ══════════════ FIRESTORE LISTENERS ══════════════ */
+function listenAppointments() {
+  db.collection('appointments').orderBy('createdAt','desc')
+    .onSnapshot(snap => {
+      appointments = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      appointments.sort((a,b) => {
+        if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+        return (a.time||'') < (b.time||'') ? -1 : 1;
+      });
+      renderAppts();
+      renderDashboard();
+    });
+}
+
+function listenCobros() {
+  db.collection('cobros').orderBy('createdAt','desc')
+    .onSnapshot(snap => {
+      cobros = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderCobros();
+      renderDashboardStats();
+    });
+}
+
+function listenServices() {
+  db.collection('services').orderBy('order')
+    .onSnapshot(snap => {
+      services = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderServices();
+      populateServiceSelect();
+    });
+}
+
+/* ══════════════ NAVIGATION ══════════════ */
+function navTo(page) {
+  currentPage = page;
+  document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
+  const titles = {dashboard:'Dashboard', citas:'Citas', cobros:'Cobros', servicios:'Servicios', galeria:'Galería'};
+  document.getElementById('topbarTitle').textContent = titles[page] || page;
+}
+
+/* ══════════════ DASHBOARD ══════════════ */
+function renderDashboard() {
+  renderDashboardStats();
+  renderTodayAppts();
+  renderServicePopularity();
+  renderRevenueChart();
+}
+
+function renderDashboardStats() {
+  const today = dateStr(new Date());
+  const weekStart = (() => { const d = new Date(); d.setDate(d.getDate() - d.getDay()); return dateStr(d); })();
+  const monthStart = dateStr(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+
+  const todayCobros  = cobros.filter(c => c.date === today);
+  const weekCobros   = cobros.filter(c => c.date >= weekStart);
+  const monthCobros  = cobros.filter(c => c.date >= monthStart);
+  const pendingCount = appointments.filter(a => a.status === 'pending' || a.status === 'confirmed').length;
+
+  const sum = arr => arr.reduce((s, c) => s + (c.amount||0), 0);
+
+  setText('sc-hoy',   '$' + fmt(sum(todayCobros)));
+  setText('sc-hoy-n', todayCobros.length + ' cobro' + (todayCobros.length!==1?'s':''));
+  setText('sc-sem',   '$' + fmt(sum(weekCobros)));
+  setText('sc-sem-n', weekCobros.length + ' cobros');
+  setText('sc-mes',   '$' + fmt(sum(monthCobros)));
+  setText('sc-mes-n', monthCobros.length + ' cobros');
+  setText('sc-pend',  pendingCount);
+
+  const total   = sum(cobros);
+  const cash    = sum(cobros.filter(c => c.method === 'efectivo'));
+  const digital = sum(cobros.filter(c => c.method !== 'efectivo'));
+  setText('ct-total',   '$' + fmt(total));
+  setText('ct-total-n', cobros.length + ' transacciones');
+  setText('ct-cash',    '$' + fmt(cash));
+  setText('ct-digital', '$' + fmt(digital));
+}
+
+function renderTodayAppts() {
+  const today = dateStr(new Date());
+  const todays = appointments
+    .filter(a => a.date >= today && a.status !== 'cancelled')
+    .slice(0, 5);
+  const el = document.getElementById('dash-appts');
+  if (!todays.length) { el.innerHTML = '<div class="appt-empty">Sin próximas citas 🌸</div>'; return; }
+  el.innerHTML = todays.map(a => `
+    <div class="appt-mini">
+      <div class="appt-time">${a.time || '–'}</div>
+      <div class="appt-info">
+        <div class="appt-name">${esc(a.clientName)}</div>
+        <div class="appt-svc">${esc(a.serviceName)}</div>
+      </div>
+      ${statusBadge(a.status)}
+    </div>`).join('');
+}
+
+function renderServicePopularity() {
+  if (!cobros.length) { document.getElementById('svc-popularity').innerHTML = '<div class="appt-empty">Sin cobros registrados aún</div>'; return; }
+  const counts = {};
+  cobros.forEach(c => { counts[c.serviceName] = (counts[c.serviceName]||0) + 1; });
+  const total = cobros.length;
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  document.getElementById('svc-popularity').innerHTML = sorted.map(([name, n]) => `
+    <div class="svc-pop-row">
+      <span class="svc-pop-name">${esc(name)}</span>
+      <div class="svc-pop-bar-wrap"><div class="svc-pop-bar" style="width:${Math.round(n/total*100)}%"></div></div>
+      <span class="svc-pop-pct">${Math.round(n/total*100)}%</span>
+    </div>`).join('');
+}
+
+function renderRevenueChart() {
+  const days = [];
+  const labels = [];
+  const data = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const ds = dateStr(d);
+    days.push(ds);
+    labels.push(d.toLocaleDateString('es-MX', {weekday:'short'}));
+    data.push(cobros.filter(c => c.date === ds).reduce((s,c) => s+(c.amount||0), 0));
+  }
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  if (revenueChart) revenueChart.destroy();
+  revenueChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: data.map((v,i) => i===6 ? 'rgba(192,51,104,.8)' : 'rgba(244,180,200,.25)'),
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: c => ' $' + fmt(c.raw) },
+        backgroundColor: '#1e1020', borderColor: 'rgba(255,255,255,.1)', borderWidth: 1,
+        titleColor: '#fdf0f6', bodyColor: '#d4a574',
+      }},
+      scales: {
+        x: { grid: { display: false }, ticks: { color: 'rgba(253,240,246,.35)', font: { family: 'Outfit', size: 11 } } },
+        y: {
+          grid: { color: 'rgba(255,255,255,.05)' },
+          ticks: { color: 'rgba(253,240,246,.35)', font: { family: 'Outfit', size: 11 }, callback: v => '$'+fmt(v) },
+        }
+      }
+    }
+  });
+}
+
+/* ══════════════ APPOINTMENTS ══════════════ */
+function renderAppts() {
+  const dateF   = document.getElementById('fDate')?.value   || '';
+  const statusF = document.getElementById('fStatus')?.value || '';
+  const searchF = (document.getElementById('fSearch')?.value || '').toLowerCase();
+
+  let list = [...appointments];
+  if (dateF)   list = list.filter(a => a.date === dateF);
+  if (statusF) list = list.filter(a => a.status === statusF);
+  if (searchF) list = list.filter(a =>
+    a.clientName?.toLowerCase().includes(searchF) ||
+    a.serviceName?.toLowerCase().includes(searchF) ||
+    a.phone?.includes(searchF));
+
+  const el = document.getElementById('apptList');
+  if (!list.length) { el.innerHTML = '<div class="list-empty">No hay citas con esos filtros</div>'; return; }
+
+  el.innerHTML = list.map(a => `
+    <div class="appt-card">
+      <div>
+        <div class="ac-top">
+          <span class="ac-name">${esc(a.clientName)}</span>
+          ${a.phone ? `<span class="ac-phone">📱 ${esc(a.phone)}</span>` : ''}
+          ${statusBadge(a.status)}
+        </div>
+        <div class="ac-mid">
+          <span class="ac-svc">${esc(a.serviceName)}</span>
+          <span class="ac-date">📅 ${a.date || '–'} ${a.time ? '· ' + a.time : ''}</span>
+          ${a.servicePrice ? `<span class="ac-price">$${fmt(a.servicePrice)}</span>` : ''}
+        </div>
+      </div>
+      <div class="ac-actions">
+        ${a.status === 'pending'   ? `<button class="btn-action confirm"  onclick="updateStatus('${a.id}','confirmed')">Confirmar</button>` : ''}
+        ${a.status === 'confirmed' ? `<button class="btn-action complete" onclick="updateStatus('${a.id}','completed')">Completar</button>` : ''}
+        ${a.status !== 'cancelled' && !a.paid
+          ? `<button class="btn-action pay" onclick="openCobroModal('${a.id}')">💰 Cobrar</button>` : ''}
+        ${a.paid
+          ? `<span class="badge badge-completed" title="Pagada con ${a.paymentMethod||'–'} · $${fmt(a.amountPaid)}">✓ $${fmt(a.amountPaid)}</span>`
+          : ''}
+        ${a.status !== 'cancelled' && a.status !== 'completed'
+          ? `<button class="btn-action cancel" onclick="updateStatus('${a.id}','cancelled')">Cancelar</button>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+async function updateStatus(id, status) {
+  await db.collection('appointments').doc(id).update({ status });
+}
+
+/* ══════════════ COBROS ══════════════ */
+function renderCobros() {
+  const dateF   = document.getElementById('cfDate')?.value   || '';
+  const methodF = document.getElementById('cfMethod')?.value || '';
+
+  let list = [...cobros];
+  if (dateF)   list = list.filter(c => c.date === dateF);
+  if (methodF) list = list.filter(c => c.method === methodF);
+
+  renderDashboardStats();
+
+  const el = document.getElementById('cobroList');
+  if (!list.length) { el.innerHTML = '<div class="list-empty">No hay cobros con esos filtros</div>'; return; }
+
+  const methodIcon = { efectivo:'💵', transferencia:'📱', tarjeta:'💳' };
+  el.innerHTML = list.map(c => `
+    <div class="cobro-card">
+      <div>
+        <div class="cc-name">${esc(c.clientName)}</div>
+        <div class="cc-svc">${esc(c.serviceName)}</div>
+      </div>
+      <div class="cc-date">${c.date || '–'}</div>
+      <div>
+        <div class="cc-amount">$${fmt(c.amount)}</div>
+        <div class="cc-method">${methodIcon[c.method]||''} ${c.method||''}</div>
+      </div>
+      <button class="btn-action cancel" style="font-size:.68rem;padding:.3rem .6rem" onclick="deleteCobro('${c.id}','${c.appointmentId}')">✕</button>
+    </div>`).join('');
+}
+
+/* Abre el modal de cobro vinculado a una cita existente */
+function openCobroModal(apptId) {
+  pendingCobroAppt = appointments.find(a => a.id === apptId);
+  if (!pendingCobroAppt) return;
+
+  document.getElementById('mc-title').textContent = 'Registrar cobro';
+  document.getElementById('mc-name-group').style.display = 'none';
+
+  const infoEl = document.getElementById('mc-appt-info');
+  infoEl.style.display = 'block';
+  infoEl.innerHTML = `<b>${esc(pendingCobroAppt.clientName)}</b>`
+    + (pendingCobroAppt.phone ? ` · 📱 ${esc(pendingCobroAppt.phone)}` : '')
+    + (pendingCobroAppt.date  ? ` · 📅 ${pendingCobroAppt.date}` : '');
+
+  fillCobroServiceSelect(pendingCobroAppt.serviceName, pendingCobroAppt.servicePrice);
+  document.getElementById('mc-notes').value = '';
+  openModal('modalCobro');
+}
+
+/* Abre el modal de cobro directo (walk-in, sin cita previa) */
+function openDirectCobroModal() {
+  pendingCobroAppt = null;
+
+  document.getElementById('mc-title').textContent = '⚡ Cobro rápido';
+  document.getElementById('mc-name-group').style.display = 'block';
+  document.getElementById('mc-client-name').value = '';
+  document.getElementById('mc-appt-info').style.display = 'none';
+
+  fillCobroServiceSelect('', 0);
+  document.getElementById('mc-amount').value = '';
+  document.getElementById('mc-notes').value  = '';
+  openModal('modalCobro');
+}
+
+/* Llena el selector de servicios en el modal de cobro */
+function fillCobroServiceSelect(preselect, prePrice) {
+  const sel = document.getElementById('mc-service');
+  sel.innerHTML = '<option value="">— Selecciona el servicio realizado —</option>'
+    + services.map(s =>
+        `<option value="${esc(s.name)}" data-price="${s.price}">${s.icon||''} ${esc(s.name)} — $${fmt(s.price)}</option>`
+      ).join('');
+  if (preselect) {
+    const opt = [...sel.options].find(o => o.value === preselect);
+    if (opt) sel.value = preselect;
+  }
+  document.getElementById('mc-amount').value = prePrice || '';
+  updatePriceHint();
+}
+
+/* Cuando cambia el servicio en el modal → actualiza precio sugerido y monto */
+function onCobroServiceChange() {
+  const sel = document.getElementById('mc-service');
+  const opt = sel.options[sel.selectedIndex];
+  const price = parseFloat(opt?.dataset.price) || 0;
+  document.getElementById('mc-amount').value = price || '';
+  updatePriceHint();
+}
+
+function updatePriceHint() {
+  const sel   = document.getElementById('mc-service');
+  const opt   = sel.options[sel.selectedIndex];
+  const price = parseFloat(opt?.dataset.price) || 0;
+  const hint  = document.getElementById('mc-price-hint');
+  if (price && sel.value) {
+    hint.style.display = 'block';
+    document.getElementById('mc-price-hint-val').textContent = '$' + fmt(price);
+  } else {
+    hint.style.display = 'none';
+  }
+}
+
+async function saveCobro() {
+  const amount     = parseFloat(document.getElementById('mc-amount').value) || 0;
+  const method     = document.getElementById('mc-method').value;
+  const notes      = document.getElementById('mc-notes').value.trim();
+  const today      = dateStr(new Date());
+  const svcSel     = document.getElementById('mc-service');
+  const serviceName= svcSel.value;
+
+  if (!serviceName) { alert('Selecciona el servicio realizado.'); return; }
+  if (!amount)      { alert('Ingresa el monto cobrado.'); return; }
+
+  /* Cobro vinculado a una cita */
+  if (pendingCobroAppt) {
+    const clientName = pendingCobroAppt.clientName;
+    const batch = db.batch();
+    batch.set(db.collection('cobros').doc(), {
+      appointmentId: pendingCobroAppt.id,
+      clientName, serviceName, amount, method, notes, date: today,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    batch.update(db.collection('appointments').doc(pendingCobroAppt.id), {
+      serviceName,                        // actualiza el servicio si fue cambiado
+      paid: true, paidAt: today,
+      paymentMethod: method, amountPaid: amount,
+      status: 'completed'
+    });
+    await batch.commit();
+
+  /* Cobro directo (sin cita) */
+  } else {
+    const clientName = document.getElementById('mc-client-name').value.trim() || 'Cliente directo';
+    await db.collection('cobros').add({
+      appointmentId: null,
+      clientName, serviceName, amount, method, notes, date: today,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+
+  closeModal('modalCobro');
+  pendingCobroAppt = null;
+}
+
+async function deleteCobro(cobroId, apptId) {
+  if (!confirm('¿Eliminar este cobro?')) return;
+  const batch = db.batch();
+  batch.delete(db.collection('cobros').doc(cobroId));
+  if (apptId) batch.update(db.collection('appointments').doc(apptId), { paid: false, paidAt: null, amountPaid: null, paymentMethod: null });
+  await batch.commit();
+}
+
+/* ══════════════ SERVICES ══════════════ */
+function renderServices() {
+  const el = document.getElementById('svcList');
+  if (!services.length) { el.innerHTML = '<div class="list-empty">Sin servicios configurados</div>'; return; }
+  el.innerHTML = services.map(s => `
+    <div class="svc-edit-card">
+      <div class="svc-icon-box">${s.icon||'✦'}</div>
+      <div class="svc-info">
+        <div class="svc-edit-name">${esc(s.name)}</div>
+        <div class="svc-edit-desc">${esc(s.description||'')}</div>
+      </div>
+      <div class="svc-price-wrap">
+        <span style="font-size:.72rem;color:var(--text-g);margin-right:.2rem">$</span>
+        <input class="svc-price-input" type="number" value="${s.price||0}"
+          onchange="updateSvcPrice('${s.id}', this.value)"
+          onblur="updateSvcPrice('${s.id}', this.value)">
+      </div>
+      <button class="btn-action cancel" onclick="deleteSvc('${s.id}')">✕</button>
+    </div>`).join('');
+}
+
+let priceDebounce = {};
+function updateSvcPrice(id, val) {
+  clearTimeout(priceDebounce[id]);
+  priceDebounce[id] = setTimeout(() => {
+    db.collection('services').doc(id).update({ price: parseFloat(val)||0 });
+  }, 600);
+}
+
+async function deleteSvc(id) {
+  if (!confirm('¿Eliminar este servicio?')) return;
+  await db.collection('services').doc(id).delete();
+}
+
+function openNewSvcModal() {
+  document.getElementById('ns-icon').value = '';
+  document.getElementById('ns-name').value = '';
+  document.getElementById('ns-desc').value = '';
+  document.getElementById('ns-price').value = '';
+  openModal('modalNewSvc');
+}
+
+async function saveNewSvc() {
+  const icon  = document.getElementById('ns-icon').value.trim() || '✦';
+  const name  = document.getElementById('ns-name').value.trim();
+  const desc  = document.getElementById('ns-desc').value.trim();
+  const price = parseFloat(document.getElementById('ns-price').value) || 0;
+  if (!name) return;
+  await db.collection('services').add({ icon, name, description: desc, price, order: services.length + 1 });
+  closeModal('modalNewSvc');
+}
+
+function populateServiceSelect() {
+  /* Select de nueva cita */
+  const sel = document.getElementById('na-service');
+  if (sel) {
+    sel.innerHTML = services.map(s =>
+      `<option value="${esc(s.name)}" data-price="${s.price}">${s.icon||''} ${esc(s.name)} — $${fmt(s.price)}</option>`
+    ).join('');
+  }
+  /* Si el modal de cobro está abierto, también actualiza su select */
+  const mc = document.getElementById('mc-service');
+  if (mc && mc.options.length <= 1) fillCobroServiceSelect('', 0);
+}
+
+/* ══════════════ NEW APPOINTMENT MODAL ══════════════ */
+function openNewApptModal() {
+  document.getElementById('na-name').value  = '';
+  document.getElementById('na-phone').value = '';
+  document.getElementById('na-date').value  = dateStr(new Date());
+  document.getElementById('na-time').value  = '';
+  openModal('modalNewAppt');
+}
+
+async function saveNewAppt() {
+  const name = document.getElementById('na-name').value.trim();
+  const phone= document.getElementById('na-phone').value.trim();
+  const date = document.getElementById('na-date').value;
+  const time = document.getElementById('na-time').value;
+  const sel  = document.getElementById('na-service');
+  const svcName  = sel.value;
+  const svcPrice = parseFloat(sel.options[sel.selectedIndex]?.dataset.price) || 0;
+  if (!name || !date) return;
+  await db.collection('appointments').add({
+    clientName: name, phone, date, time,
+    serviceName: svcName, servicePrice: svcPrice,
+    status: 'pending',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  closeModal('modalNewAppt');
+}
+
+/* ══════════════ MODAL HELPERS ══════════════ */
+function openModal(id)  { document.getElementById(id).classList.add('open') }
+function closeModal(id) { document.getElementById(id).classList.remove('open') }
+
+document.querySelectorAll('.modal-overlay').forEach(mo =>
+  mo.addEventListener('click', e => { if (e.target === mo) mo.classList.remove('open'); })
+);
+
+/* ══════════════ UTILITIES ══════════════ */
+function dateStr(d) {
+  return d.toISOString().split('T')[0];
+}
+function fmt(n) {
+  return Number(n||0).toLocaleString('es-MX');
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function statusBadge(s) {
+  const map = {
+    pending:   ['Pendiente',  'badge-pending'],
+    confirmed: ['Confirmada', 'badge-confirmed'],
+    completed: ['Completada', 'badge-completed'],
+    cancelled: ['Cancelada',  'badge-cancelled'],
+  };
+  const [label, cls] = map[s] || ['–',''];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+/* ══════════════ GALERÍA ══════════════ */
+let galleryItems = [];
+
+function listenGallery() {
+  db.collection('gallery').orderBy('createdAt','asc')
+    .onSnapshot(snap => {
+      galleryItems = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderGallery();
+    }, () => {
+      db.collection('gallery')
+        .onSnapshot(snap => {
+          galleryItems = snap.docs.map(d => ({id: d.id, ...d.data()}));
+          renderGallery();
+        });
+    });
+}
+
+function renderGallery() {
+  const grid = document.getElementById('galGrid');
+  if (!grid) return;
+  if (!galleryItems.length) {
+    grid.innerHTML = '<div class="appt-empty">Sin imágenes aún.</div>';
+    return;
+  }
+  grid.innerHTML = galleryItems.map(img => `
+    <div class="gal-item">
+      <img src="${img.url}" alt="${img.title || ''}" loading="lazy">
+      <div class="gal-item-overlay">
+        <div class="gal-item-title">${img.title || 'Sin título'}</div>
+        <button class="gal-del-btn" onclick="deleteGalleryImage('${img.id}')">🗑 Eliminar</button>
+      </div>
+    </div>`).join('');
+}
+
+async function addGalleryUrl() {
+  const urlEl   = document.getElementById('galUrlInput');
+  const titleEl = document.getElementById('galTitleInput');
+  const url     = urlEl.value.trim();
+  const title   = titleEl.value.trim();
+  if (!url) { alert('Pega una URL de imagen.'); return; }
+  try {
+    await db.collection('gallery').add({
+      url, title,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    urlEl.value = ''; titleEl.value = '';
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function deleteGalleryImage(docId) {
+  if (!confirm('¿Eliminar esta imagen?')) return;
+  try {
+    await db.collection('gallery').doc(docId).delete();
+  } catch(e) { alert('Error al eliminar: ' + e.message); }
+}
+</script>
+</body>
+</html>
