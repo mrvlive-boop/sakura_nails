@@ -1448,6 +1448,7 @@ async function handleBook(e) {
     btn.textContent = '¡Listo! 🌸';
     btn.style.background = 'linear-gradient(135deg,#2e7d32,#43a047)';
     e.target.reset(); resetPickers();
+    document.getElementById('bkService').value = '';
     setTimeout(() => {
       btn.textContent = 'Reservar ahora';
       btn.style.background = '';
@@ -1740,7 +1741,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="cht-av">🌸</div>
     <div class="cht-info">
       <div class="cht-name">Sakura AI</div>
-      <div class="cht-status"><span class="cht-dot"></span>En línea · Groq / Llama 3.3</div>
+      <div class="cht-status"><span class="cht-dot"></span>En línea · Groq / Llama 3.1</div>
     </div>
     <button class="cht-close" onclick="toggleChat()">✕</button>
   </div>
