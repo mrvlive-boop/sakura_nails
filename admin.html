@@ -521,6 +521,9 @@ body{background:var(--void);color:var(--text);overflow:hidden}
     <a class="sb-item" data-page="galeria" onclick="navTo('galeria')">
       <span class="sb-icon">🖼</span> Galería
     </a>
+    <a class="sb-item" data-page="horario" onclick="navTo('horario')">
+      <span class="sb-icon">🗓</span> Horario
+    </a>
     <div class="sb-spacer"></div>
     <div class="sb-user">
       <span>Administrador</span>
@@ -653,6 +656,30 @@ body{background:var(--void);color:var(--text);overflow:hidden}
         <button class="btn-sm" onclick="openNewSvcModal()">+ Agregar servicio</button>
       </div>
       <div id="svcList"><div class="list-empty">Cargando servicios…</div></div>
+    </section>
+
+    <!-- ── HORARIO PAGE ── -->
+    <section class="page" id="page-horario">
+      <div class="panel">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Días que no trabajamos</span>
+          <span style="font-size:.72rem;color:var(--text-g)">El chatbot bloqueará estas fechas automáticamente</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;gap:.6rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:1;min-width:160px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">Fecha</div>
+              <input class="filter-input" id="cdDateInput" type="date" style="width:100%">
+            </div>
+            <div style="flex:2;min-width:180px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">Motivo (opcional)</div>
+              <input class="filter-input" id="cdReasonInput" type="text" placeholder="Festivo, vacaciones, descanso…" style="width:100%">
+            </div>
+            <button class="btn-sm" onclick="addClosedDay()">+ Agregar día</button>
+          </div>
+          <div id="cdList"><div class="appt-empty">Sin días cerrados configurados.</div></div>
+        </div>
+      </div>
     </section>
 
     <!-- ── GALERÍA PAGE ── -->
@@ -895,6 +922,7 @@ async function initApp() {
   listenCobros();
   listenServices();
   listenGallery();
+  listenClosedDays();
   navTo('dashboard');
 }
 
@@ -950,7 +978,7 @@ function navTo(page) {
   currentPage = page;
   document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
-  const titles = {dashboard:'Dashboard', citas:'Citas', cobros:'Cobros', servicios:'Servicios', galeria:'Galería'};
+  const titles = {dashboard:'Dashboard', citas:'Citas', cobros:'Cobros', servicios:'Servicios', galeria:'Galería', horario:'Horario'};
   document.getElementById('topbarTitle').textContent = titles[page] || page;
 }
 
@@ -1444,6 +1472,69 @@ async function deleteGalleryImage(docId) {
   try {
     await db.collection('gallery').doc(docId).delete();
   } catch(e) { alert('Error al eliminar: ' + e.message); }
+}
+
+/* ══════════════ DÍAS CERRADOS ══════════════ */
+let closedDaysAdmin = [];
+
+function listenClosedDays() {
+  db.collection('closedDays').orderBy('date','asc')
+    .onSnapshot(snap => {
+      closedDaysAdmin = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderClosedDays();
+    }, () => {
+      db.collection('closedDays').onSnapshot(snap => {
+        closedDaysAdmin = snap.docs.map(d => ({id: d.id, ...d.data()}));
+        renderClosedDays();
+      });
+    });
+}
+
+function renderClosedDays() {
+  const el = document.getElementById('cdList');
+  if (!el) return;
+  if (!closedDaysAdmin.length) {
+    el.innerHTML = '<div class="appt-empty">Sin días cerrados configurados.</div>';
+    return;
+  }
+  el.innerHTML = closedDaysAdmin.map(d => `
+    <div class="appt-card">
+      <div>
+        <div class="ac-top">
+          <span class="ac-name">${formatDateEs(d.date)}</span>
+          ${d.reason ? `<span class="ac-phone">— ${esc(d.reason)}</span>` : ''}
+        </div>
+      </div>
+      <div class="ac-actions">
+        <button class="btn-action cancel" onclick="deleteClosedDay('${d.id}')">Eliminar</button>
+      </div>
+    </div>`).join('');
+}
+
+async function addClosedDay() {
+  const date   = document.getElementById('cdDateInput').value;
+  const reason = document.getElementById('cdReasonInput').value.trim();
+  if (!date) { alert('Selecciona una fecha.'); return; }
+  if (closedDaysAdmin.find(d => d.date === date)) { alert('Esa fecha ya está registrada.'); return; }
+  try {
+    await db.collection('closedDays').add({
+      date, reason,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('cdDateInput').value = '';
+    document.getElementById('cdReasonInput').value = '';
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function deleteClosedDay(id) {
+  if (!confirm('¿Eliminar este día?')) return;
+  await db.collection('closedDays').doc(id).delete();
+}
+
+function formatDateEs(ds) {
+  if (!ds) return '–';
+  const [y, m, d] = ds.split('-');
+  return new Date(+y, +m-1, +d).toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 }
 </script>
 </body>

@@ -1300,18 +1300,33 @@ function renderLandingGallery(items) {
     </div>`).join('');
 }
 if (db) {
+  console.log('[Galería] Firebase OK, conectando...');
   db.collection('gallery').orderBy('createdAt','asc')
     .onSnapshot(snap => {
+      console.log('[Galería] Documentos recibidos:', snap.docs.length);
+      snap.docs.forEach(d => console.log('[Galería] Item:', d.id, d.data()));
       const items = snap.docs.map(d => ({id: d.id, ...d.data()}));
       if (items.length) renderLandingGallery(items);
     }, err => {
-      console.warn('Galería con orderBy falló, reintentando sin orden:', err.message);
+      console.warn('[Galería] orderBy falló:', err.message, '— reintentando sin orden...');
       db.collection('gallery')
         .onSnapshot(snap => {
+          console.log('[Galería] Fallback — documentos:', snap.docs.length);
+          snap.docs.forEach(d => console.log('[Galería] Item:', d.id, d.data()));
           const items = snap.docs.map(d => ({id: d.id, ...d.data()}));
           if (items.length) renderLandingGallery(items);
-        }, err2 => console.error('Galería no disponible:', err2.message));
+        }, err2 => console.error('[Galería] Sin acceso:', err2.message));
     });
+} else {
+  console.warn('[Galería] db es null — Firebase no se inicializó en esta página');
+}
+
+/* ── DÍAS CERRADOS ── */
+if (db) {
+  db.collection('closedDays').onSnapshot(snap => {
+    closedDaysSet = new Set(snap.docs.map(d => d.data().date).filter(Boolean));
+    chatMsgs[0] = {role:'system', content: buildChatSystem()};
+  }, () => {});
 }
 
 /* ── DATE / TIME PICKER ── */
@@ -1367,9 +1382,12 @@ function renderCalendar() {
   for (let d = 1; d <= daysInMonth; d++) {
     const dt = new Date(pkViewYear, pkViewMonth, d);
     const ds = `${pkViewYear}-${String(pkViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isPast = dt < today;
-    let cls = 'pk-day' + (isPast ? ' disabled' : '') + (dt.getTime()===today.getTime() ? ' today' : '') + (ds===pkDate ? ' selected' : '');
-    html += `<button type="button" class="${cls}"${isPast ? '' : ` onclick="selectDate('${ds}')"`}>${d}</button>`;
+    const isPast   = dt < today;
+    const isClosed = closedDaysSet.has(ds);
+    const isBlocked = isPast || isClosed;
+    let cls = 'pk-day' + (isBlocked ? ' disabled' : '') + (dt.getTime()===today.getTime() ? ' today' : '') + (ds===pkDate ? ' selected' : '');
+    const title = isClosed ? ' title="Día cerrado"' : '';
+    html += `<button type="button" class="${cls}"${title}${isBlocked ? '' : ` onclick="selectDate('${ds}')"`}>${d}</button>`;
   }
   document.getElementById('pkDays').innerHTML = html;
 }
@@ -1483,7 +1501,14 @@ const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
 const GROQ_MODEL = 'llama-3.1-8b-instant';
 const GROQ_KEY   = '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';
 
-const CHAT_SYSTEM = `Eres Sakura, la asistente virtual de Sakura Nails, estudio de uñas premium en México. Eres amable, sofisticada y apasionada por el arte de las uñas. Responde siempre en español, de forma concisa y elegante.
+let closedDaysSet = new Set();
+
+function buildChatSystem() {
+  const closedList = closedDaysSet.size > 0
+    ? '\n\nDías en que el estudio está cerrado (NO aceptes citas en estas fechas bajo ningún motivo): '
+      + [...closedDaysSet].join(', ') + '.'
+    : '';
+  return `Eres Sakura, la asistente virtual de Sakura Nails, estudio de uñas premium en México. Eres amable, sofisticada y apasionada por el arte de las uñas. Responde siempre en español correcto, de forma concisa y elegante. Usa gramática española impecable: por ejemplo, el subjuntivo correcto de "saber" es "sepas" (no "sabas"), "puedas" (no "podas"), "vengas" (no "vengas"), etc.
 
 Cuando alguien pregunte por imágenes, fotos, diseños, trabajos realizados, el portafolio o ejemplos de uñas, comparte este enlace de Instagram: https://www.instagram.com/dianenails_and_beauty?igsh=MWhvN3hzdDA3bTJ4aw==
 
@@ -1495,18 +1520,19 @@ Servicios y precios:
 - Nail Art 3D $900
 - Pedicura de Lujo $520
 
-Horario: Lunes a Sábado 9:00am–7:00pm. Hoy es ${new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}.
+Horario: Lunes a Sábado 9:00am–7:00pm. Hoy es ${new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}.${closedList}
 
 Cuando un cliente quiera reservar, recopila amablemente uno por uno:
 1. Nombre completo
 2. Número de WhatsApp (opcional)
 3. Servicio deseado
-4. Fecha (no aceptes fechas pasadas ni domingos)
+4. Fecha (no aceptes fechas pasadas ni domingos, ni días cerrados)
 5. Hora (entre 09:00 y 19:00)
 
 Cuando tengas nombre, servicio, fecha y hora confirmados por el cliente, usa la herramienta save_appointment. No la uses sin confirmación explícita.
 
 Si el cliente quiere cambiar, reagendar o modificar una cita existente, usa reschedule_appointment (NO save_appointment). Pídele el nombre con el que reservó, la nueva fecha y la nueva hora. Confirma los nuevos datos antes de ejecutar la herramienta.`;
+}
 
 const CHAT_TOOLS = [
 {
@@ -1551,7 +1577,7 @@ const CHAT_TOOLS = [
 const SVC_PRICES = {'Sakura Art':650,'Gel Premium':450,'Escultura Acrílica':780,'Manicura Spa':380,'Nail Art 3D':900,'Pedicura de Lujo':520};
 
 let chatOpen = false;
-let chatMsgs  = [{role:'system', content: CHAT_SYSTEM}];
+let chatMsgs  = [{role:'system', content: buildChatSystem()}];
 let chatBusy  = false;
 
 function toggleChat() {
