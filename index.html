@@ -1531,7 +1531,9 @@ Cuando un cliente quiera reservar, recopila amablemente uno por uno:
 
 Cuando tengas nombre, servicio, fecha y hora confirmados por el cliente, usa la herramienta save_appointment. No la uses sin confirmación explícita.
 
-Si el cliente quiere cambiar, reagendar o modificar una cita existente, usa reschedule_appointment (NO save_appointment). Pídele el nombre con el que reservó, la nueva fecha y la nueva hora. Confirma los nuevos datos antes de ejecutar la herramienta.`;
+Si el cliente quiere cambiar, reagendar o modificar una cita existente, usa reschedule_appointment (NO save_appointment). Pídele el nombre con el que reservó, la nueva fecha y la nueva hora. Confirma los nuevos datos antes de ejecutar la herramienta.
+
+Si el cliente pregunta si tiene cita, quiere saber su próxima cita o consultar su reservación, pregúntale su nombre completo y usa check_appointment para buscarla.`;
 }
 
 const CHAT_TOOLS = [
@@ -1569,6 +1571,20 @@ const CHAT_TOOLS = [
         newServiceName: {type:'string', description:'Nuevo servicio si también desea cambiarlo', enum:['Sakura Art','Gel Premium','Escultura Acrílica','Manicura Spa','Nail Art 3D','Pedicura de Lujo']}
       },
       required: ['clientName','newDate','newTime']
+    }
+  }
+},
+{
+  type: 'function',
+  function: {
+    name: 'check_appointment',
+    description: 'Consulta si un cliente tiene citas activas (pendientes o confirmadas) en el sistema.',
+    parameters: {
+      type: 'object',
+      properties: {
+        clientName: {type:'string', description:'Nombre del cliente a buscar'}
+      },
+      required: ['clientName']
     }
   }
 }
@@ -1696,6 +1712,37 @@ async function rescheduleAppointmentFromChat(args) {
   }
 }
 
+async function checkAppointmentFromChat(args) {
+  if (!db) return {ok: false, error: 'Firebase no disponible'};
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const snap = await db.collection('appointments')
+      .where('clientName', '==', args.clientName)
+      .where('status', 'in', ['pending', 'confirmed'])
+      .get();
+
+    const upcoming = snap.docs
+      .map(d => d.data())
+      .filter(a => a.date >= today)
+      .sort((a, b) => a.date < b.date ? -1 : 1);
+
+    if (!upcoming.length) return {ok: true, found: false};
+
+    return {
+      ok: true,
+      found: true,
+      appointments: upcoming.map(a => ({
+        date: a.date,
+        time: a.time,
+        serviceName: a.serviceName,
+        status: a.status
+      }))
+    };
+  } catch(e) {
+    return {ok: false, error: e.message};
+  }
+}
+
 async function sendChat() {
   if (chatBusy) return;
   const input = document.getElementById('chatInput');
@@ -1718,9 +1765,25 @@ async function sendChat() {
         if (tc.function.name === 'save_appointment') {
           const args = JSON.parse(tc.function.arguments);
           result = await saveAppointmentFromChat(args);
+          result._instruccion = result.ok
+            ? `Cita guardada con éxito. Responde con un mensaje cálido confirmando la cita: nombre "${args.clientName}", servicio "${args.serviceName}", fecha ${args.date}, hora ${args.time}. Despídete con entusiasmo.`
+            : `Error al guardar la cita: ${result.error}. Informa al cliente amablemente y sugiere intentar de nuevo.`;
         } else if (tc.function.name === 'reschedule_appointment') {
           const args = JSON.parse(tc.function.arguments);
           result = await rescheduleAppointmentFromChat(args);
+          result._instruccion = result.ok
+            ? `Cita reagendada con éxito. Confirma al cliente "${args.clientName}" que su cita quedó para el ${args.newDate} a las ${args.newTime}. Despídete con entusiasmo.`
+            : `Error al reagendar: ${result.error}. Informa al cliente amablemente.`;
+        } else if (tc.function.name === 'check_appointment') {
+          const args = JSON.parse(tc.function.arguments);
+          result = await checkAppointmentFromChat(args);
+          if (result.ok && result.found) {
+            result._instruccion = `Se encontraron citas para "${args.clientName}". Informa amablemente cada cita con su fecha, hora y servicio.`;
+          } else if (result.ok && !result.found) {
+            result._instruccion = `No se encontró ninguna cita próxima para "${args.clientName}". Informa amablemente y ofrece agendar una nueva.`;
+          } else {
+            result._instruccion = `Error al consultar: ${result.error}. Informa al cliente amablemente.`;
+          }
         }
         chatMsgs.push({role:'tool', tool_call_id: tc.id, content: JSON.stringify(result)});
       }
