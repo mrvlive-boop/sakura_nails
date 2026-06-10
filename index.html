@@ -1304,7 +1304,14 @@ if (db) {
     .onSnapshot(snap => {
       const items = snap.docs.map(d => ({id: d.id, ...d.data()}));
       if (items.length) renderLandingGallery(items);
-    }, () => {});
+    }, err => {
+      console.warn('Galería con orderBy falló, reintentando sin orden:', err.message);
+      db.collection('gallery')
+        .onSnapshot(snap => {
+          const items = snap.docs.map(d => ({id: d.id, ...d.data()}));
+          if (items.length) renderLandingGallery(items);
+        }, err2 => console.error('Galería no disponible:', err2.message));
+    });
 }
 
 /* ── DATE / TIME PICKER ── */
