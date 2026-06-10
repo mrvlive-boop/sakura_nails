@@ -1533,7 +1533,7 @@ Cuando tengas nombre, servicio, fecha y hora confirmados por el cliente, usa la 
 
 Si el cliente quiere cambiar, reagendar o modificar una cita existente, usa reschedule_appointment (NO save_appointment). Pídele el nombre con el que reservó, la nueva fecha y la nueva hora. Confirma los nuevos datos antes de ejecutar la herramienta.
 
-Si el cliente pregunta si tiene cita, quiere saber su próxima cita o consultar su reservación, pregúntale su nombre completo y usa check_appointment para buscarla.`;
+Si el cliente pregunta si tiene cita, quiere saber su próxima cita o consultar su reservación, PRIMERO respóndele pidiendo su nombre completo. NUNCA uses check_appointment sin que el cliente haya escrito su nombre explícitamente en el chat. Solo cuando el cliente te dé su nombre, usa check_appointment con ese nombre exacto.`;
 }
 
 const CHAT_TOOLS = [
@@ -1714,6 +1714,7 @@ async function rescheduleAppointmentFromChat(args) {
 
 async function checkAppointmentFromChat(args) {
   if (!db) return {ok: false, error: 'Firebase no disponible'};
+  if (!args.clientName?.trim()) return {ok: false, error: 'Necesito el nombre del cliente para buscar'};
   try {
     const today = new Date().toISOString().split('T')[0];
     const snap = await db.collection('appointments')
