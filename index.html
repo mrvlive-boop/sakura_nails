@@ -1496,10 +1496,10 @@ async function handleBook(e) {
   }
 }
 
-/* ── CHATBOT ── */
-const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama-3.1-8b-instant';
-const GROQ_KEY = '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';
+/* ── CHATBOT ──
+   No llames APIs de IA con llaves privadas desde el navegador. Si se vuelve
+   a conectar IA, debe pasar por una Function/servidor que proteja la llave.
+*/
 
 let closedDaysSet = new Set();
 
@@ -1635,18 +1635,25 @@ function showTyping() {
 function removeTyping() { const t = document.getElementById('cht-typing'); if (t) t.remove(); }
 
 async function groqFetch(messages, useTools) {
-  const body = {model: GROQ_MODEL, messages};
-  if (useTools) { body.tools = CHAT_TOOLS; body.tool_choice = 'auto'; }
-  const res = await fetch(GROQ_URL, {
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_KEY}`},
-    body: JSON.stringify(body)
-  });
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(`${res.status}: ${body?.error?.message || res.statusText}`);
+  const last = messages.filter(m => m.role === 'user').at(-1)?.content || '';
+  return {choices:[{message:{content: localChatReply(last)}}]};
+}
+
+function localChatReply(text) {
+  const t = text.toLowerCase();
+  if (/(foto|fotos|diseñ|disen|galer|portafolio|trabajos|instagram|ig)/.test(t)) {
+    return 'Puedes ver nuestros trabajos y diseños recientes aquí: https://www.instagram.com/dianenails_and_beauty?igsh=MWhvN3hzdDA3bTJ4aw==';
   }
-  return res.json();
+  if (/(precio|cu[aá]nto|costo|vale|servicio)/.test(t)) {
+    return 'Servicios principales: Sakura Art $650, Gel Premium $450, Escultura Acrílica $780, Manicura Spa $380, Nail Art 3D $900 y Pedicura de Lujo $520 MXN. Puedes reservar desde el formulario de esta página.';
+  }
+  if (/(horario|hora|abren|cierran|cerrado)/.test(t)) {
+    return 'Atendemos de lunes a sábado de 9:00 am a 7:00 pm. Los domingos no abrimos. Para reservar, elige fecha y hora en el formulario.';
+  }
+  if (/(cita|reserv|agend|reagend|cambiar)/.test(t)) {
+    return 'Con gusto. Usa el formulario de reserva de esta página con tu nombre, WhatsApp, fecha, hora y servicio. Te confirmaremos pronto.';
+  }
+  return 'Hola, soy Sakura. Puedo ayudarte con servicios, precios, horarios, galería y reservas. Para agendar, usa el formulario de esta página.';
 }
 
 async function saveAppointmentFromChat(args) {

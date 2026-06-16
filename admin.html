@@ -464,7 +464,6 @@ body{background:var(--void);color:var(--text);overflow:hidden}
     </div>
     <div class="login-tabs">
       <div class="ltab active" data-tab="login" onclick="switchTab('login')">Iniciar sesión</div>
-      <div class="ltab" data-tab="register" onclick="switchTab('register')">Crear cuenta</div>
     </div>
 
     <!-- Login form -->
@@ -474,13 +473,7 @@ body{background:var(--void);color:var(--text);overflow:hidden}
       <button class="lbtn" onclick="doLogin()">Entrar</button>
     </div>
 
-    <!-- Register form -->
-    <div id="registerForm" style="display:none">
-      <input class="lfield" id="regEmail" type="email" placeholder="Correo electrónico" autocomplete="username">
-      <input class="lfield" id="regPass"  type="password" placeholder="Contraseña (mín. 6 caracteres)" autocomplete="new-password">
-      <input class="lfield" id="regPass2" type="password" placeholder="Confirmar contraseña" autocomplete="new-password">
-      <button class="lbtn" onclick="doRegister()">Crear cuenta admin</button>
-    </div>
+    <p class="login-sub" style="margin:.9rem 0 0">Las cuentas admin se crean desde Firebase Console.</p>
     <div class="lerr" id="loginErr"></div>
   </div>
 </div>
@@ -856,8 +849,7 @@ let revenueChart  = null;
 /* ══════════════ AUTH ══════════════ */
 function switchTab(tab) {
   document.querySelectorAll('.ltab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-  document.getElementById('loginForm').style.display    = tab === 'login'    ? '' : 'none';
-  document.getElementById('registerForm').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('loginForm').style.display = '';
   document.getElementById('loginErr').textContent = '';
 }
 
@@ -873,17 +865,7 @@ async function doLogin() {
 }
 
 async function doRegister() {
-  const email = document.getElementById('regEmail').value.trim();
-  const pass  = document.getElementById('regPass').value;
-  const pass2 = document.getElementById('regPass2').value;
-  document.getElementById('loginErr').textContent = '';
-  if (pass !== pass2) { document.getElementById('loginErr').textContent = 'Las contraseñas no coinciden.'; return; }
-  if (pass.length < 6) { document.getElementById('loginErr').textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
-  try {
-    await auth.createUserWithEmailAndPassword(email, pass);
-  } catch(e) {
-    document.getElementById('loginErr').textContent = friendlyAuthError(e.code);
-  }
+  document.getElementById('loginErr').textContent = 'Registro público deshabilitado. Crea usuarios desde Firebase Console.';
 }
 
 async function doLogout() {
