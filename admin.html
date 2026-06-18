@@ -735,11 +735,29 @@ body{background:var(--void);color:var(--text);overflow:hidden}
       Precio sugerido: <span id="mc-price-hint-val"></span>
     </div>
 
+    <!-- Descuento -->
+    <div class="mfield-group">
+      <label class="mfield-label">Descuento</label>
+      <select class="mfield" id="mc-discount" onchange="recalculateCobroAmount()">
+        <option value="0">Sin descuento</option>
+        <option value="5">5%</option>
+        <option value="10">10%</option>
+        <option value="15">15%</option>
+        <option value="20">20%</option>
+        <option value="25">25%</option>
+        <option value="30">30%</option>
+        <option value="40">40%</option>
+        <option value="50">50%</option>
+      </select>
+    </div>
+
+    <div id="mc-discount-summary" style="display:none;margin:-0.45rem 0 .9rem;font-size:.76rem;color:var(--text-d);padding:0 .2rem;line-height:1.5"></div>
+
     <!-- Monto -->
     <div class="mfield-group">
-      <label class="mfield-label">Monto cobrado ($)</label>
+      <label class="mfield-label">Total a cobrar ($)</label>
       <input class="mfield" id="mc-amount" type="number" min="0" step="10" placeholder="0"
-        style="font-family:'Shippori Mincho B1',serif;font-size:1.2rem;color:var(--gold)">
+        readonly style="font-family:'Shippori Mincho B1',serif;font-size:1.2rem;color:var(--gold)">
     </div>
 
     <div class="mfield-group">
@@ -1112,7 +1130,7 @@ function renderAppts() {
         ${a.status !== 'cancelled' && !a.paid
           ? `<button class="btn-action pay" onclick="openCobroModal('${a.id}')">💰 Cobrar</button>` : ''}
         ${a.paid
-          ? `<span class="badge badge-completed" title="Pagada con ${a.paymentMethod||'–'} · $${fmt(a.amountPaid)}">✓ $${fmt(a.amountPaid)}</span>`
+          ? `<span class="badge badge-completed" title="Pagada con ${a.paymentMethod||'–'} · $${fmt(a.amountPaid)}${a.discountPercent ? ' · ' + a.discountPercent + '% desc.' : ''}">✓ $${fmt(a.amountPaid)}</span>`
           : ''}
         ${a.status !== 'cancelled' && a.status !== 'completed'
           ? `<button class="btn-action cancel" onclick="updateStatus('${a.id}','cancelled')">Cancelar</button>` : ''}
@@ -1143,7 +1161,7 @@ function renderCobros() {
     <div class="cobro-card">
       <div>
         <div class="cc-name">${esc(c.clientName)}</div>
-        <div class="cc-svc">${esc(c.serviceName)}</div>
+        <div class="cc-svc">${esc(c.serviceName)}${c.discountPercent ? ` · ${c.discountPercent}% desc.` : ''}</div>
       </div>
       <div class="cc-date">${c.date || '–'}</div>
       <div>
@@ -1169,6 +1187,8 @@ function openCobroModal(apptId) {
     + (pendingCobroAppt.date  ? ` · 📅 ${pendingCobroAppt.date}` : '');
 
   fillCobroServiceSelect(pendingCobroAppt.serviceName, pendingCobroAppt.servicePrice);
+  document.getElementById('mc-discount').value = '0';
+  recalculateCobroAmount();
   document.getElementById('mc-notes').value = '';
   openModal('modalCobro');
 }
@@ -1184,6 +1204,8 @@ function openDirectCobroModal() {
 
   fillCobroServiceSelect('', 0);
   document.getElementById('mc-amount').value = '';
+  document.getElementById('mc-discount').value = '0';
+  clearCobroBaseAmount();
   document.getElementById('mc-notes').value  = '';
   openModal('modalCobro');
 }
@@ -1199,17 +1221,61 @@ function fillCobroServiceSelect(preselect, prePrice) {
     const opt = [...sel.options].find(o => o.value === preselect);
     if (opt) sel.value = preselect;
   }
-  document.getElementById('mc-amount').value = prePrice || '';
+  setCobroBaseAmount(prePrice || getCobroSelectedServicePrice());
   updatePriceHint();
+  recalculateCobroAmount();
 }
 
 /* Cuando cambia el servicio en el modal → actualiza precio sugerido y monto */
 function onCobroServiceChange() {
+  setCobroBaseAmount(getCobroSelectedServicePrice());
+  updatePriceHint();
+  recalculateCobroAmount();
+}
+
+function getCobroSelectedServicePrice() {
   const sel = document.getElementById('mc-service');
   const opt = sel.options[sel.selectedIndex];
-  const price = parseFloat(opt?.dataset.price) || 0;
-  document.getElementById('mc-amount').value = price || '';
-  updatePriceHint();
+  return parseFloat(opt?.dataset.price) || 0;
+}
+
+function setCobroBaseAmount(amount) {
+  const amountEl = document.getElementById('mc-amount');
+  amountEl.dataset.baseAmount = amount || '';
+}
+
+function clearCobroBaseAmount() {
+  const amountEl = document.getElementById('mc-amount');
+  amountEl.dataset.baseAmount = '';
+  document.getElementById('mc-discount-summary').style.display = 'none';
+}
+
+function getCobroBaseAmount() {
+  return parseFloat(document.getElementById('mc-amount').dataset.baseAmount) || 0;
+}
+
+function getCobroDiscount() {
+  const base = getCobroBaseAmount();
+  const percent = parseFloat(document.getElementById('mc-discount').value) || 0;
+  const amount = Math.round((base * percent / 100) * 100) / 100;
+  const total = Math.max(0, Math.round((base - amount) * 100) / 100);
+  return { base, percent, amount, total };
+}
+
+function recalculateCobroAmount() {
+  const calc = getCobroDiscount();
+  const amountEl = document.getElementById('mc-amount');
+  const summary = document.getElementById('mc-discount-summary');
+
+  amountEl.value = calc.total || '';
+  if (!calc.base) {
+    summary.style.display = 'none';
+    summary.textContent = '';
+    return;
+  }
+
+  summary.style.display = 'block';
+  summary.innerHTML = `Subtotal: <b>$${fmt(calc.base)}</b> · Descuento: <b>${calc.percent}%</b> (-$${fmt(calc.amount)}) · Total: <b style="color:var(--gold)">$${fmt(calc.total)}</b>`;
 }
 
 function updatePriceHint() {
@@ -1226,7 +1292,8 @@ function updatePriceHint() {
 }
 
 async function saveCobro() {
-  const amount     = parseFloat(document.getElementById('mc-amount').value) || 0;
+  const calc       = getCobroDiscount();
+  const amount     = calc.total;
   const method     = document.getElementById('mc-method').value;
   const notes      = document.getElementById('mc-notes').value.trim();
   const today      = dateStr(new Date());
@@ -1242,12 +1309,19 @@ async function saveCobro() {
     const batch = db.batch();
     batch.set(db.collection('cobros').doc(), {
       appointmentId: pendingCobroAppt.id,
-      clientName, serviceName, amount, method, notes, date: today,
+      clientName, serviceName,
+      subtotalAmount: calc.base,
+      discountPercent: calc.percent,
+      discountAmount: calc.amount,
+      amount, method, notes, date: today,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     batch.update(db.collection('appointments').doc(pendingCobroAppt.id), {
       serviceName,                        // actualiza el servicio si fue cambiado
       paid: true, paidAt: today,
+      subtotalAmount: calc.base,
+      discountPercent: calc.percent,
+      discountAmount: calc.amount,
       paymentMethod: method, amountPaid: amount,
       status: 'completed'
     });
@@ -1258,7 +1332,11 @@ async function saveCobro() {
     const clientName = document.getElementById('mc-client-name').value.trim() || 'Cliente directo';
     await db.collection('cobros').add({
       appointmentId: null,
-      clientName, serviceName, amount, method, notes, date: today,
+      clientName, serviceName,
+      subtotalAmount: calc.base,
+      discountPercent: calc.percent,
+      discountAmount: calc.amount,
+      amount, method, notes, date: today,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
   }
@@ -1271,7 +1349,15 @@ async function deleteCobro(cobroId, apptId) {
   if (!confirm('¿Eliminar este cobro?')) return;
   const batch = db.batch();
   batch.delete(db.collection('cobros').doc(cobroId));
-  if (apptId) batch.update(db.collection('appointments').doc(apptId), { paid: false, paidAt: null, amountPaid: null, paymentMethod: null });
+  if (apptId) batch.update(db.collection('appointments').doc(apptId), {
+    paid: false,
+    paidAt: null,
+    subtotalAmount: null,
+    discountPercent: null,
+    discountAmount: null,
+    amountPaid: null,
+    paymentMethod: null
+  });
   await batch.commit();
 }
 

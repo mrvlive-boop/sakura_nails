@@ -15,19 +15,19 @@
 html{scroll-behavior:smooth}
 
 :root{
-  --void:#060105;
-  --plum:#100810;
-  --surface:#170c16;
-  --glass:rgba(255,255,255,.05);
-  --glass-b:rgba(255,255,255,.09);
+  --void:#120812;
+  --plum:#1d0f1c;
+  --surface:#281526;
+  --glass:rgba(255,255,255,.075);
+  --glass-b:rgba(255,255,255,.14);
   --blossom:#f4b4c8;
   --blossom-d:#e07898;
   --blossom-v:#c03368;
   --gold:#d4a574;
   --gold-l:rgba(212,165,116,.15);
   --text:#fdf0f6;
-  --text-d:rgba(253,240,246,.55);
-  --text-g:rgba(253,240,246,.22);
+  --text-d:rgba(253,240,246,.74);
+  --text-g:rgba(253,240,246,.46);
   --cream:#fdf4f0;
   --cream2:#f5e8e4;
   --ink:#251520;
@@ -72,7 +72,7 @@ nav{
   border-bottom:1px solid transparent;
 }
 nav.scrolled{
-  background:rgba(6,1,5,.88);
+  background:rgba(18,8,18,.9);
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   padding:1rem 5%;
@@ -113,7 +113,7 @@ nav.scrolled{
   display:flex;align-items:center;
   padding:0 8%;
   overflow:hidden;
-  background:radial-gradient(ellipse 90% 70% at 72% 55%, #1e0418 0%, var(--void) 65%);
+  background:radial-gradient(ellipse 90% 70% at 72% 55%, #351029 0%, var(--void) 68%);
 }
 
 .hero-kanji{
@@ -229,7 +229,7 @@ nav.scrolled{
 }
 .about-dark-bg{
   position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 80% at 40% 55%,#300d2a 0%,var(--plum) 70%);
+  background:radial-gradient(ellipse 70% 80% at 40% 55%,#431535 0%,var(--plum) 72%);
 }
 .about-badge{
   position:absolute;bottom:2.8rem;left:2.8rem;z-index:2;
@@ -273,6 +273,68 @@ nav.scrolled{
 .pill-light{background:#f0dde6;color:var(--ink);border:1px solid rgba(192,51,104,.12)}
 .pill-dark{background:var(--glass);color:var(--text-d);border:1px solid var(--glass-b)}
 
+/* ── ARTISTS ── */
+#artists{padding:7rem 5%;background:var(--void);position:relative;overflow:hidden}
+#artists::before{
+  content:'';position:absolute;inset:auto -10% -35% -10%;
+  height:420px;background:radial-gradient(ellipse,rgba(192,51,104,.13) 0%,transparent 68%);
+  pointer-events:none;
+}
+.artist-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.1rem;position:relative;margin-top:3.4rem;
+}
+.artist-card{
+  background:var(--surface);border:1px solid var(--glass-b);
+  border-radius:20px;overflow:hidden;
+  transition:border-color .25s,transform .25s;
+}
+.artist-card:hover{border-color:rgba(244,180,200,.2);transform:translateY(-4px)}
+.artist-photo{
+  aspect-ratio:4/5;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 52% 32%,rgba(253,240,246,.18) 0 9%,transparent 10%),
+    radial-gradient(circle at 50% 42%,rgba(244,180,200,.28) 0 18%,transparent 19%),
+    linear-gradient(145deg,#531333 0%,#281526 52%,#120812 100%);
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.artist-photo::after{
+  content:attr(data-initials);
+  font-family:'Shippori Mincho B1',serif;
+  font-size:clamp(3.2rem,6vw,5.4rem);font-weight:600;
+  color:rgba(253,240,246,.18);letter-spacing:.04em;
+  margin-bottom:1.2rem;
+}
+.artist-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.artist-body{padding:1.5rem 1.35rem 1.6rem}
+.artist-role{
+  font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.55rem;
+}
+.artist-name{
+  font-family:'Shippori Mincho B1',serif;
+  font-size:1.32rem;font-weight:600;color:var(--text);margin-bottom:.55rem;
+}
+.artist-bio{font-size:.83rem;font-weight:300;color:var(--text-d);line-height:1.72}
+.artist-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem}
+.artist-tag{
+  padding:.32rem .7rem;border-radius:100px;
+  background:var(--glass);border:1px solid var(--glass-b);
+  color:var(--text-d);font-size:.66rem;letter-spacing:.05em;
+}
+.artist-cta,.svc-cta{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-top:1.2rem;padding:.58rem 1rem;border-radius:100px;
+  background:transparent;border:1px solid rgba(244,180,200,.22);
+  color:var(--blossom);font-family:'Outfit',sans-serif;
+  font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;transition:background .2s,border-color .2s,color .2s,transform .2s;
+}
+.artist-cta:hover,.svc-cta:hover{
+  background:var(--blossom-v);border-color:var(--blossom-v);
+  color:#fff;transform:translateY(-1px);
+}
+
 /* ── SERVICES ── */
 #services{padding:7rem 5%;background:var(--void)}
 .sec-hd{text-align:center;margin-bottom:3.8rem}
@@ -295,7 +357,7 @@ nav.scrolled{
   transform:scaleX(0);transform-origin:left;
   transition:transform .45s var(--ease);
 }
-.svc-tile:hover{background:#1c0d18}
+.svc-tile:hover{background:#32182d}
 .svc-tile:hover::after{transform:scaleX(1)}
 .svc-no{
   font-family:'Shippori Mincho B1',serif;
@@ -321,6 +383,7 @@ nav.scrolled{
   background:var(--gold-l);border:1px solid rgba(212,165,116,.22);
   border-radius:100px;font-size:.7rem;letter-spacing:.08em;color:var(--gold);
 }
+.svc-cta{margin-left:.55rem}
 
 /* ── GALLERY ── */
 #gallery{padding:7rem 5%;background:var(--cream)}
@@ -439,7 +502,7 @@ nav.scrolled{
 .bk-picker-btn.active{border-color:rgba(244,180,200,.45);background:rgba(255,255,255,.07);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
 .pk-overlay{position:fixed;inset:0;z-index:9999;background:rgba(10,0,14,.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
 .pk-overlay.open{opacity:1;pointer-events:all}
-.pk-popup{background:rgba(20,5,24,.97);border:1px solid rgba(244,180,200,.2);border-radius:22px;padding:1.6rem;box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(244,180,200,.05);width:300px;max-width:92vw;transform:scale(.93) translateY(10px);transition:transform .24s cubic-bezier(.34,1.4,.64,1)}
+.pk-popup{background:rgba(34,15,36,.97);border:1px solid rgba(244,180,200,.24);border-radius:22px;padding:1.6rem;box-shadow:0 30px 80px rgba(0,0,0,.62),0 0 0 1px rgba(244,180,200,.07);width:300px;max-width:92vw;transform:scale(.93) translateY(10px);transition:transform .24s cubic-bezier(.34,1.4,.64,1)}
 .pk-overlay.open .pk-popup{transform:scale(1) translateY(0)}
 .pk-title{text-align:center;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-g);margin-bottom:1.1rem;font-family:'Outfit',sans-serif}
 .pk-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
@@ -490,7 +553,7 @@ nav.scrolled{
   cursor:none;transition:border-color .2s,background .2s;
 }
 .bk-select:focus{border-color:rgba(244,180,200,.45);background-color:rgba(255,255,255,.07);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
-.bk-select option{background:#170c16;color:var(--text)}
+.bk-select option{background:#281526;color:var(--text)}
 .bk-row2{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;max-width:820px;margin:.7rem auto 0}
 
 /* ── FOOTER ── */
@@ -543,6 +606,7 @@ footer{
   .svc-grid{grid-template-columns:repeat(2,1fr)}
   #stats{grid-template-columns:repeat(3,1fr)}
   .testi-grid{grid-template-columns:repeat(2,1fr)}
+  .artist-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:768px){
   nav{padding:1rem 4%}
@@ -551,6 +615,7 @@ footer{
   .hero-kanji{font-size:45vw;right:-8%;opacity:.4}
   #about{grid-template-columns:1fr}
   .about-dark{min-height:55vw}
+  .artist-grid{grid-template-columns:1fr}
   .svc-grid{grid-template-columns:1fr}
   .gal-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
   .gi:nth-child(n){grid-column:auto;grid-row:auto;height:180px}
@@ -564,12 +629,12 @@ footer{
   .stat-b+.stat-b::before{display:none}
 }
 /* ── CHATBOT ── */
-#chat-btn{position:fixed;bottom:2rem;right:2rem;z-index:9998;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--blossom-v),#e0507a);border:none;cursor:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 28px rgba(192,51,104,.55);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+#chat-btn{position:fixed;bottom:2rem;left:2rem;z-index:9998;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--blossom-v),#e0507a);border:none;cursor:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 28px rgba(192,51,104,.55);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
 #chat-btn:hover{transform:scale(1.12);box-shadow:0 8px 36px rgba(192,51,104,.7)}
 #chat-btn.open{transform:scale(.9)}
 #chat-btn .chat-petal{transition:transform .3s}
 #chat-btn.open .chat-petal{transform:rotate(45deg) scale(.85)}
-#chat-panel{position:fixed;bottom:5.5rem;right:2rem;z-index:9997;width:340px;max-width:calc(100vw - 2.4rem);background:rgba(16,3,20,.97);border:1px solid rgba(244,180,200,.18);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.75),0 0 0 1px rgba(244,180,200,.06);display:flex;flex-direction:column;transform:scale(.9) translateY(16px);transform-origin:bottom right;opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.34,1.4,.64,1),opacity .2s;overflow:hidden}
+#chat-panel{position:fixed;bottom:5.5rem;left:2rem;z-index:9997;width:340px;max-width:calc(100vw - 2.4rem);background:rgba(34,15,36,.97);border:1px solid rgba(244,180,200,.24);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.65),0 0 0 1px rgba(244,180,200,.08);display:flex;flex-direction:column;transform:scale(.9) translateY(16px);transform-origin:bottom left;opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.34,1.4,.64,1),opacity .2s;overflow:hidden}
 #chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
 .cht-hd{padding:.9rem 1.1rem;border-bottom:1px solid rgba(244,180,200,.1);display:flex;align-items:center;gap:.7rem;flex-shrink:0}
 .cht-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,rgba(192,51,104,.4),rgba(244,180,200,.15));border:1px solid rgba(244,180,200,.25);display:flex;align-items:center;justify-content:center;font-size:.82rem}
@@ -642,6 +707,7 @@ footer{
   </a>
   <ul class="nav-links">
     <li><a href="#about">Nosotras</a></li>
+    <li><a href="#artists">Artistas</a></li>
     <li><a href="#services">Servicios</a></li>
     <li><a href="#gallery">Galería</a></li>
     <li><a href="#testimonials">Reseñas</a></li>
@@ -799,6 +865,62 @@ footer{
   </div>
 </section>
 
+<!-- ── ARTISTS ── -->
+<section id="artists">
+  <div class="sec-hd">
+    <p class="eyebrow eyebrow-d rv">Nuestro equipo</p>
+    <h2 class="h2 h2-dark rv" style="transition-delay:.08s">Nuestras <em>artistas</em></h2>
+    <p class="body body-dark rv" style="transition-delay:.16s">Cada especialista tiene un estilo propio para cuidar tus manos con técnica, paciencia y una mirada muy detallista.</p>
+  </div>
+
+  <div class="artist-grid rv">
+    <article class="artist-card">
+      <div class="artist-photo" data-initials="DN"></div>
+      <div class="artist-body">
+        <div class="artist-role">Fundadora · Gel premium</div>
+        <h3 class="artist-name">Diane</h3>
+        <p class="artist-bio">Su trabajo combina acabados limpios, tonos suaves y detalles florales. Es ideal para clientas que buscan diseños elegantes, delicados y duraderos.</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Sakura Art</span>
+          <span class="artist-tag">Gel</span>
+          <span class="artist-tag">Floral</span>
+        </div>
+        <button type="button" class="artist-cta" onclick="selectArtist('Diane')">Reservar con Diane</button>
+      </div>
+    </article>
+
+    <article class="artist-card">
+      <div class="artist-photo" data-initials="AM"></div>
+      <div class="artist-body">
+        <div class="artist-role">Nail art · Detalle fino</div>
+        <h3 class="artist-name">Ana</h3>
+        <p class="artist-bio">Especialista en trazos pequeños, brillo sutil y composiciones personalizadas. Su estilo funciona perfecto para diseños románticos o minimalistas.</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Nail art</span>
+          <span class="artist-tag">Minimal</span>
+          <span class="artist-tag">Brillo</span>
+        </div>
+        <button type="button" class="artist-cta" onclick="selectArtist('Ana')">Reservar con Ana</button>
+      </div>
+    </article>
+
+    <article class="artist-card">
+      <div class="artist-photo" data-initials="LV"></div>
+      <div class="artist-body">
+        <div class="artist-role">Escultura · Acrílico</div>
+        <h3 class="artist-name">Luna</h3>
+        <p class="artist-bio">Se enfoca en estructura, forma y resistencia. Recomendada para extensiones, cambios de largo y sets con presencia más marcada.</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Acrílico</span>
+          <span class="artist-tag">3D</span>
+          <span class="artist-tag">Extensión</span>
+        </div>
+        <button type="button" class="artist-cta" onclick="selectArtist('Luna')">Reservar con Luna</button>
+      </div>
+    </article>
+  </div>
+</section>
+
 <!-- ── SERVICES ── -->
 <section id="services">
   <div class="sec-hd">
@@ -813,6 +935,7 @@ footer{
       <div class="svc-name">Sakura Art</div>
       <p class="svc-desc">Cerezos pintados a mano con técnicas japonesas. Cada uña es un lienzo único que florece con la estación.</p>
       <span class="svc-price">Desde $650 MXN</span>
+      <button type="button" class="svc-cta" onclick="selectService('Sakura Art')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">02</span>
@@ -820,6 +943,7 @@ footer{
       <div class="svc-name">Gel Premium</div>
       <p class="svc-desc">Aplicación de gel de larga duración con acabado espejo, mate o glitter. Hasta 4 semanas sin levantamiento.</p>
       <span class="svc-price">Desde $450 MXN</span>
+      <button type="button" class="svc-cta" onclick="selectService('Gel Premium')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">03</span>
@@ -827,6 +951,7 @@ footer{
       <div class="svc-name">Escultura Acrílica</div>
       <p class="svc-desc">Extensiones modeladas a mano para longitud y forma perfecta. Diseños personalizados disponibles.</p>
       <span class="svc-price">Desde $780 MXN</span>
+      <button type="button" class="svc-cta" onclick="selectService('Escultura Acrílica')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">04</span>
@@ -834,6 +959,7 @@ footer{
       <div class="svc-name">Manicura Spa</div>
       <p class="svc-desc">Exfoliación, hidratación profunda, masaje con aceites esenciales y esmaltado de alta duración.</p>
       <span class="svc-price">Desde $380 MXN</span>
+      <button type="button" class="svc-cta" onclick="selectService('Manicura Spa')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">05</span>
@@ -841,6 +967,7 @@ footer{
       <div class="svc-name">Nail Art 3D</div>
       <p class="svc-desc">Flores, cristales Swarovski y figuras en acrílico. Un look tridimensional que irradia exclusividad.</p>
       <span class="svc-price">Desde $900 MXN</span>
+      <button type="button" class="svc-cta" onclick="selectService('Nail Art 3D')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">06</span>
@@ -848,6 +975,7 @@ footer{
       <div class="svc-name">Pedicura de Lujo</div>
       <p class="svc-desc">Sales aromáticas, exfoliación, masaje y esmaltado semipermanente. Una hora de puro bienestar.</p>
       <span class="svc-price">Desde $520 MXN</span>
+      <button type="button" class="svc-cta" onclick="selectService('Pedicura de Lujo')">Reservar</button>
     </div>
   </div>
 </section>
@@ -1114,6 +1242,12 @@ footer{
       <option value="Nail Art 3D">🦋 Nail Art 3D — $900</option>
       <option value="Pedicura de Lujo">🌿 Pedicura de Lujo — $520</option>
     </select>
+    <select class="bk-select" id="bkArtist">
+      <option value="Sin preferencia" selected>Sin preferencia de artista</option>
+      <option value="Diane">Diane — Gel premium y floral</option>
+      <option value="Ana">Ana — Nail art y detalle fino</option>
+      <option value="Luna">Luna — Escultura y acrílico</option>
+    </select>
     <button type="submit" form="bookingForm" class="btn-bloom" id="bkBtn">Reservar ahora</button>
   </div>
   <p class="bk-hint rv" style="transition-delay:.34s">También por <a href="#">WhatsApp</a> o <a href="#">Instagram</a></p>
@@ -1194,7 +1328,7 @@ let mx = window.innerWidth/2, my = window.innerHeight/2;
 let cx = mx, cy = my;
 
 document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-document.querySelectorAll('a,button,.gi,.svc-tile,.testi-card').forEach(el => {
+document.querySelectorAll('a,button,.gi,.svc-tile,.testi-card,.artist-card').forEach(el => {
   el.addEventListener('mouseenter', () => cur.classList.add('big'));
   el.addEventListener('mouseleave', () => cur.classList.remove('big'));
 });
@@ -1434,6 +1568,22 @@ function resetPickers() {
   document.getElementById('pkTimeConfirm').disabled = true;
 }
 
+function scrollToBooking() {
+  document.getElementById('booking')?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function selectArtist(name) {
+  const artist = document.getElementById('bkArtist');
+  if (artist) artist.value = name;
+  scrollToBooking();
+}
+
+function selectService(name) {
+  const service = document.getElementById('bkService');
+  if (service) service.value = name;
+  scrollToBooking();
+}
+
 /* ── BOOKING FORM ── */
 async function handleBook(e) {
   e.preventDefault();
@@ -1444,6 +1594,7 @@ async function handleBook(e) {
   const date    = document.getElementById('bkDate').value;
   const time    = document.getElementById('bkTime').value;
   const service = document.getElementById('bkService').value;
+  const artist  = document.getElementById('bkArtist').value;
   if (!date) { msg.style.display='block'; msg.textContent='Por favor selecciona una fecha.'; return; }
   if (!time) { msg.style.display='block'; msg.textContent='Por favor selecciona un horario.'; return; }
   if (!service) { msg.style.display='block'; msg.textContent='Por favor selecciona un servicio.'; return; }
@@ -1461,6 +1612,7 @@ async function handleBook(e) {
         time,
         serviceName: service,
         servicePrice: prices[service] || 0,
+        artistName: artist || 'Sin preferencia',
         status: 'pending',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -1474,6 +1626,7 @@ async function handleBook(e) {
     btn.style.background = 'linear-gradient(135deg,#2e7d32,#43a047)';
     e.target.reset(); resetPickers();
     document.getElementById('bkService').value = '';
+    document.getElementById('bkArtist').value = 'Sin preferencia';
     setTimeout(() => {
       btn.textContent = 'Reservar ahora';
       btn.style.background = '';
