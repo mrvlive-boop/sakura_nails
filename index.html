@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sakura Nails — Arte que florece</title>
+<title>Diane Nails — Arte que florece</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
@@ -15,21 +15,25 @@
 html{scroll-behavior:smooth}
 
 :root{
-  --void:#120812;
-  --plum:#1d0f1c;
-  --surface:#281526;
-  --glass:rgba(255,255,255,.075);
-  --glass-b:rgba(255,255,255,.14);
-  --blossom:#f4b4c8;
-  --blossom-d:#e07898;
-  --blossom-v:#c03368;
-  --gold:#d4a574;
-  --gold-l:rgba(212,165,116,.15);
-  --text:#fdf0f6;
-  --text-d:rgba(253,240,246,.74);
-  --text-g:rgba(253,240,246,.46);
-  --cream:#fdf4f0;
-  --cream2:#f5e8e4;
+  --void:#ead0cf;
+  --plum:#dfc0be;
+  --surface:#f3dddc;
+  --glass:rgba(255,250,248,.24);
+  --glass-b:rgba(125,82,84,.18);
+  --blossom:#f6e3e2;
+  --blossom-d:#c89594;
+  --blossom-v:#b3d3c0;
+  --mint:#b3d3c0;
+  --mint-d:#6f9785;
+  --mint-l:rgba(179,211,192,.22);
+  --mint-ring:rgba(179,211,192,.42);
+  --gold:#8c6b32;
+  --gold-l:rgba(140,107,50,.13);
+  --text:#342323;
+  --text-d:rgba(52,35,35,.76);
+  --text-g:rgba(52,35,35,.52);
+  --cream:#fff5f4;
+  --cream2:#f8e9e8;
   --ink:#251520;
   --ink-d:#7a4f60;
   --ease:cubic-bezier(.16,1,.3,1);
@@ -72,7 +76,7 @@ nav{
   border-bottom:1px solid transparent;
 }
 nav.scrolled{
-  background:rgba(18,8,18,.9);
+  background:rgba(234,208,207,.92);
   backdrop-filter:blur(20px) saturate(180%);
   -webkit-backdrop-filter:blur(20px) saturate(180%);
   padding:1rem 5%;
@@ -82,7 +86,7 @@ nav.scrolled{
   display:flex;align-items:center;gap:.7rem;
   font-family:'Shippori Mincho B1',serif;
   font-size:1.4rem;font-weight:600;letter-spacing:.03em;
-  color:var(--text);text-decoration:none;
+  color:var(--gold);text-decoration:none;
 }
 .nav-links{display:flex;gap:2.4rem;list-style:none}
 .nav-links a{
@@ -92,28 +96,19 @@ nav.scrolled{
 }
 .nav-links a::after{
   content:'';position:absolute;bottom:-3px;left:0;right:0;
-  height:1px;background:var(--blossom-v);
+  height:2px;background:linear-gradient(90deg,var(--mint),rgba(179,211,192,.12));
   transform:scaleX(0);transform-origin:left;
   transition:transform .35s var(--ease);
 }
 .nav-links a:hover{color:var(--text)}
 .nav-links a:hover::after{transform:scaleX(1)}
-.nav-cta{
-  border:1px solid rgba(244,180,200,.3);color:var(--blossom);
-  padding:.55rem 1.5rem;border-radius:100px;
-  font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
-  font-weight:500;text-decoration:none;
-  transition:background .2s,border-color .2s,color .2s,transform .2s;
-}
-.nav-cta:hover{background:var(--blossom-v);border-color:var(--blossom-v);color:#fff;transform:translateY(-1px)}
-
 /* ── HERO ── */
 #hero{
   position:relative;min-height:100vh;
   display:flex;align-items:center;
   padding:0 8%;
   overflow:hidden;
-  background:radial-gradient(ellipse 90% 70% at 72% 55%, #351029 0%, var(--void) 68%);
+  background:linear-gradient(135deg,#efd8d7 0%,#f6e3e2 58%,#dfc0be 100%);
 }
 
 .hero-kanji{
@@ -136,19 +131,19 @@ nav.scrolled{
   opacity:0;transform:translateY(18px);
   animation:up .9s var(--ease) .15s forwards;
 }
-.kicker-line{width:28px;height:1px;background:var(--blossom-v)}
-.kicker-text{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--blossom);font-weight:400}
+.kicker-line{width:28px;height:2px;background:linear-gradient(90deg,var(--mint),transparent)}
+.kicker-text{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--mint-d);font-weight:500}
 
 .hero-title{
   font-family:'Shippori Mincho B1',serif;
   font-size:clamp(3.4rem,7vw,6.5rem);
-  font-weight:800;line-height:1.02;color:var(--text);
+  font-weight:800;line-height:1.02;color:var(--gold);
   opacity:0;transform:translateY(28px);
   animation:up 1s var(--ease) .35s forwards;
 }
 .hero-title-2{
   display:block;font-weight:400;font-style:italic;
-  color:var(--blossom);font-size:.88em;letter-spacing:-.01em;
+  color:var(--mint-d);font-size:.88em;letter-spacing:-.01em;
 }
 .hero-sub{
   font-size:.98rem;font-weight:300;color:var(--text-d);
@@ -161,15 +156,6 @@ nav.scrolled{
   opacity:0;transform:translateY(18px);
   animation:up .9s var(--ease) .85s forwards;
 }
-.btn-gold{
-  background:var(--gold);color:var(--void);
-  padding:.88rem 2.4rem;border-radius:100px;
-  font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:500;text-decoration:none;border:none;
-  box-shadow:0 4px 28px rgba(212,165,116,.38);
-  transition:background .2s,transform .2s,box-shadow .2s;
-}
-.btn-gold:hover{background:#e8c49a;transform:translateY(-2px);box-shadow:0 8px 36px rgba(212,165,116,.46)}
 .btn-ghost{
   border:1px solid var(--glass-b);color:var(--text-d);
   padding:.88rem 2.4rem;border-radius:100px;
@@ -177,7 +163,7 @@ nav.scrolled{
   font-weight:400;text-decoration:none;
   transition:border-color .2s,color .2s,transform .2s;
 }
-.btn-ghost:hover{border-color:rgba(244,180,200,.45);color:var(--blossom);transform:translateY(-2px)}
+.btn-ghost:hover{border-color:rgba(179,211,192,.72);color:var(--mint-d);transform:translateY(-2px)}
 
 .hero-scroll{
   position:absolute;bottom:2.5rem;left:8%;
@@ -201,7 +187,7 @@ nav.scrolled{
 /* ── STATS ── */
 #stats{
   background:var(--surface);
-  border-top:1px solid var(--glass-b);border-bottom:1px solid var(--glass-b);
+  border-top:1px solid var(--mint-ring);border-bottom:1px solid var(--mint-ring);
   display:grid;grid-template-columns:repeat(5,1fr);
   padding:3.5rem 5%;
 }
@@ -210,15 +196,19 @@ nav.scrolled{
 }
 .stat-b+.stat-b::before{
   content:'';position:absolute;left:0;top:20%;bottom:20%;
-  width:1px;background:var(--glass-b);
+  width:1px;background:linear-gradient(to bottom,transparent,var(--mint),transparent);
 }
 .stat-n{
   font-family:'Shippori Mincho B1',serif;
   font-size:clamp(2.4rem,4vw,3.6rem);font-weight:400;line-height:1;
-  color:var(--gold);display:block;
+  color:var(--mint-d);display:block;
 }
 .stat-u{font-size:1.1rem;color:var(--blossom-v)}
 .stat-l{font-size:.67rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-g);margin-top:.45rem}
+.stat-b::after{
+  content:'';display:block;width:28px;height:2px;margin:.9rem auto 0;
+  background:var(--mint);opacity:.65;border-radius:999px;
+}
 
 /* ── ABOUT ── */
 #about{display:grid;grid-template-columns:1fr 1fr;min-height:78vh}
@@ -229,16 +219,22 @@ nav.scrolled{
 }
 .about-dark-bg{
   position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 80% at 40% 55%,#431535 0%,var(--plum) 72%);
+  background:linear-gradient(145deg,#dfc0be 0%,#f3dddc 68%,rgba(179,211,192,.34) 100%);
 }
+.about-feature-photo{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center 58%;display:block;
+}
+.about-hand-illustration{display:none}
 .about-badge{
   position:absolute;bottom:2.8rem;left:2.8rem;z-index:2;
   background:var(--glass);border:1px solid var(--glass-b);
   backdrop-filter:blur(12px);padding:1.1rem 1.4rem;border-radius:14px;
+  box-shadow:inset 0 -3px 0 rgba(179,211,192,.52);
 }
 .badge-num{
   font-family:'Shippori Mincho B1',serif;
-  font-size:2.4rem;font-weight:600;color:var(--gold);line-height:1;
+  font-size:2.4rem;font-weight:600;color:var(--mint-d);line-height:1;
 }
 .badge-lbl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-d);margin-top:.2rem}
 
@@ -248,7 +244,7 @@ nav.scrolled{
 }
 .about-inner{max-width:480px}
 .eyebrow{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:1.1rem;font-weight:400}
-.eyebrow-d{color:var(--blossom-v)}
+.eyebrow-d{color:var(--mint-d)}
 .eyebrow-l{color:var(--blossom-d)}
 
 .h2{
@@ -258,8 +254,8 @@ nav.scrolled{
 }
 .h2-light{color:var(--ink)}
 .h2-dark{color:var(--text)}
-.h2-light em{color:var(--blossom-v);font-weight:400;font-style:italic}
-.h2-dark em{color:var(--blossom);font-weight:400;font-style:italic}
+.h2-light em{color:var(--mint-d);font-weight:400;font-style:italic}
+.h2-dark em{color:var(--mint-d);font-weight:400;font-style:italic}
 
 .body{font-size:.92rem;font-weight:300;line-height:1.82;margin:1.3rem 0}
 .body-light{color:var(--ink-d)}
@@ -270,16 +266,12 @@ nav.scrolled{
   padding:.38rem .95rem;border-radius:100px;
   font-size:.7rem;letter-spacing:.07em;font-weight:400;
 }
-.pill-light{background:#f0dde6;color:var(--ink);border:1px solid rgba(192,51,104,.12)}
+.pill-light{background:#f5dfde;color:var(--ink);border:1px solid rgba(125,82,84,.12)}
+.pill-light:nth-child(even){background:var(--mint-l);border-color:var(--mint-ring);color:var(--mint-d)}
 .pill-dark{background:var(--glass);color:var(--text-d);border:1px solid var(--glass-b)}
 
 /* ── ARTISTS ── */
 #artists{padding:7rem 5%;background:var(--void);position:relative;overflow:hidden}
-#artists::before{
-  content:'';position:absolute;inset:auto -10% -35% -10%;
-  height:420px;background:radial-gradient(ellipse,rgba(192,51,104,.13) 0%,transparent 68%);
-  pointer-events:none;
-}
 .artist-grid{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:1.1rem;position:relative;margin-top:3.4rem;
@@ -287,15 +279,13 @@ nav.scrolled{
 .artist-card{
   background:var(--surface);border:1px solid var(--glass-b);
   border-radius:20px;overflow:hidden;
-  transition:border-color .25s,transform .25s;
+  box-shadow:inset 0 0 0 1px rgba(179,211,192,.08);
+  transition:border-color .25s,transform .25s,box-shadow .25s;
 }
-.artist-card:hover{border-color:rgba(244,180,200,.2);transform:translateY(-4px)}
+.artist-card:hover{border-color:rgba(179,211,192,.65);box-shadow:inset 0 0 0 1px rgba(179,211,192,.28);transform:translateY(-4px)}
 .artist-photo{
   aspect-ratio:4/5;position:relative;overflow:hidden;
-  background:
-    radial-gradient(circle at 52% 32%,rgba(253,240,246,.18) 0 9%,transparent 10%),
-    radial-gradient(circle at 50% 42%,rgba(244,180,200,.28) 0 18%,transparent 19%),
-    linear-gradient(145deg,#531333 0%,#281526 52%,#120812 100%);
+  background:linear-gradient(145deg,#f5e0df 0%,#dfc0be 62%,rgba(179,211,192,.44) 100%);
   display:flex;align-items:flex-end;justify-content:center;
 }
 .artist-photo::after{
@@ -306,38 +296,38 @@ nav.scrolled{
   margin-bottom:1.2rem;
 }
 .artist-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.artist-photo.has-photo::after{display:none}
+.artist-photo.has-photo img{position:absolute;inset:0}
+.artist-photo img.diane-photo{object-position:43% center}
+.artist-photo img.veronica-photo{object-position:50% center}
+.artist-photo img.bety-photo{object-position:50% center}
+.artist-photo img.briscia-photo{object-position:50% center}
 .artist-body{padding:1.5rem 1.35rem 1.6rem}
 .artist-role{
   font-size:.63rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:.55rem;
+  color:var(--mint-d);margin-bottom:.55rem;
 }
 .artist-name{
   font-family:'Shippori Mincho B1',serif;
   font-size:1.32rem;font-weight:600;color:var(--text);margin-bottom:.55rem;
 }
 .artist-bio{font-size:.83rem;font-weight:300;color:var(--text-d);line-height:1.72}
+.artist-bio+.artist-bio{margin-top:.72rem}
+.artist-bio strong{color:var(--text);font-weight:500}
 .artist-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem}
 .artist-tag{
   padding:.32rem .7rem;border-radius:100px;
   background:var(--glass);border:1px solid var(--glass-b);
   color:var(--text-d);font-size:.66rem;letter-spacing:.05em;
 }
-.artist-cta,.svc-cta{
-  display:inline-flex;align-items:center;justify-content:center;
-  margin-top:1.2rem;padding:.58rem 1rem;border-radius:100px;
-  background:transparent;border:1px solid rgba(244,180,200,.22);
-  color:var(--blossom);font-family:'Outfit',sans-serif;
-  font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
-  text-decoration:none;transition:background .2s,border-color .2s,color .2s,transform .2s;
-}
-.artist-cta:hover,.svc-cta:hover{
-  background:var(--blossom-v);border-color:var(--blossom-v);
-  color:#fff;transform:translateY(-1px);
-}
-
+.artist-tag:nth-child(2){background:var(--mint-l);border-color:var(--mint-ring);color:var(--mint-d)}
 /* ── SERVICES ── */
 #services{padding:7rem 5%;background:var(--void)}
 .sec-hd{text-align:center;margin-bottom:3.8rem}
+.sec-hd::after{
+  content:'';display:block;width:54px;height:2px;margin:1.25rem auto 0;
+  background:linear-gradient(90deg,transparent,var(--mint),transparent);
+}
 .sec-hd .body{max-width:420px;margin:0 auto}
 .sec-hd .body-dark{color:var(--text-d)}
 
@@ -351,13 +341,14 @@ nav.scrolled{
   position:relative;overflow:hidden;
   transition:background .3s;
 }
+.svc-tile:nth-child(even){background:linear-gradient(145deg,var(--surface),rgba(179,211,192,.16))}
 .svc-tile::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--blossom-v),transparent);
+  background:linear-gradient(90deg,transparent,var(--mint),transparent);
   transform:scaleX(0);transform-origin:left;
   transition:transform .45s var(--ease);
 }
-.svc-tile:hover{background:#32182d}
+.svc-tile:hover{background:#f7e7e6}
 .svc-tile:hover::after{transform:scaleX(1)}
 .svc-no{
   font-family:'Shippori Mincho B1',serif;
@@ -371,7 +362,7 @@ nav.scrolled{
   font-size:1.25rem;margin-bottom:1.3rem;
   transition:border-color .3s,background .3s;
 }
-.svc-tile:hover .svc-ico{border-color:rgba(244,180,200,.28);background:rgba(244,180,200,.06)}
+.svc-tile:hover .svc-ico{border-color:rgba(179,211,192,.68);background:var(--mint-l)}
 .svc-name{
   font-family:'Shippori Mincho B1',serif;
   font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:.5rem;
@@ -380,11 +371,9 @@ nav.scrolled{
 .svc-price{
   display:inline-flex;align-items:center;
   margin-top:1.3rem;padding:.32rem .8rem;
-  background:var(--gold-l);border:1px solid rgba(212,165,116,.22);
-  border-radius:100px;font-size:.7rem;letter-spacing:.08em;color:var(--gold);
+  background:var(--mint-l);border:1px solid rgba(179,211,192,.58);
+  border-radius:100px;font-size:.7rem;letter-spacing:.08em;color:var(--mint-d);
 }
-.svc-cta{margin-left:.55rem}
-
 /* ── GALLERY ── */
 #gallery{padding:7rem 5%;background:var(--cream)}
 
@@ -428,16 +417,17 @@ nav.scrolled{
 .testi-card{
   background:var(--glass);border:1px solid var(--glass-b);
   border-radius:20px;padding:1.8rem 1.6rem;
-  transition:border-color .3s,transform .3s;
+  box-shadow:inset 0 2px 0 rgba(179,211,192,.22);
+  transition:border-color .3s,transform .3s,box-shadow .3s;
 }
-.testi-card:hover{border-color:rgba(244,180,200,.2);transform:translateY(-4px)}
+.testi-card:hover{border-color:rgba(179,211,192,.58);box-shadow:inset 0 3px 0 rgba(179,211,192,.48);transform:translateY(-4px)}
 .testi-q{
   font-family:'Shippori Mincho B1',serif;
   font-size:2.8rem;line-height:.7;
   color:var(--blossom-v);opacity:.35;
   display:block;margin-bottom:.7rem;
 }
-.testi-stars{color:var(--gold);font-size:.72rem;letter-spacing:.1em;margin-bottom:.7rem}
+.testi-stars{color:var(--mint-d);font-size:.72rem;letter-spacing:.1em;margin-bottom:.7rem}
 .testi-txt{
   font-family:'Shippori Mincho B1',serif;font-style:italic;
   font-size:.9rem;line-height:1.72;color:var(--text);
@@ -446,115 +436,12 @@ nav.scrolled{
 .testi-who{display:flex;align-items:center;gap:.75rem}
 .testi-av{
   width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(135deg,var(--blossom-v),var(--blossom-d));
+  background:linear-gradient(135deg,var(--mint),var(--blossom-d));
   display:flex;align-items:center;justify-content:center;
   font-size:.68rem;font-weight:600;color:#fff;
 }
 .testi-nm{font-size:.8rem;font-weight:500;color:var(--text)}
 .testi-dt{font-size:.68rem;color:var(--text-g)}
-
-/* ── BOOKING ── */
-#booking{
-  padding:8rem 5%;background:var(--void);
-  position:relative;overflow:hidden;text-align:center;
-}
-.bk-glow{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:700px;height:500px;
-  background:radial-gradient(ellipse,rgba(192,51,104,.16) 0%,transparent 70%);
-  pointer-events:none;
-}
-.bk-title{
-  font-family:'Shippori Mincho B1',serif;
-  font-size:clamp(2.4rem,5vw,4.4rem);
-  font-weight:800;line-height:1.1;color:var(--text);
-  margin:.5rem 0 .9rem;position:relative;
-}
-.bk-title span{color:var(--blossom);font-weight:400;font-style:italic}
-.bk-sub{
-  font-size:.93rem;color:var(--text-d);font-weight:300;
-  max-width:380px;margin:0 auto 2.8rem;line-height:1.75;position:relative;
-}
-.bk-form{
-  display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;
-  max-width:820px;margin:0 auto;position:relative;
-}
-.bk-input{
-  flex:1;min-width:175px;
-  padding:.88rem 1.4rem;border-radius:100px;
-  background:var(--glass);border:1px solid var(--glass-b);
-  color:var(--text);font-family:'Outfit',sans-serif;
-  font-size:.86rem;font-weight:300;outline:none;
-  transition:border-color .2s,background .2s,box-shadow .2s;
-}
-.bk-input::placeholder{color:var(--text-g)}
-.bk-input:focus{
-  border-color:rgba(244,180,200,.45);
-  background:rgba(255,255,255,.07);
-  box-shadow:0 0 0 3px rgba(192,51,104,.1);
-}
-.bk-picker-btn{flex:1;min-width:175px;cursor:none;text-align:left;display:flex;align-items:center;gap:.6rem;color:var(--text-g)}
-.bk-picker-btn.has-value{color:var(--text)}
-.bk-picker-btn svg{flex-shrink:0;opacity:.45;transition:opacity .15s}
-.bk-picker-btn:hover{border-color:rgba(244,180,200,.45);background:rgba(255,255,255,.07)}
-.bk-picker-btn:hover svg{opacity:.8}
-.bk-picker-btn.active{border-color:rgba(244,180,200,.45);background:rgba(255,255,255,.07);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
-.pk-overlay{position:fixed;inset:0;z-index:9999;background:rgba(10,0,14,.72);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
-.pk-overlay.open{opacity:1;pointer-events:all}
-.pk-popup{background:rgba(34,15,36,.97);border:1px solid rgba(244,180,200,.24);border-radius:22px;padding:1.6rem;box-shadow:0 30px 80px rgba(0,0,0,.62),0 0 0 1px rgba(244,180,200,.07);width:300px;max-width:92vw;transform:scale(.93) translateY(10px);transition:transform .24s cubic-bezier(.34,1.4,.64,1)}
-.pk-overlay.open .pk-popup{transform:scale(1) translateY(0)}
-.pk-title{text-align:center;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-g);margin-bottom:1.1rem;font-family:'Outfit',sans-serif}
-.pk-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.pk-month-label{font-family:'Shippori Mincho B1',serif;font-size:.96rem;color:var(--text);text-align:center;flex:1}
-.pk-nav{background:none;border:1px solid rgba(244,180,200,.15);color:var(--text-g);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:none;font-size:.85rem;transition:border-color .15s,color .15s;line-height:1;padding:0}
-.pk-nav:hover{border-color:var(--blossom);color:var(--blossom)}
-.pk-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:.3rem}
-.pk-dow span{text-align:center;font-size:.58rem;color:var(--text-g);padding:.3rem 0;font-family:'Outfit',sans-serif;letter-spacing:.04em}
-.pk-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-.pk-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:.78rem;font-family:'Outfit',sans-serif;cursor:none;transition:background .15s,color .15s;color:var(--text);border:none;background:none;width:100%}
-.pk-day:hover:not(.disabled):not(.selected){background:rgba(244,180,200,.13);color:var(--blossom)}
-.pk-day.today{color:var(--blossom);font-weight:600;position:relative}
-.pk-day.today::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--blossom)}
-.pk-day.selected{background:linear-gradient(135deg,var(--blossom-v),#e0507a);color:#fff;font-weight:600;box-shadow:0 2px 10px rgba(192,51,104,.45)}
-.pk-day.other-month{color:rgba(253,240,246,.18);pointer-events:none}
-.pk-day.disabled{color:rgba(253,240,246,.15);pointer-events:none}
-.pk-time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;max-height:244px;overflow-y:auto;padding-right:2px}
-.pk-time-grid::-webkit-scrollbar{width:3px}
-.pk-time-grid::-webkit-scrollbar-thumb{background:rgba(244,180,200,.2);border-radius:2px}
-.pk-slot{padding:.48rem .2rem;text-align:center;border-radius:8px;font-size:.72rem;font-family:'Outfit',sans-serif;color:var(--text-g);border:1px solid rgba(244,180,200,.1);background:none;cursor:none;transition:background .15s,color .15s,border-color .15s;width:100%}
-.pk-slot:hover{background:rgba(244,180,200,.1);color:var(--blossom);border-color:rgba(244,180,200,.25)}
-.pk-slot.selected{background:linear-gradient(135deg,var(--blossom-v),#e0507a);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(192,51,104,.3)}
-.pk-confirm{width:100%;margin-top:1.1rem;background:linear-gradient(135deg,var(--blossom-v),#e0507a);color:#fff;border:none;border-radius:100px;padding:.7rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-family:'Outfit',sans-serif;font-weight:500;cursor:none;box-shadow:0 4px 20px rgba(192,51,104,.35);transition:transform .15s,opacity .15s}
-.pk-confirm:hover{transform:translateY(-1px);opacity:.9}
-.pk-confirm:disabled{opacity:.35;pointer-events:none}
-.btn-bloom{
-  background:linear-gradient(135deg,var(--blossom-v),#e0507a);
-  color:#fff;border:none;
-  padding:.88rem 2.3rem;border-radius:100px;
-  font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:500;font-family:'Outfit',sans-serif;
-  box-shadow:0 4px 28px rgba(192,51,104,.42);
-  transition:transform .2s,box-shadow .2s,opacity .2s;
-}
-.btn-bloom:hover{transform:translateY(-2px);box-shadow:0 8px 36px rgba(192,51,104,.52);opacity:.92}
-.bk-hint{margin-top:1.6rem;font-size:.74rem;color:var(--text-g);position:relative}
-.bk-hint a{color:var(--blossom);text-decoration:none}
-.bk-select{
-  flex:1;min-width:175px;
-  padding:.88rem 1.4rem;border-radius:100px;
-  background:var(--glass);border:1px solid var(--glass-b);
-  color:var(--text);font-family:'Outfit',sans-serif;
-  font-size:.86rem;font-weight:300;outline:none;
-  appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(253,240,246,.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 1.2rem center;
-  padding-right:2.8rem;
-  cursor:none;transition:border-color .2s,background .2s;
-}
-.bk-select:focus{border-color:rgba(244,180,200,.45);background-color:rgba(255,255,255,.07);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
-.bk-select option{background:#281526;color:var(--text)}
-.bk-row2{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;max-width:820px;margin:.7rem auto 0}
 
 /* ── FOOTER ── */
 footer{
@@ -570,7 +457,7 @@ footer{
 .ft-logo{
   display:flex;align-items:center;gap:.7rem;
   font-family:'Shippori Mincho B1',serif;
-  font-size:1.3rem;font-weight:600;color:var(--text);
+  font-size:1.3rem;font-weight:600;color:var(--gold);
   margin-bottom:.85rem;
 }
 .ft-tag{font-size:.82rem;font-weight:300;color:var(--text-d);line-height:1.75;max-width:240px;margin-bottom:1.35rem}
@@ -582,10 +469,10 @@ footer{
   font-size:.66rem;color:var(--text-d);text-decoration:none;
   transition:border-color .2s,color .2s,background .2s;
 }
-.ft-soc:hover{border-color:rgba(244,180,200,.35);color:var(--blossom);background:rgba(244,180,200,.06)}
+.ft-soc:hover{border-color:rgba(179,211,192,.62);color:var(--mint-d);background:var(--mint-l)}
 .ft-col h5{
   font-size:.63rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--text-g);font-weight:400;margin-bottom:1rem;
+  color:var(--mint-d);font-weight:400;margin-bottom:1rem;
 }
 .ft-col ul{list-style:none}
 .ft-col ul li+li{margin-top:.55rem}
@@ -593,10 +480,10 @@ footer{
   text-decoration:none;color:var(--text-d);
   font-size:.82rem;font-weight:300;transition:color .2s;
 }
-.ft-col ul li a:hover{color:var(--blossom)}
+.ft-col ul li a:hover{color:var(--mint-d)}
 .ft-col p{font-size:.82rem;font-weight:300;color:var(--text-d);line-height:1.75}
 .ft-bottom{
-  border-top:1px solid var(--glass-b);padding-top:1.4rem;
+  border-top:1px solid var(--mint-ring);padding-top:1.4rem;
   display:flex;justify-content:space-between;align-items:center;
   font-size:.7rem;color:var(--text-g);
 }
@@ -624,51 +511,8 @@ footer{
 }
 @media(max-width:480px){
   .ft-grid{grid-template-columns:1fr}
-  .bk-form{flex-direction:column;align-items:stretch}
-  .bk-input{min-width:unset}
   .stat-b+.stat-b::before{display:none}
 }
-/* ── CHATBOT ── */
-#chat-btn{position:fixed;bottom:2rem;left:2rem;z-index:9998;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--blossom-v),#e0507a);border:none;cursor:none;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 28px rgba(192,51,104,.55);transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
-#chat-btn:hover{transform:scale(1.12);box-shadow:0 8px 36px rgba(192,51,104,.7)}
-#chat-btn.open{transform:scale(.9)}
-#chat-btn .chat-petal{transition:transform .3s}
-#chat-btn.open .chat-petal{transform:rotate(45deg) scale(.85)}
-#chat-panel{position:fixed;bottom:5.5rem;left:2rem;z-index:9997;width:340px;max-width:calc(100vw - 2.4rem);background:rgba(34,15,36,.97);border:1px solid rgba(244,180,200,.24);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.65),0 0 0 1px rgba(244,180,200,.08);display:flex;flex-direction:column;transform:scale(.9) translateY(16px);transform-origin:bottom left;opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.34,1.4,.64,1),opacity .2s;overflow:hidden}
-#chat-panel.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
-.cht-hd{padding:.9rem 1.1rem;border-bottom:1px solid rgba(244,180,200,.1);display:flex;align-items:center;gap:.7rem;flex-shrink:0}
-.cht-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,rgba(192,51,104,.4),rgba(244,180,200,.15));border:1px solid rgba(244,180,200,.25);display:flex;align-items:center;justify-content:center;font-size:.82rem}
-.cht-info{flex:1;min-width:0}
-.cht-name{font-family:'Shippori Mincho B1',serif;font-size:.82rem;color:var(--text);line-height:1.2}
-.cht-status{font-size:.59rem;color:var(--text-g);letter-spacing:.04em;display:flex;align-items:center;gap:.3rem;margin-top:.1rem}
-.cht-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;flex-shrink:0;animation:cdot 2.2s infinite}
-@keyframes cdot{0%,100%{opacity:1}50%{opacity:.25}}
-.cht-close{background:none;border:none;cursor:none;color:var(--text-g);font-size:1rem;line-height:1;padding:.25rem;transition:color .15s;flex-shrink:0}
-.cht-close:hover{color:var(--text)}
-.cht-msgs{height:300px;overflow-y:auto;padding:.8rem .9rem;display:flex;flex-direction:column;gap:.55rem;flex-shrink:0}
-.cht-msgs::-webkit-scrollbar{width:3px}
-.cht-msgs::-webkit-scrollbar-thumb{background:rgba(244,180,200,.15);border-radius:2px}
-.cht-msg{display:flex;flex-direction:column;max-width:86%}
-.cht-msg.user{align-self:flex-end;align-items:flex-end}
-.cht-msg.bot{align-self:flex-start;align-items:flex-start}
-.cht-bbl{padding:.5rem .82rem;border-radius:14px;font-size:.79rem;font-family:'Outfit',sans-serif;line-height:1.52;word-break:break-word}
-.cht-msg.user .cht-bbl{background:linear-gradient(135deg,var(--blossom-v),#e0507a);color:#fff;border-bottom-right-radius:4px}
-.cht-msg.bot  .cht-bbl{background:rgba(255,255,255,.06);border:1px solid rgba(244,180,200,.1);color:var(--text);border-bottom-left-radius:4px}
-.cht-typing{display:flex;align-items:center;gap:4px;padding:.52rem .82rem;background:rgba(255,255,255,.06);border:1px solid rgba(244,180,200,.1);border-radius:14px;border-bottom-left-radius:4px;width:fit-content}
-.cht-typing span{width:5px;height:5px;border-radius:50%;background:var(--blossom);animation:ctdot .8s infinite}
-.cht-typing span:nth-child(2){animation-delay:.16s}
-.cht-typing span:nth-child(3){animation-delay:.32s}
-@keyframes ctdot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
-.cht-err{font-size:.69rem;color:#f87171;padding:.4rem .9rem;background:rgba(248,113,113,.06);border-top:1px solid rgba(248,113,113,.1);display:none;flex-shrink:0;line-height:1.45}
-.cht-foot{padding:.7rem .9rem;border-top:1px solid rgba(244,180,200,.1);display:flex;gap:.5rem;align-items:flex-end;flex-shrink:0}
-.cht-input{flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(244,180,200,.12);border-radius:12px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.79rem;padding:.5rem .8rem;outline:none;resize:none;max-height:88px;line-height:1.45;transition:border-color .2s}
-.cht-input::placeholder{color:var(--text-g);font-size:.76rem}
-.cht-input:focus{border-color:rgba(244,180,200,.35)}
-.cht-send{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:linear-gradient(135deg,var(--blossom-v),#e0507a);border:none;cursor:none;color:#fff;display:flex;align-items:center;justify-content:center;transition:transform .15s,opacity .15s;box-shadow:0 2px 10px rgba(192,51,104,.3)}
-.cht-send:hover{transform:scale(1.1)}
-.cht-send:disabled{opacity:.28;pointer-events:none}
-.cht-ig-btn{display:inline-flex;align-items:center;gap:.45rem;margin-top:.5rem;padding:.45rem 1rem;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;border-radius:100px;text-decoration:none;font-size:.74rem;font-weight:500;font-family:'Outfit',sans-serif;letter-spacing:.04em;box-shadow:0 2px 12px rgba(253,29,29,.35);transition:transform .15s,opacity .15s}
-.cht-ig-btn:hover{transform:translateY(-1px);opacity:.9}
 </style>
 </head>
 <body>
@@ -703,7 +547,7 @@ footer{
         <circle r="1.4" fill="#c03368"/>
       </g>
     </svg>
-    Sakura Nails
+    Diane Nails
   </a>
   <ul class="nav-links">
     <li><a href="#about">Nosotras</a></li>
@@ -712,7 +556,6 @@ footer{
     <li><a href="#gallery">Galería</a></li>
     <li><a href="#testimonials">Reseñas</a></li>
   </ul>
-  <a class="nav-cta" href="#booking">Reservar cita</a>
 </nav>
 
 <!-- ── HERO ── -->
@@ -761,7 +604,6 @@ footer{
     </h1>
     <p class="hero-sub">Diseños únicos inspirados en la delicadeza del sakura. Técnicas japonesas, materiales de primera calidad y una atención que trasciende lo estético.</p>
     <div class="hero-btns">
-      <a class="btn-gold" href="#booking">Reservar mi cita</a>
       <a class="btn-ghost" href="#gallery">Ver galería</a>
     </div>
   </div>
@@ -799,8 +641,9 @@ footer{
 <section id="about">
   <div class="about-dark rv-l">
     <div class="about-dark-bg"></div>
-    <!-- Hand SVG illustration -->
-    <svg width="260" height="340" viewBox="0 0 260 340" fill="none" style="position:relative;z-index:1">
+    <img class="about-feature-photo" src="assets/about-diane-nails.png" alt="Detalle floral del estudio Diane Nails &amp; Beauty">
+    <!-- Ilustración anterior conservada como respaldo -->
+    <svg class="about-hand-illustration" width="260" height="340" viewBox="0 0 260 340" fill="none" style="position:relative;z-index:1">
       <defs>
         <linearGradient id="ng1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.35)"/><stop offset="60%" stop-color="rgba(255,255,255,.04)"/><stop offset="100%" stop-color="rgba(0,0,0,.2)"/></linearGradient>
         <linearGradient id="ng2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f4b4c8"/><stop offset="100%" stop-color="#c03368"/></linearGradient>
@@ -852,7 +695,7 @@ footer{
     <div class="about-inner">
       <p class="eyebrow eyebrow-l">Nuestra historia</p>
       <h2 class="h2 h2-light">Donde la precisión<br/>se vuelve <em>arte</em></h2>
-      <p class="body body-light">Sakura Nails nació de la pasión por transformar cada sesión en una experiencia sensorial única. Combinamos técnicas japonesas tradicionales con las últimas tendencias en nail art para crear diseños que reflejan la personalidad de cada clienta.</p>
+      <p class="body body-light">Diane Nails nació de la pasión por transformar cada sesión en una experiencia sensorial única. Combinamos técnicas japonesas tradicionales con las últimas tendencias en nail art para crear diseños que reflejan la personalidad de cada clienta.</p>
       <p class="body body-light">Nuestras artistas se certifican continuamente en Japón, Corea del Sur y Europa para traerte siempre lo más nuevo en técnicas y cuidado.</p>
       <div class="pills">
         <span class="pill pill-light">Gel UV premium</span>
@@ -875,47 +718,115 @@ footer{
 
   <div class="artist-grid rv">
     <article class="artist-card">
-      <div class="artist-photo" data-initials="DN"></div>
+      <div class="artist-photo has-photo" data-initials="DN">
+        <img class="diane-photo" src="assets/diane-gomez.png" alt="Diane Gómez, fundadora de Diane Nails &amp; Beauty">
+      </div>
       <div class="artist-body">
-        <div class="artist-role">Fundadora · Gel premium</div>
-        <h3 class="artist-name">Diane</h3>
-        <p class="artist-bio">Su trabajo combina acabados limpios, tonos suaves y detalles florales. Es ideal para clientas que buscan diseños elegantes, delicados y duraderos.</p>
+        <div class="artist-role">Fundadora · Belleza integral</div>
+        <h3 class="artist-name">Diane Gómez</h3>
+        <p class="artist-bio">Soy <strong>Diane Gómez, fundadora de Diane Nails &amp; Beauty</strong>. Cuento con más de 10 años de experiencia en el mundo de la belleza, donde he convertido mi pasión por crear, cuidar y transformar en una experiencia especial para cada una de mis clientas.</p>
+        <p class="artist-bio">Además de ofrecer servicios integrales de belleza, comparto mi experiencia impartiendo cursos para futuras emprendedoras que desean desarrollar su talento y comenzar su propio camino.</p>
+        <p class="artist-bio">En <strong>Diane Nails &amp; Beauty</strong> creemos que la belleza va más allá de un servicio: es un momento para consentirte, sentirte segura y resaltar lo mejor de ti. ✨</p>
         <div class="artist-tags">
-          <span class="artist-tag">Sakura Art</span>
-          <span class="artist-tag">Gel</span>
-          <span class="artist-tag">Floral</span>
+          <span class="artist-tag">Belleza integral</span>
+          <span class="artist-tag">Formación</span>
+          <span class="artist-tag">Emprendimiento</span>
         </div>
-        <button type="button" class="artist-cta" onclick="selectArtist('Diane')">Reservar con Diane</button>
       </div>
     </article>
 
     <article class="artist-card">
-      <div class="artist-photo" data-initials="AM"></div>
+      <div class="artist-photo has-photo" data-initials="VG">
+        <img class="veronica-photo" src="assets/veronica-godinez.png" alt="Verónica Godínez, Lash Artist">
+      </div>
       <div class="artist-body">
-        <div class="artist-role">Nail art · Detalle fino</div>
-        <h3 class="artist-name">Ana</h3>
-        <p class="artist-bio">Especialista en trazos pequeños, brillo sutil y composiciones personalizadas. Su estilo funciona perfecto para diseños románticos o minimalistas.</p>
+        <div class="artist-role">Lash Artist · Desde 2019</div>
+        <h3 class="artist-name">Verónica Godínez</h3>
+        <p class="artist-bio">Soy <strong>Verónica Godínez, Lash Artist</strong>, y desde 2019 me dedico al mundo de las extensiones de pestañas, una profesión que se ha convertido en una de mis grandes pasiones.</p>
+        <p class="artist-bio">La capacitación constante es parte fundamental de mi crecimiento profesional. Me he certificado en <strong>RAEV Academy</strong>, bajo la formación de la maestra Mitzy Dzoara, como <strong>Lash Maker (2024), Instructor Lash (2025) y Lash Artist (2026)</strong>.</p>
+        <p class="artist-bio">También he participado en congresos y capacitaciones con reconocidos profesionales como <strong>Henry Denzel, Cinthy Rojas, Rita Fernández, Lucy Torres y Tania Torre</strong>, perfeccionando técnicas, diseños según el tipo de mirada y sets en tendencia como <strong>Anime, Wispy y Foxy</strong>.</p>
+        <p class="artist-bio">Cada nuevo diseño representa para mí la oportunidad de seguir aprendiendo, crear algo especial y resaltar la mirada de cada clienta.</p>
+        <p class="artist-bio"><strong>Te invito a conocer mi trabajo y descubrir el diseño de pestañas ideal para ti. ✨</strong></p>
         <div class="artist-tags">
-          <span class="artist-tag">Nail art</span>
-          <span class="artist-tag">Minimal</span>
-          <span class="artist-tag">Brillo</span>
+          <span class="artist-tag">Anime</span>
+          <span class="artist-tag">Wispy</span>
+          <span class="artist-tag">Foxy</span>
         </div>
-        <button type="button" class="artist-cta" onclick="selectArtist('Ana')">Reservar con Ana</button>
       </div>
     </article>
 
     <article class="artist-card">
-      <div class="artist-photo" data-initials="LV"></div>
+      <div class="artist-photo has-photo" data-initials="BA">
+        <img class="bety-photo" src="assets/bety-avila.png" alt="Bety Ávila, especialista en belleza y microblading">
+      </div>
       <div class="artist-body">
-        <div class="artist-role">Escultura · Acrílico</div>
-        <h3 class="artist-name">Luna</h3>
-        <p class="artist-bio">Se enfoca en estructura, forma y resistencia. Recomendada para extensiones, cambios de largo y sets con presencia más marcada.</p>
+        <div class="artist-role">Especialista en belleza · Microblading</div>
+        <h3 class="artist-name">Bety Ávila</h3>
+        <p class="artist-bio">Soy <strong>Bety Ávila</strong>, especialista en belleza con más de <strong>8 años de experiencia</strong>, enfocada principalmente en <strong>microblading</strong>. Cuento con una <strong>certificación internacional por Silam Academy</strong>, formación que me ha permitido perfeccionar mi técnica y brindar resultados naturales, armoniosos y personalizados.</p>
+        <p class="artist-bio">Además, realizo servicios de <strong>uñas, extensiones de pestañas, depilación facial con hilo, laminado de cejas, lash lifting y make-up</strong>, siempre buscando resaltar la belleza de cada clienta con atención, detalle y profesionalismo.</p>
+        <p class="artist-bio">Mi objetivo es que cada servicio sea una experiencia de cuidado, confianza y belleza pensada especialmente para ti. ✨</p>
         <div class="artist-tags">
-          <span class="artist-tag">Acrílico</span>
-          <span class="artist-tag">3D</span>
-          <span class="artist-tag">Extensión</span>
+          <span class="artist-tag">Microblading</span>
+          <span class="artist-tag">Cejas y pestañas</span>
+          <span class="artist-tag">Make-up</span>
         </div>
-        <button type="button" class="artist-cta" onclick="selectArtist('Luna')">Reservar con Luna</button>
+      </div>
+    </article>
+
+    <article class="artist-card">
+      <div class="artist-photo has-photo" data-initials="BG">
+        <img class="briscia-photo" src="assets/briscia-gomez.png" alt="Briscia Gómez, encargada de publicidad y recepción">
+      </div>
+      <div class="artist-body">
+        <div class="artist-role">Publicidad · Recepción</div>
+        <h3 class="artist-name">Briscia Gómez</h3>
+        <p class="artist-bio">Soy <strong>Briscia Gómez</strong>, encargada de <strong>publicidad y recepción</strong> en Diane Nails &amp; Beauty. Mi objetivo es brindarte una atención cercana, ayudarte a conocer nuestras mejores promociones e invitarte a formar parte de nuestra comunidad de clientas distinguidas.</p>
+        <p class="artist-bio">Estoy aquí para orientarte, resolver tus dudas y ayudarte a encontrar el servicio ideal para ti.</p>
+        <p class="artist-bio">Además, actualmente continúo preparándome en <strong>uñas esculturales, alaciados progresivos y peinados</strong>, ampliando mis conocimientos dentro del mundo de la belleza para seguir creciendo profesionalmente. ✨</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Atención</span>
+          <span class="artist-tag">Promociones</span>
+          <span class="artist-tag">Belleza</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="artist-card">
+      <div class="artist-photo" data-initials="IP"></div>
+      <div class="artist-body">
+        <div class="artist-role">Artista de uñas</div>
+        <h3 class="artist-name">Itzel</h3>
+        <p class="artist-bio">Artista de uñas en Diane Nails &amp; Beauty.</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Pincel</span>
+          <span class="artist-tag">Uñas</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="artist-card">
+      <div class="artist-photo" data-initials="JP"></div>
+      <div class="artist-body">
+        <div class="artist-role">Artista de uñas</div>
+        <h3 class="artist-name">Jaqueline</h3>
+        <p class="artist-bio">Artista de uñas en Diane Nails &amp; Beauty.</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Pincel</span>
+          <span class="artist-tag">Uñas</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="artist-card">
+      <div class="artist-photo" data-initials="NP"></div>
+      <div class="artist-body">
+        <div class="artist-role">Artista de uñas</div>
+        <h3 class="artist-name">Nancy</h3>
+        <p class="artist-bio">Artista de uñas en Diane Nails &amp; Beauty.</p>
+        <div class="artist-tags">
+          <span class="artist-tag">Pincel</span>
+          <span class="artist-tag">Uñas</span>
+        </div>
       </div>
     </article>
   </div>
@@ -935,7 +846,6 @@ footer{
       <div class="svc-name">Sakura Art</div>
       <p class="svc-desc">Cerezos pintados a mano con técnicas japonesas. Cada uña es un lienzo único que florece con la estación.</p>
       <span class="svc-price">Desde $650 MXN</span>
-      <button type="button" class="svc-cta" onclick="selectService('Sakura Art')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">02</span>
@@ -943,7 +853,6 @@ footer{
       <div class="svc-name">Gel Premium</div>
       <p class="svc-desc">Aplicación de gel de larga duración con acabado espejo, mate o glitter. Hasta 4 semanas sin levantamiento.</p>
       <span class="svc-price">Desde $450 MXN</span>
-      <button type="button" class="svc-cta" onclick="selectService('Gel Premium')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">03</span>
@@ -951,7 +860,6 @@ footer{
       <div class="svc-name">Escultura Acrílica</div>
       <p class="svc-desc">Extensiones modeladas a mano para longitud y forma perfecta. Diseños personalizados disponibles.</p>
       <span class="svc-price">Desde $780 MXN</span>
-      <button type="button" class="svc-cta" onclick="selectService('Escultura Acrílica')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">04</span>
@@ -959,7 +867,6 @@ footer{
       <div class="svc-name">Manicura Spa</div>
       <p class="svc-desc">Exfoliación, hidratación profunda, masaje con aceites esenciales y esmaltado de alta duración.</p>
       <span class="svc-price">Desde $380 MXN</span>
-      <button type="button" class="svc-cta" onclick="selectService('Manicura Spa')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">05</span>
@@ -967,7 +874,6 @@ footer{
       <div class="svc-name">Nail Art 3D</div>
       <p class="svc-desc">Flores, cristales Swarovski y figuras en acrílico. Un look tridimensional que irradia exclusividad.</p>
       <span class="svc-price">Desde $900 MXN</span>
-      <button type="button" class="svc-cta" onclick="selectService('Nail Art 3D')">Reservar</button>
     </div>
     <div class="svc-tile">
       <span class="svc-no">06</span>
@@ -975,7 +881,6 @@ footer{
       <div class="svc-name">Pedicura de Lujo</div>
       <p class="svc-desc">Sales aromáticas, exfoliación, masaje y esmaltado semipermanente. Una hora de puro bienestar.</p>
       <span class="svc-price">Desde $520 MXN</span>
-      <button type="button" class="svc-cta" onclick="selectService('Pedicura de Lujo')">Reservar</button>
     </div>
   </div>
 </section>
@@ -991,7 +896,7 @@ footer{
   <div class="gal-grid rv" id="galleryGrid">
     <!-- 1 large: Signature Sakura -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(ellipse 80% 110% at 35% 60%,#8b1a3a 0%,#3d0820 40%,#1a0410 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#f3d7d5 0%,#ead0cf 62%,rgba(179,211,192,.42) 100%)">
         <svg width="200" height="320" viewBox="0 0 200 320" fill="none">
           <defs>
             <linearGradient id="g1a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.35)"/><stop offset="100%" stop-color="rgba(0,0,0,.2)"/></linearGradient>
@@ -1021,7 +926,7 @@ footer{
 
     <!-- 2 Chrome Rose -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(circle at 60% 40%,#f7c5d8 0%,#e07898 45%,#9a3055 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#f6e2e1 0%,#ead0cf 58%,rgba(179,211,192,.36) 100%)">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
           <defs><linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff" stop-opacity=".7"/><stop offset="50%" stop-color="#f4b4c8" stop-opacity=".3"/><stop offset="100%" stop-color="#c03368" stop-opacity=".5"/></linearGradient></defs>
           <rect x="28" y="35" width="22" height="55" rx="11" fill="#fce8ec" opacity=".8"/>
@@ -1038,7 +943,7 @@ footer{
 
     <!-- 3 Midnight -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(ellipse at 50% 30%,#2d0538 0%,#0d0215 60%,#060105 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#3e4540 0%,#202b25 52%,#101714 100%)">
         <svg width="110" height="110" viewBox="0 0 110 110" fill="none">
           <rect x="25" y="33" width="20" height="58" rx="10" fill="#1a0614" opacity=".9"/>
           <rect x="25" y="27" width="20" height="18" rx="8" fill="#2d0840"/>
@@ -1057,7 +962,7 @@ footer{
 
     <!-- 4 Garden Collection -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(ellipse at 40% 60%,#fce8f0 0%,#f4c8d8 40%,#d47090 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#f7e5e1 0%,#ead0cf 58%,rgba(179,211,192,.34) 100%)">
         <svg width="150" height="200" viewBox="0 0 150 200" fill="none">
           <defs><linearGradient id="fl1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.4)"/><stop offset="100%" stop-color="rgba(0,0,0,.15)"/></linearGradient></defs>
           <!-- press-on nail collection laid flat -->
@@ -1083,7 +988,7 @@ footer{
 
     <!-- 5 Gold Art -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(ellipse at 50% 40%,#3d1408 0%,#1a0810 55%,#060105 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#ead0cf 0%,#dfc0be 60%,#5c7415 100%)">
         <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
           <rect x="20" y="28" width="22" height="50" rx="11" fill="#1a0614"/>
           <rect x="20" y="22" width="22" height="18" rx="8" fill="#2d0c1a"/>
@@ -1102,7 +1007,7 @@ footer{
 
     <!-- 6 French Luxe wide -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(ellipse 120% 80% at 50% 50%,#fdf0f4 0%,#f5d8e4 50%,#e0a8c0 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#f6eadf 0%,#e3cfc1 52%,#b99f91 100%)">
         <svg width="320" height="120" viewBox="0 0 320 120" fill="none">
           <!-- 5 nails in a row, elegant french tip -->
           <defs><linearGradient id="frg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.5)"/><stop offset="100%" stop-color="rgba(0,0,0,.08)"/></linearGradient></defs>
@@ -1145,7 +1050,7 @@ footer{
 
     <!-- 7 Burgundy -->
     <div class="gi">
-      <div class="gi-in" style="background:radial-gradient(ellipse at 50% 40%,#5c0f28 0%,#2a0612 55%,#0e0208 100%)">
+      <div class="gi-in" style="background:linear-gradient(145deg,#f4dcda 0%,#dfc0be 58%,rgba(179,211,192,.44) 100%)">
         <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
           <defs><linearGradient id="burg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="rgba(255,255,255,.3)"/><stop offset="100%" stop-color="rgba(0,0,0,.25)"/></linearGradient></defs>
           <rect x="18" y="28" width="24" height="52" rx="12" fill="#5c0f28" opacity=".9"/>
@@ -1203,55 +1108,13 @@ footer{
     <div class="testi-card rv" style="transition-delay:.26s">
       <span class="testi-q">"</span>
       <div class="testi-stars">★★★★★</div>
-      <p class="testi-txt">La pedicura spa es de otro mundo. Los productos huelen delicioso y el masaje me dejó relajadísima. No cambio Sakura Nails por nada.</p>
+      <p class="testi-txt">La pedicura spa es de otro mundo. Los productos huelen delicioso y el masaje me dejó relajadísima. No cambio Diane Nails por nada.</p>
       <div class="testi-who">
         <div class="testi-av">MP</div>
         <div><div class="testi-nm">Mariana P.</div><div class="testi-dt">Clienta desde 2020</div></div>
       </div>
     </div>
   </div>
-</section>
-
-<!-- ── BOOKING ── -->
-<section id="booking">
-  <div class="bk-glow"></div>
-  <p class="eyebrow eyebrow-d rv" style="position:relative">Agenda tu cita</p>
-  <h2 class="bk-title rv" style="transition-delay:.08s">¿Lista para <span>florecer</span>?</h2>
-  <p class="bk-sub rv" style="transition-delay:.16s">Reserva en menos de 2 minutos. Sin esperas, sin complicaciones.</p>
-  <form class="bk-form rv" id="bookingForm" style="transition-delay:.24s" onsubmit="handleBook(event)">
-    <input class="bk-input" id="bkName" type="text" placeholder="Tu nombre" required>
-    <input class="bk-input" id="bkPhone" type="tel" placeholder="WhatsApp">
-    <button type="button" class="bk-input bk-picker-btn" id="bkDateBtn" onclick="openPicker('date')">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <span id="bkDateLabel">Selecciona fecha</span>
-    </button>
-    <input type="hidden" id="bkDate">
-    <button type="button" class="bk-input bk-picker-btn" id="bkTimeBtn" style="min-width:120px;max-width:160px" onclick="openPicker('time')">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
-      <span id="bkTimeLabel">Selecciona hora</span>
-    </button>
-    <input type="hidden" id="bkTime">
-  </form>
-  <div class="bk-row2 rv" style="transition-delay:.28s">
-    <select class="bk-select" id="bkService" required>
-      <option value="" disabled selected>Selecciona un servicio</option>
-      <option value="Sakura Art">🌸 Sakura Art — $650</option>
-      <option value="Gel Premium">💅 Gel Premium — $450</option>
-      <option value="Escultura Acrílica">✨ Escultura Acrílica — $780</option>
-      <option value="Manicura Spa">🛁 Manicura Spa — $380</option>
-      <option value="Nail Art 3D">🦋 Nail Art 3D — $900</option>
-      <option value="Pedicura de Lujo">🌿 Pedicura de Lujo — $520</option>
-    </select>
-    <select class="bk-select" id="bkArtist">
-      <option value="Sin preferencia" selected>Sin preferencia de artista</option>
-      <option value="Diane">Diane — Gel premium y floral</option>
-      <option value="Ana">Ana — Nail art y detalle fino</option>
-      <option value="Luna">Luna — Escultura y acrílico</option>
-    </select>
-    <button type="submit" form="bookingForm" class="btn-bloom" id="bkBtn">Reservar ahora</button>
-  </div>
-  <p class="bk-hint rv" style="transition-delay:.34s">También por <a href="#">WhatsApp</a> o <a href="#">Instagram</a></p>
-  <div id="bkMsg" style="display:none;margin-top:1.4rem;font-size:.85rem;color:var(--blossom);position:relative"></div>
 </section>
 
 <!-- ── FOOTER ── -->
@@ -1272,7 +1135,7 @@ footer{
           <circle cx="14" cy="14" r="13.5" fill="#1a0614" stroke="rgba(244,180,200,.2)" stroke-width="1"/>
           <g transform="translate(14,14)"><ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#f4b4c8" transform="rotate(0)"/><ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#e07898" transform="rotate(72)"/><ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#f4b4c8" transform="rotate(144)"/><ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#e07898" transform="rotate(216)"/><ellipse cx="0" cy="-6.5" rx="2.8" ry="5" fill="#f4b4c8" transform="rotate(288)"/><circle r="3" fill="#100810" stroke="rgba(192,51,104,.4)" stroke-width=".7"/><circle r="1.2" fill="#c03368"/></g>
         </svg>
-        Sakura Nails
+        Diane Nails
       </div>
       <p class="ft-tag">Arte que florece en cada detalle. Estudio de uñas premium en el corazón de la ciudad desde 2015.</p>
       <div class="ft-socials">
@@ -1313,10 +1176,11 @@ footer{
     </div>
   </div>
   <div class="ft-bottom">
-    <span>© 2026 Sakura Nails. Todos los derechos reservados.</span>
+    <span>© 2026 Diane Nails. Todos los derechos reservados.</span>
     <span style="display:flex;align-items:center;gap:1.2rem">
       Hecho con amor en México 🌸
-      <a href="admin.html" style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-g);text-decoration:none;border:1px solid var(--glass-b);padding:.3rem .75rem;border-radius:100px;transition:color .2s,border-color .2s" onmouseover="this.style.color='var(--blossom)';this.style.borderColor='rgba(244,180,200,.3)'" onmouseout="this.style.color='';this.style.borderColor=''">Admin</a>
+      <a href="artistas.html" style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-g);text-decoration:none;border:1px solid var(--glass-b);padding:.3rem .75rem;border-radius:100px;transition:color .2s,border-color .2s" onmouseover="this.style.color='var(--mint-d)';this.style.borderColor='rgba(179,211,192,.68)'" onmouseout="this.style.color='';this.style.borderColor=''">Artistas</a>
+      <a href="admin.html" style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-g);text-decoration:none;border:1px solid var(--glass-b);padding:.3rem .75rem;border-radius:100px;transition:color .2s,border-color .2s" onmouseover="this.style.color='var(--mint-d)';this.style.borderColor='rgba(179,211,192,.68)'" onmouseout="this.style.color='';this.style.borderColor=''">Admin</a>
     </span>
   </div>
 </footer>
@@ -1427,7 +1291,7 @@ function renderLandingGallery(items) {
   grid.innerHTML = items.map(img => `
     <div class="gi">
       <div class="gi-in" style="background:#1a0410;overflow:hidden">
-        <img src="${img.url}" alt="${img.title||'Diseño Sakura Nails'}"
+        <img src="${img.url}" alt="${img.title||'Diseño Diane Nails'}"
              style="width:100%;height:100%;object-fit:cover;display:block">
       </div>
       ${img.title ? `<div class="gi-lbl"><span>${img.title}</span></div>` : ''}
@@ -1455,591 +1319,7 @@ if (db) {
   console.warn('[Galería] db es null — Firebase no se inicializó en esta página');
 }
 
-/* ── DÍAS CERRADOS ── */
-if (db) {
-  db.collection('closedDays').onSnapshot(snap => {
-    closedDaysSet = new Set(snap.docs.map(d => d.data().date).filter(Boolean));
-    chatMsgs[0] = {role:'system', content: buildChatSystem()};
-  }, () => {});
-}
-
-/* ── DATE / TIME PICKER ── */
-let pkDate = null, pkTime = null, pkViewYear, pkViewMonth;
-const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const TIME_SLOTS = [];
-for (let h = 9; h <= 19; h++) {
-  for (let m = 0; m < 60; m += 30) {
-    if (h === 19 && m > 0) break;
-    TIME_SLOTS.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
-  }
-}
-
-function openPicker(type) {
-  if (type === 'date') {
-    const n = new Date();
-    pkViewYear = n.getFullYear(); pkViewMonth = n.getMonth();
-    renderCalendar();
-    document.getElementById('datePickerOverlay').classList.add('open');
-    document.getElementById('bkDateBtn').classList.add('active');
-  } else {
-    renderTimeSlots();
-    document.getElementById('timePickerOverlay').classList.add('open');
-    document.getElementById('bkTimeBtn').classList.add('active');
-  }
-}
-
-function closePicker(type) {
-  document.getElementById(type === 'date' ? 'datePickerOverlay' : 'timePickerOverlay').classList.remove('open');
-  document.getElementById(type === 'date' ? 'bkDateBtn' : 'bkTimeBtn').classList.remove('active');
-}
-
-function handleOverlayClick(e, type) {
-  if (e.target === e.currentTarget) closePicker(type);
-}
-
-function shiftMonth(dir) {
-  pkViewMonth += dir;
-  if (pkViewMonth < 0) { pkViewMonth = 11; pkViewYear--; }
-  if (pkViewMonth > 11) { pkViewMonth = 0; pkViewYear++; }
-  renderCalendar();
-}
-
-function renderCalendar() {
-  document.getElementById('pkMonthLabel').textContent = `${MONTHS_ES[pkViewMonth]} ${pkViewYear}`;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const firstDow = new Date(pkViewYear, pkViewMonth, 1).getDay();
-  const daysInMonth = new Date(pkViewYear, pkViewMonth + 1, 0).getDate();
-  const daysInPrev = new Date(pkViewYear, pkViewMonth, 0).getDate();
-  let html = '';
-  for (let i = firstDow - 1; i >= 0; i--)
-    html += `<button type="button" class="pk-day other-month">${daysInPrev - i}</button>`;
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dt = new Date(pkViewYear, pkViewMonth, d);
-    const ds = `${pkViewYear}-${String(pkViewMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isPast   = dt < today;
-    const isClosed = closedDaysSet.has(ds);
-    const isBlocked = isPast || isClosed;
-    let cls = 'pk-day' + (isBlocked ? ' disabled' : '') + (dt.getTime()===today.getTime() ? ' today' : '') + (ds===pkDate ? ' selected' : '');
-    const title = isClosed ? ' title="Día cerrado"' : '';
-    html += `<button type="button" class="${cls}"${title}${isBlocked ? '' : ` onclick="selectDate('${ds}')"`}>${d}</button>`;
-  }
-  document.getElementById('pkDays').innerHTML = html;
-}
-
-function selectDate(ds) {
-  pkDate = ds;
-  document.getElementById('bkDate').value = ds;
-  const [y,m,d] = ds.split('-');
-  const disp = new Date(+y, +m-1, +d).toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
-  document.getElementById('bkDateLabel').textContent = disp.charAt(0).toUpperCase() + disp.slice(1);
-  document.getElementById('bkDateBtn').classList.add('has-value');
-  renderCalendar();
-  setTimeout(() => closePicker('date'), 220);
-}
-
-function renderTimeSlots() {
-  document.getElementById('pkTimeGrid').innerHTML = TIME_SLOTS.map(t => {
-    const h = +t.split(':')[0], m = t.split(':')[1];
-    const h12 = h % 12 || 12, ampm = h < 12 ? 'am' : 'pm';
-    return `<button type="button" class="pk-slot${t===pkTime?' selected':''}" onclick="selectTime('${t}')">${h12}:${m} ${ampm}</button>`;
-  }).join('');
-}
-
-function selectTime(t) {
-  pkTime = t;
-  document.getElementById('bkTime').value = t;
-  const h = +t.split(':')[0], m = t.split(':')[1];
-  document.getElementById('bkTimeLabel').textContent = `${h%12||12}:${m} ${h<12?'am':'pm'}`;
-  document.getElementById('bkTimeBtn').classList.add('has-value');
-  document.getElementById('pkTimeConfirm').disabled = false;
-  renderTimeSlots();
-}
-
-function confirmTime() { if (pkTime) closePicker('time'); }
-
-function resetPickers() {
-  pkDate = null; pkTime = null;
-  document.getElementById('bkDate').value = '';
-  document.getElementById('bkTime').value = '';
-  document.getElementById('bkDateLabel').textContent = 'Selecciona fecha';
-  document.getElementById('bkTimeLabel').textContent = 'Selecciona hora';
-  document.getElementById('bkDateBtn').classList.remove('has-value','active');
-  document.getElementById('bkTimeBtn').classList.remove('has-value','active');
-  document.getElementById('pkTimeConfirm').disabled = true;
-}
-
-function scrollToBooking() {
-  document.getElementById('booking')?.scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-function selectArtist(name) {
-  const artist = document.getElementById('bkArtist');
-  if (artist) artist.value = name;
-  scrollToBooking();
-}
-
-function selectService(name) {
-  const service = document.getElementById('bkService');
-  if (service) service.value = name;
-  scrollToBooking();
-}
-
-/* ── BOOKING FORM ── */
-async function handleBook(e) {
-  e.preventDefault();
-  const btn = document.getElementById('bkBtn');
-  const msg = document.getElementById('bkMsg');
-  const name    = document.getElementById('bkName').value.trim();
-  const phone   = document.getElementById('bkPhone').value.trim();
-  const date    = document.getElementById('bkDate').value;
-  const time    = document.getElementById('bkTime').value;
-  const service = document.getElementById('bkService').value;
-  const artist  = document.getElementById('bkArtist').value;
-  if (!date) { msg.style.display='block'; msg.textContent='Por favor selecciona una fecha.'; return; }
-  if (!time) { msg.style.display='block'; msg.textContent='Por favor selecciona un horario.'; return; }
-  if (!service) { msg.style.display='block'; msg.textContent='Por favor selecciona un servicio.'; return; }
-
-  const prices = {'Sakura Art':650,'Gel Premium':450,'Escultura Acrílica':780,'Manicura Spa':380,'Nail Art 3D':900,'Pedicura de Lujo':520};
-  btn.textContent = 'Guardando…';
-  btn.disabled = true;
-
-  try {
-    if (db) {
-      await db.collection('appointments').add({
-        clientName: name,
-        phone,
-        date,
-        time,
-        serviceName: service,
-        servicePrice: prices[service] || 0,
-        artistName: artist || 'Sin preferencia',
-        status: 'pending',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      msg.style.display = 'block';
-      msg.textContent = '¡Cita reservada con éxito! Te confirmaremos pronto 🌸';
-    } else {
-      msg.style.display = 'block';
-      msg.textContent = '¡Cita recibida! (configura Firebase para guardarla en la nube) 🌸';
-    }
-    btn.textContent = '¡Listo! 🌸';
-    btn.style.background = 'linear-gradient(135deg,#2e7d32,#43a047)';
-    e.target.reset(); resetPickers();
-    document.getElementById('bkService').value = '';
-    document.getElementById('bkArtist').value = 'Sin preferencia';
-    setTimeout(() => {
-      btn.textContent = 'Reservar ahora';
-      btn.style.background = '';
-      btn.disabled = false;
-      msg.style.display = 'none';
-    }, 4000);
-  } catch(err) {
-    console.error('Firebase error:', err.code, err.message);
-    msg.style.display = 'block';
-    msg.style.color   = '#f87171';
-    if (err.code === 'permission-denied') {
-      msg.textContent = '⚠️ Permiso denegado. Actualiza las reglas de Firestore (ver instrucciones).';
-    } else if (!navigator.onLine) {
-      msg.textContent = '⚠️ Sin conexión a internet. Verifica tu red e intenta de nuevo.';
-    } else {
-      msg.textContent = '⚠️ Error: ' + (err.message || 'Intenta de nuevo.');
-    }
-    btn.textContent = 'Reservar ahora';
-    btn.disabled = false;
-  }
-}
-
-/* ── CHATBOT ──
-   No llames APIs de IA con llaves privadas desde el navegador. Si se vuelve
-   a conectar IA, debe pasar por una Function/servidor que proteja la llave.
-*/
-
-let closedDaysSet = new Set();
-
-function buildChatSystem() {
-  const closedList = closedDaysSet.size > 0
-    ? '\n\nDías en que el estudio está cerrado (NO aceptes citas en estas fechas bajo ningún motivo): '
-      + [...closedDaysSet].join(', ') + '.'
-    : '';
-  return `Eres Sakura, la asistente virtual de Sakura Nails, estudio de uñas premium en México. Eres amable, sofisticada y apasionada por el arte de las uñas. Responde siempre en español correcto, de forma concisa y elegante. Usa gramática española impecable: por ejemplo, el subjuntivo correcto de "saber" es "sepas" (no "sabas"), "puedas" (no "podas"), "vengas" (no "vengas"), etc.
-
-Cuando alguien pregunte por imágenes, fotos, diseños, trabajos realizados, el portafolio o ejemplos de uñas, comparte este enlace de Instagram: https://www.instagram.com/dianenails_and_beauty?igsh=MWhvN3hzdDA3bTJ4aw==
-
-Servicios y precios:
-- Sakura Art $650
-- Gel Premium $450
-- Escultura Acrílica $780
-- Manicura Spa $380
-- Nail Art 3D $900
-- Pedicura de Lujo $520
-
-Horario: Lunes a Sábado 9:00am–7:00pm. Hoy es ${new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}.${closedList}
-
-Cuando un cliente quiera reservar, recopila amablemente uno por uno:
-1. Nombre completo
-2. Número de WhatsApp (opcional)
-3. Servicio deseado
-4. Fecha (no aceptes fechas pasadas ni domingos, ni días cerrados)
-5. Hora (entre 09:00 y 19:00)
-
-Cuando tengas nombre, servicio, fecha y hora confirmados por el cliente, usa la herramienta save_appointment. No la uses sin confirmación explícita.
-
-Si el cliente quiere cambiar, reagendar o modificar una cita existente, usa reschedule_appointment (NO save_appointment). Pídele el nombre con el que reservó, la nueva fecha y la nueva hora. Confirma los nuevos datos antes de ejecutar la herramienta.
-
-Si el cliente pregunta si tiene cita, quiere saber su próxima cita o consultar su reservación, PRIMERO respóndele pidiendo su nombre completo. NUNCA uses check_appointment sin que el cliente haya escrito su nombre explícitamente en el chat. Solo cuando el cliente te dé su nombre, usa check_appointment con ese nombre exacto.`;
-}
-
-const CHAT_TOOLS = [
-{
-  type: 'function',
-  function: {
-    name: 'save_appointment',
-    description: 'Guarda una NUEVA cita en el sistema cuando el cliente ha confirmado todos los datos.',
-    parameters: {
-      type: 'object',
-      properties: {
-        clientName:   {type:'string', description:'Nombre completo del cliente'},
-        phone:        {type:'string', description:'WhatsApp del cliente (puede estar vacío)'},
-        date:         {type:'string', description:'Fecha en formato YYYY-MM-DD'},
-        time:         {type:'string', description:'Hora en formato HH:MM (24h)'},
-        serviceName:  {type:'string', enum:['Sakura Art','Gel Premium','Escultura Acrílica','Manicura Spa','Nail Art 3D','Pedicura de Lujo']},
-        servicePrice: {type:'number', description:'Precio en MXN'}
-      },
-      required: ['clientName','date','time','serviceName','servicePrice']
-    }
-  }
-},
-{
-  type: 'function',
-  function: {
-    name: 'reschedule_appointment',
-    description: 'Cambia la fecha y/o hora de una cita existente del cliente. Usar cuando el cliente quiera reagendar, cambiar o modificar una cita ya reservada.',
-    parameters: {
-      type: 'object',
-      properties: {
-        clientName:     {type:'string', description:'Nombre completo del cliente tal como fue registrado'},
-        newDate:        {type:'string', description:'Nueva fecha en formato YYYY-MM-DD'},
-        newTime:        {type:'string', description:'Nueva hora en formato HH:MM (24h)'},
-        originalDate:   {type:'string', description:'Fecha original de la cita en formato YYYY-MM-DD, si el cliente la mencionó'},
-        newServiceName: {type:'string', description:'Nuevo servicio si también desea cambiarlo', enum:['Sakura Art','Gel Premium','Escultura Acrílica','Manicura Spa','Nail Art 3D','Pedicura de Lujo']}
-      },
-      required: ['clientName','newDate','newTime']
-    }
-  }
-},
-{
-  type: 'function',
-  function: {
-    name: 'check_appointment',
-    description: 'Consulta si un cliente tiene citas activas (pendientes o confirmadas) en el sistema.',
-    parameters: {
-      type: 'object',
-      properties: {
-        clientName: {type:'string', description:'Nombre del cliente a buscar'}
-      },
-      required: ['clientName']
-    }
-  }
-}
-];
-
-const SVC_PRICES = {'Sakura Art':650,'Gel Premium':450,'Escultura Acrílica':780,'Manicura Spa':380,'Nail Art 3D':900,'Pedicura de Lujo':520};
-
-let chatOpen = false;
-let chatMsgs  = [{role:'system', content: buildChatSystem()}];
-let chatBusy  = false;
-
-function toggleChat() {
-  chatOpen = !chatOpen;
-  document.getElementById('chat-panel').classList.toggle('open', chatOpen);
-  document.getElementById('chat-btn').classList.toggle('open', chatOpen);
-  if (chatOpen) { setTimeout(() => document.getElementById('chatInput').focus(), 260); scrollChat(); }
-}
-
-function scrollChat() { const el = document.getElementById('cht-msgs'); if (el) el.scrollTop = el.scrollHeight; }
-function escChat(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-const IG_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`;
-
-function linkifyInstagram(html) {
-  return html.replace(
-    /https?:\/\/(www\.)?instagram\.com\/[^\s<"')]+/g,
-    url => `<a href="${url}" target="_blank" rel="noopener" class="cht-ig-btn">${IG_SVG} Ver trabajos en Instagram</a>`
-  );
-}
-
-function appendMsg(role, text) {
-  const el = document.getElementById('cht-msgs');
-  const d  = document.createElement('div');
-  d.className = `cht-msg ${role}`;
-  d.innerHTML  = `<div class="cht-bbl">${text}</div>`;
-  el.appendChild(d); scrollChat();
-  return d.querySelector('.cht-bbl');
-}
-
-function showTyping() {
-  const el = document.getElementById('cht-msgs');
-  const d  = document.createElement('div');
-  d.className = 'cht-msg bot'; d.id = 'cht-typing';
-  d.innerHTML = `<div class="cht-typing"><span></span><span></span><span></span></div>`;
-  el.appendChild(d); scrollChat();
-}
-
-function removeTyping() { const t = document.getElementById('cht-typing'); if (t) t.remove(); }
-
-async function groqFetch(messages, useTools) {
-  const last = messages.filter(m => m.role === 'user').at(-1)?.content || '';
-  return {choices:[{message:{content: localChatReply(last)}}]};
-}
-
-function localChatReply(text) {
-  const t = text.toLowerCase();
-  if (/(foto|fotos|diseñ|disen|galer|portafolio|trabajos|instagram|ig)/.test(t)) {
-    return 'Puedes ver nuestros trabajos y diseños recientes aquí: https://www.instagram.com/dianenails_and_beauty?igsh=MWhvN3hzdDA3bTJ4aw==';
-  }
-  if (/(precio|cu[aá]nto|costo|vale|servicio)/.test(t)) {
-    return 'Servicios principales: Sakura Art $650, Gel Premium $450, Escultura Acrílica $780, Manicura Spa $380, Nail Art 3D $900 y Pedicura de Lujo $520 MXN. Puedes reservar desde el formulario de esta página.';
-  }
-  if (/(horario|hora|abren|cierran|cerrado)/.test(t)) {
-    return 'Atendemos de lunes a sábado de 9:00 am a 7:00 pm. Los domingos no abrimos. Para reservar, elige fecha y hora en el formulario.';
-  }
-  if (/(cita|reserv|agend|reagend|cambiar)/.test(t)) {
-    return 'Con gusto. Usa el formulario de reserva de esta página con tu nombre, WhatsApp, fecha, hora y servicio. Te confirmaremos pronto.';
-  }
-  return 'Hola, soy Sakura. Puedo ayudarte con servicios, precios, horarios, galería y reservas. Para agendar, usa el formulario de esta página.';
-}
-
-async function saveAppointmentFromChat(args) {
-  if (!db) return {ok: false, error: 'Firebase no disponible'};
-  try {
-    await db.collection('appointments').add({
-      clientName:   args.clientName,
-      phone:        args.phone || '',
-      date:         args.date,
-      time:         args.time,
-      serviceName:  args.serviceName,
-      servicePrice: args.servicePrice || SVC_PRICES[args.serviceName] || 0,
-      status:       'pending',
-      createdAt:    firebase.firestore.FieldValue.serverTimestamp()
-    });
-    return {ok: true};
-  } catch(e) {
-    return {ok: false, error: e.message};
-  }
-}
-
-async function rescheduleAppointmentFromChat(args) {
-  if (!db) return {ok: false, error: 'Firebase no disponible'};
-  try {
-    let query = db.collection('appointments')
-      .where('clientName', '==', args.clientName)
-      .where('status', 'in', ['pending', 'confirmed']);
-
-    if (args.originalDate) {
-      query = query.where('date', '==', args.originalDate);
-    }
-
-    const snap = await query.get();
-    if (snap.empty) {
-      return {ok: false, error: 'No se encontró una cita activa para ese cliente'};
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-    let targetDoc = null;
-
-    snap.forEach(d => {
-      const data = d.data();
-      if (data.date >= today) {
-        if (!targetDoc || data.date < targetDoc.data().date) targetDoc = d;
-      }
-    });
-    if (!targetDoc) snap.forEach(d => { if (!targetDoc) targetDoc = d; });
-
-    const updateData = {
-      date: args.newDate,
-      time: args.newTime,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    if (args.newServiceName) {
-      updateData.serviceName  = args.newServiceName;
-      updateData.servicePrice = SVC_PRICES[args.newServiceName] || targetDoc.data().servicePrice;
-    }
-
-    await db.collection('appointments').doc(targetDoc.id).update(updateData);
-    return {ok: true, appointmentId: targetDoc.id};
-  } catch(e) {
-    return {ok: false, error: e.message};
-  }
-}
-
-async function checkAppointmentFromChat(args) {
-  if (!db) return {ok: false, error: 'Firebase no disponible'};
-  if (!args.clientName?.trim()) return {ok: false, error: 'Necesito el nombre del cliente para buscar'};
-  try {
-    const today = new Date().toISOString().split('T')[0];
-    const snap = await db.collection('appointments')
-      .where('clientName', '==', args.clientName)
-      .where('status', 'in', ['pending', 'confirmed'])
-      .get();
-
-    const upcoming = snap.docs
-      .map(d => d.data())
-      .filter(a => a.date >= today)
-      .sort((a, b) => a.date < b.date ? -1 : 1);
-
-    if (!upcoming.length) return {ok: true, found: false};
-
-    return {
-      ok: true,
-      found: true,
-      appointments: upcoming.map(a => ({
-        date: a.date,
-        time: a.time,
-        serviceName: a.serviceName,
-        status: a.status
-      }))
-    };
-  } catch(e) {
-    return {ok: false, error: e.message};
-  }
-}
-
-async function sendChat() {
-  if (chatBusy) return;
-  const input = document.getElementById('chatInput');
-  const txt   = input.value.trim();
-  if (!txt) return;
-  input.value = ''; input.style.height = '';
-  document.getElementById('cht-send').disabled = true;
-  document.getElementById('cht-err').style.display = 'none';
-  appendMsg('user', escChat(txt));
-  chatMsgs.push({role:'user', content: txt});
-  chatBusy = true; showTyping();
-  try {
-    const data = await groqFetch(chatMsgs, true);
-    const msg  = data.choices[0].message;
-
-    if (msg.tool_calls?.length) {
-      chatMsgs.push(msg);
-      for (const tc of msg.tool_calls) {
-        let result;
-        if (tc.function.name === 'save_appointment') {
-          const args = JSON.parse(tc.function.arguments);
-          result = await saveAppointmentFromChat(args);
-          result._instruccion = result.ok
-            ? `Cita guardada con éxito. Responde con un mensaje cálido confirmando la cita: nombre "${args.clientName}", servicio "${args.serviceName}", fecha ${args.date}, hora ${args.time}. Despídete con entusiasmo.`
-            : `Error al guardar la cita: ${result.error}. Informa al cliente amablemente y sugiere intentar de nuevo.`;
-        } else if (tc.function.name === 'reschedule_appointment') {
-          const args = JSON.parse(tc.function.arguments);
-          result = await rescheduleAppointmentFromChat(args);
-          result._instruccion = result.ok
-            ? `Cita reagendada con éxito. Confirma al cliente "${args.clientName}" que su cita quedó para el ${args.newDate} a las ${args.newTime}. Despídete con entusiasmo.`
-            : `Error al reagendar: ${result.error}. Informa al cliente amablemente.`;
-        } else if (tc.function.name === 'check_appointment') {
-          const args = JSON.parse(tc.function.arguments);
-          result = await checkAppointmentFromChat(args);
-          if (result.ok && result.found) {
-            result._instruccion = `Se encontraron citas para "${args.clientName}". Informa amablemente cada cita con su fecha, hora y servicio.`;
-          } else if (result.ok && !result.found) {
-            result._instruccion = `No se encontró ninguna cita próxima para "${args.clientName}". Informa amablemente y ofrece agendar una nueva.`;
-          } else {
-            result._instruccion = `Error al consultar: ${result.error}. Informa al cliente amablemente.`;
-          }
-        }
-        chatMsgs.push({role:'tool', tool_call_id: tc.id, content: JSON.stringify(result)});
-      }
-      // Get final reply after tool execution
-      const data2 = await groqFetch(chatMsgs, false);
-      const reply = data2.choices[0].message.content;
-      removeTyping();
-      appendMsg('bot', linkifyInstagram(escChat(reply).replace(/\n/g,'<br>')));
-      chatMsgs.push({role:'assistant', content: reply});
-    } else {
-      removeTyping();
-      const reply = msg.content;
-      appendMsg('bot', linkifyInstagram(escChat(reply).replace(/\n/g,'<br>')));
-      chatMsgs.push({role:'assistant', content: reply});
-    }
-  } catch(err) {
-    removeTyping();
-    const errEl = document.getElementById('cht-err');
-    if (err.message.includes('429')) {
-      errEl.textContent = '⚠️ Demasiadas consultas en poco tiempo. Espera unos segundos e intenta de nuevo.';
-    } else if (err.name === 'TypeError') {
-      errEl.textContent = '⚠️ No se pudo conectar. Verifica tu conexión a internet.';
-    } else {
-      errEl.textContent = '⚠️ Error: ' + err.message;
-    }
-    errEl.style.display = 'block';
-    chatMsgs.pop();
-  } finally {
-    chatBusy = false;
-    document.getElementById('cht-send').disabled = false;
-    document.getElementById('chatInput').focus();
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const i = document.getElementById('chatInput');
-  if (!i) return;
-  i.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } });
-  i.addEventListener('input', function() { this.style.height='auto'; this.style.height = Math.min(this.scrollHeight,88)+'px'; });
-});
 </script>
-
-<!-- ── CHATBOT ── -->
-<button id="chat-btn" onclick="toggleChat()" aria-label="Chat con Sakura AI">
-  <svg class="chat-petal" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-</button>
-<div id="chat-panel">
-  <div class="cht-hd">
-    <div class="cht-av">🌸</div>
-    <div class="cht-info">
-      <div class="cht-name">Sakura AI</div>
-      <div class="cht-status"><span class="cht-dot"></span>En línea · Groq / Llama 3.1</div>
-    </div>
-    <button class="cht-close" onclick="toggleChat()">✕</button>
-  </div>
-  <div class="cht-msgs" id="cht-msgs">
-    <div class="cht-msg bot">
-      <div class="cht-bbl">¡Hola! Soy Sakura 🌸 Tu asistente de Sakura Nails. ¿En qué te puedo ayudar hoy?</div>
-    </div>
-  </div>
-  <div class="cht-err" id="cht-err"></div>
-  <div class="cht-foot">
-    <textarea class="cht-input" id="chatInput" placeholder="Escribe tu pregunta…" rows="1"></textarea>
-    <button class="cht-send" id="cht-send" onclick="sendChat()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
-  </div>
-</div>
-
-<!-- ── DATE PICKER OVERLAY ── -->
-<div class="pk-overlay" id="datePickerOverlay" onclick="handleOverlayClick(event,'date')">
-  <div class="pk-popup" id="datePickerPopup">
-    <div class="pk-title">Selecciona tu fecha 🌸</div>
-    <div class="pk-head">
-      <button type="button" class="pk-nav" onclick="shiftMonth(-1)">‹</button>
-      <div class="pk-month-label" id="pkMonthLabel"></div>
-      <button type="button" class="pk-nav" onclick="shiftMonth(1)">›</button>
-    </div>
-    <div class="pk-dow">
-      <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sa</span>
-    </div>
-    <div class="pk-days" id="pkDays"></div>
-  </div>
-</div>
-
-<!-- ── TIME PICKER OVERLAY ── -->
-<div class="pk-overlay" id="timePickerOverlay" onclick="handleOverlayClick(event,'time')">
-  <div class="pk-popup" id="timePickerPopup">
-    <div class="pk-title">Selecciona tu horario ✨</div>
-    <div class="pk-time-grid" id="pkTimeGrid"></div>
-    <button type="button" class="pk-confirm" id="pkTimeConfirm" onclick="confirmTime()" disabled>Confirmar horario</button>
-  </div>
-</div>
 
 </body>
 </html>

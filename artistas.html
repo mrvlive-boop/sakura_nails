@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diane Nails — Portal de artistas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --rose:#ead0cf;
+  --rose-2:#f6e3e2;
+  --rose-3:#dfc0be;
+  --sage:#b3d3c0;
+  --sage-d:#6f9785;
+  --gold:#8c6b32;
+  --ink:#342323;
+  --muted:rgba(52,35,35,.62);
+  --line:rgba(125,82,84,.16);
+  --card:rgba(255,250,248,.46);
+  --white:#fff8f6;
+  --danger:#b85b62;
+}
+html,body{min-height:100%;font-family:'Outfit',sans-serif;color:var(--ink);background:linear-gradient(135deg,var(--rose) 0%,var(--rose-2) 55%,var(--rose-3) 100%)}
+button,input,select{font-family:inherit}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.025;mix-blend-mode:multiply}
+.login-screen{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:1.2rem;background:linear-gradient(135deg,var(--rose),var(--rose-2))}
+.login-card,.panel,.stat-card,.artist-card{background:var(--card);border:1px solid var(--line);box-shadow:0 20px 70px rgba(52,35,35,.08);backdrop-filter:blur(18px)}
+.login-card{width:min(400px,100%);border-radius:18px;padding:2.4rem}
+.brand{font-family:'Shippori Mincho B1',serif;color:var(--gold);font-size:1.55rem;font-weight:600;text-align:center;margin-bottom:.4rem}
+.login-title{font-family:'Shippori Mincho B1',serif;font-size:1.55rem;text-align:center;margin:1.5rem 0 .45rem}
+.sub{font-size:.84rem;color:var(--muted);line-height:1.6;text-align:center}
+.field{width:100%;padding:.85rem 1rem;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.32);color:var(--ink);outline:none;font-size:.9rem}
+.field:focus{border-color:rgba(179,211,192,.9);box-shadow:0 0 0 3px rgba(179,211,192,.24)}
+.login-card .field{margin-top:.7rem}
+.btn{border:none;border-radius:10px;padding:.85rem 1.1rem;background:var(--gold);color:#fff8ed;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem;cursor:pointer;transition:transform .16s,opacity .16s}
+.btn:hover{transform:translateY(-1px);opacity:.92}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.home-link{display:inline-block;text-decoration:none;margin-top:.55rem;padding:.55rem .8rem}
+.err{min-height:1.2rem;color:var(--danger);font-size:.8rem;text-align:center;margin-top:.7rem}
+.login-links{display:flex;justify-content:space-between;gap:.8rem;margin-top:.85rem;font-size:.78rem}
+.login-link{color:var(--gold);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.app{display:none;min-height:100vh;padding:1.4rem clamp(1rem,3vw,2.4rem) 2.4rem}
+.topbar{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1.4rem}
+.title{font-family:'Shippori Mincho B1',serif;font-size:clamp(2rem,4vw,3.2rem);line-height:1;color:var(--gold)}
+.title span{display:block;color:var(--sage-d);font-style:italic;font-weight:400;font-size:.58em;margin-top:.25rem}
+.user{font-size:.78rem;color:var(--muted);text-align:right}
+.toolbar{display:grid;grid-template-columns:1.2fr 1fr auto auto;gap:.8rem;align-items:end;margin-bottom:1.2rem}
+.label{display:block;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.artist-identity{padding:.82rem 1rem;border-radius:10px;border:1px solid rgba(179,211,192,.42);background:rgba(179,211,192,.18);color:var(--sage-d);font-weight:600}
+.access-note{display:none;margin-bottom:1.2rem;padding:.9rem 1rem;border-radius:12px;border:1px solid rgba(184,91,98,.22);background:rgba(184,91,98,.08);color:var(--danger);font-size:.84rem;line-height:1.55}
+.agenda-panel{margin-bottom:1.2rem}
+.weekly-agenda{display:grid;grid-template-columns:repeat(7,minmax(245px,1fr));gap:.7rem;overflow-x:auto;padding-bottom:.35rem}
+.agenda-day{min-height:130px;padding:.75rem;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.18)}
+.agenda-day.today{border-color:rgba(111,151,133,.5);background:rgba(179,211,192,.14)}
+.agenda-day-name{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage-d);font-weight:600}
+.agenda-day-date{font-family:'Shippori Mincho B1',serif;font-size:1.35rem;color:var(--gold);margin:.15rem 0 .7rem}
+.agenda-appt{display:grid;grid-template-columns:42px minmax(0,1fr);gap:.45rem;align-items:center;padding:.46rem .52rem;margin-bottom:.38rem;border-radius:8px;background:rgba(255,248,246,.55);border:1px solid var(--line)}
+.agenda-appt:last-child{margin-bottom:0}
+.agenda-appt-time{font-size:.68rem;color:var(--gold);font-weight:600}
+.agenda-appt-summary{min-width:0}
+.agenda-appt-client{font-size:.74rem;font-weight:400;line-height:1.25;white-space:normal;overflow-wrap:normal;word-break:normal}
+.agenda-appt-client.needs-attention{font-weight:600}
+.agenda-appt-meta{display:flex;align-items:center;gap:.4rem;min-width:0;margin-top:.22rem}
+.agenda-appt-service{flex:1;min-width:0;font-size:.66rem;font-weight:400;color:var(--muted);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.agenda-appt-status{flex-shrink:0;font-size:.54rem;padding:.16rem .38rem;text-transform:uppercase;letter-spacing:.05em}
+.agenda-empty{font-size:.74rem;color:var(--muted);padding:.8rem 0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;margin-bottom:1.2rem}
+.stat-card{border-radius:14px;padding:1.2rem}
+.stat-label{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem}
+.stat-value{font-family:'Shippori Mincho B1',serif;font-size:clamp(1.8rem,3vw,2.5rem);line-height:1;color:var(--gold)}
+.stat-sub{font-size:.76rem;color:var(--muted);margin-top:.45rem}
+.layout{display:grid;grid-template-columns:1fr 1.35fr;gap:1rem}
+.panel{border-radius:14px;overflow:hidden}
+.panel-hd{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 1.1rem;border-bottom:1px solid var(--line)}
+.panel-title{font-weight:600;color:var(--ink);font-size:.9rem}
+.panel-note{font-size:.76rem;color:var(--muted)}
+.panel-body{padding:1.1rem}
+.service-row{display:grid;grid-template-columns:1fr auto;gap:.5rem;align-items:center;padding:.78rem 0;border-bottom:1px solid var(--line)}
+.service-row:last-child{border-bottom:none}
+.service-name{font-weight:500;font-size:.9rem}
+.service-meta{font-size:.76rem;color:var(--muted);margin-top:.15rem}
+.service-total{font-family:'Shippori Mincho B1',serif;color:var(--sage-d);font-size:1.08rem}
+.cobro-row{display:grid;grid-template-columns:1fr auto;gap:.8rem;align-items:center;padding:.88rem 0;border-bottom:1px solid var(--line)}
+.cobro-row:last-child{border-bottom:none}
+.client{font-weight:400;font-size:.9rem}
+.client.appointment-client{font-weight:400}
+.client.appointment-client.needs-attention{font-weight:600}
+.client-emojis{display:inline;margin-left:.3rem;font-weight:400;letter-spacing:.08em;white-space:nowrap}
+.detail{font-size:.76rem;color:var(--muted);margin-top:.18rem}
+.amount{font-family:'Shippori Mincho B1',serif;color:var(--gold);font-size:1.12rem;text-align:right}
+.method{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:right;margin-top:.2rem}
+.detail-section-label{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:1.1rem 0 .25rem}
+.detail-section-label:first-child{margin-top:0}
+.appointment-status{display:inline-flex;padding:.24rem .58rem;border-radius:999px;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.status-pending{background:rgba(140,107,50,.1);border:1px solid rgba(140,107,50,.22);color:var(--gold)}
+.status-confirmed{background:rgba(76,120,164,.1);border:1px solid rgba(76,120,164,.22);color:#4c78a4}
+.status-completed{background:rgba(111,151,133,.12);border:1px solid rgba(111,151,133,.26);color:var(--sage-d)}
+.status-cancelled{background:rgba(184,91,98,.1);border:1px solid rgba(184,91,98,.22);color:var(--danger)}
+.empty{padding:2rem 1rem;text-align:center;color:var(--muted);font-size:.86rem;border:1px dashed var(--line);border-radius:12px}
+.tag{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:999px;background:rgba(179,211,192,.22);border:1px solid rgba(179,211,192,.42);color:var(--sage-d);font-size:.68rem;margin-left:.35rem}
+@media(max-width:920px){.toolbar{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.topbar{align-items:flex-start}}
+@media(max-width:560px){.toolbar,.stats{grid-template-columns:1fr}.topbar{flex-direction:column}.user{text-align:left}.app{padding:1rem}}
+</style>
+</head>
+<body>
+<section class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="brand">Diane Nails</div>
+    <p class="sub">Portal privado de artistas</p>
+    <h1 class="login-title">Entrar</h1>
+    <input class="field" id="loginEmail" type="email" placeholder="Correo electrónico" autocomplete="username">
+    <input class="field" id="loginPass" type="password" placeholder="Contraseña" autocomplete="current-password">
+    <button class="btn" style="width:100%;margin-top:.9rem" onclick="doLogin()">Entrar</button>
+    <div class="login-links">
+      <button class="login-link" type="button" onclick="showActivation()">Crear mi contraseña</button>
+      <button class="login-link" type="button" onclick="resetPassword()">Olvidé mi contraseña</button>
+      <a class="login-link" href="index.html">Página principal</a>
+    </div>
+    <div class="err" id="loginErr"></div>
+  </div>
+</section>
+
+<section class="login-screen" id="activationScreen" style="display:none">
+  <div class="login-card">
+    <div class="brand">Diane Nails</div>
+    <p class="sub">Activa tu acceso de artista</p>
+    <h1 class="login-title">Crea tu contraseña</h1>
+    <input class="field" id="activationEmail" type="email" placeholder="Correo autorizado" autocomplete="username">
+    <input class="field" id="activationPass" type="password" placeholder="Contraseña (mínimo 6 caracteres)" minlength="6" autocomplete="new-password">
+    <input class="field" id="activationPassConfirm" type="password" placeholder="Repite tu contraseña" minlength="6" autocomplete="new-password">
+    <button class="btn" style="width:100%;margin-top:.9rem" onclick="activateAccount()">Crear acceso</button>
+    <div class="login-links" style="justify-content:center">
+      <button class="login-link" type="button" onclick="showLogin()">Volver a iniciar sesión</button>
+      <a class="login-link" href="index.html">Página principal</a>
+    </div>
+    <div class="err" id="activationErr"></div>
+  </div>
+</section>
+
+<main class="app" id="app">
+  <div class="topbar">
+    <div>
+      <h1 class="title">Ganancias <span>por artista</span></h1>
+      <p class="sub" style="text-align:left;margin-top:.65rem">Resumen semanal de servicios realizados y cobros registrados.</p>
+    </div>
+    <div class="user">
+      <div id="userEmail">–</div>
+      <a class="btn btn-ghost home-link" href="index.html">Página principal</a>
+      <button class="btn btn-ghost" style="margin-top:.55rem;padding:.55rem .8rem" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <section class="toolbar">
+    <div>
+      <label class="label">Artista</label>
+      <div class="artist-identity" id="artistIdentity">–</div>
+    </div>
+    <div>
+      <label class="label" for="weekInput">Semana</label>
+      <input class="field" id="weekInput" type="date" onchange="renderPortal()">
+    </div>
+    <button class="btn btn-ghost" onclick="moveWeek(-1)">Semana anterior</button>
+    <button class="btn btn-ghost" onclick="moveWeek(1)">Semana siguiente</button>
+  </section>
+
+  <div class="access-note" id="accessNote">
+    Esta cuenta no está asociada a una artista. Pide a la administradora que registre este correo en Admin → Artistas.
+  </div>
+
+  <section class="panel agenda-panel">
+    <div class="panel-hd">
+      <span class="panel-title">Agenda semanal</span>
+      <span class="panel-note" id="agendaCountNote">0 citas</span>
+    </div>
+    <div class="panel-body">
+      <div class="weekly-agenda" id="weeklyAgenda"></div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <article class="stat-card">
+      <div class="stat-label">Ganancias</div>
+      <div class="stat-value" id="totalAmount">$0</div>
+      <div class="stat-sub" id="weekRange">–</div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-label">Servicios</div>
+      <div class="stat-value" id="totalServices">0</div>
+      <div class="stat-sub">Realizados esta semana</div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-label">Mejor servicio</div>
+      <div class="stat-value" id="topService" style="font-size:1.55rem">–</div>
+      <div class="stat-sub" id="topServiceSub">Sin datos</div>
+    </article>
+  </section>
+
+  <section class="layout">
+    <article class="panel">
+      <div class="panel-hd">
+        <span class="panel-title">Servicios realizados</span>
+        <span class="panel-note" id="serviceCountNote">0 tipos</span>
+      </div>
+      <div class="panel-body" id="serviceBreakdown"></div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-hd">
+        <span class="panel-title">Detalle semanal</span>
+        <span class="panel-note" id="detailCountNote">0 cobros</span>
+      </div>
+      <div class="panel-body" id="cobroDetail"></div>
+    </article>
+  </section>
+</main>
+
+<script>
+// Usa una instancia con nombre propio para que la sesión de artistas no se
+// comparta con la sesión administrativa abierta en admin.html.
+const artistPortalApp = firebase.apps.find(app => app.name === 'artist-portal') ||
+  firebase.initializeApp(FIREBASE_CONFIG, 'artist-portal');
+const db = artistPortalApp.firestore();
+const auth = artistPortalApp.auth();
+const ARTISTS = ['Diane', 'Ana', 'Luna'];
+let cobros = [];
+let appointments = [];
+let clients = [];
+let currentArtist = '';
+let activationInProgress = false;
+let unsubscribeCobros = null;
+let unsubscribeAppointments = null;
+let unsubscribeClients = null;
+
+// SESSION guarda la cuenta solamente en esta pestaña. Así dos artistas pueden
+// trabajar al mismo tiempo en pestañas distintas sin reemplazarse la sesión.
+async function initArtistSession() {
+  try {
+    await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+  } catch (err) {
+    console.error('No fue posible aislar la sesión de artista:', err);
+  }
+
+  auth.onAuthStateChanged(async user => {
+    if (activationInProgress) return;
+    if (user) {
+      await enterPortal(user);
+    } else {
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('activationScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'none';
+    }
+  });
+}
+
+initArtistSession();
+
+async function enterPortal(user) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('activationScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userEmail').textContent = user.email;
+  currentArtist = await resolveArtist(user);
+  document.getElementById('artistIdentity').textContent = currentArtist || 'Cuenta sin artista asignada';
+  document.getElementById('accessNote').style.display = currentArtist ? 'none' : 'block';
+  initPortal();
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  document.getElementById('loginErr').style.color = 'var(--danger)';
+  document.getElementById('loginErr').textContent = '';
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch (err) {
+    document.getElementById('loginErr').textContent = friendlyAuthError(err.code);
+  }
+}
+
+async function doLogout() {
+  await auth.signOut();
+}
+
+function showActivation() {
+  document.getElementById('activationEmail').value = document.getElementById('loginEmail').value.trim();
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('activationScreen').style.display = 'flex';
+  document.getElementById('activationErr').textContent = '';
+}
+
+function showLogin() {
+  document.getElementById('activationScreen').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+async function activateAccount() {
+  const email = document.getElementById('activationEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('activationPass').value;
+  const confirmation = document.getElementById('activationPassConfirm').value;
+  const errorEl = document.getElementById('activationErr');
+  errorEl.textContent = '';
+  if (!email || !pass) return errorEl.textContent = 'Escribe tu correo y contraseña.';
+  if (pass.length < 6) return errorEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+  if (pass !== confirmation) return errorEl.textContent = 'Las contraseñas no coinciden.';
+
+  activationInProgress = true;
+  try {
+    const credential = await auth.createUserWithEmailAndPassword(email, pass);
+    const artistName = await resolveArtist(credential.user);
+    if (!artistName) {
+      await credential.user.delete();
+      throw {code:'artist/not-authorized'};
+    }
+    activationInProgress = false;
+    await enterPortal(credential.user);
+  } catch (err) {
+    activationInProgress = false;
+    errorEl.textContent = err.code === 'artist/not-authorized'
+      ? 'Este correo no está autorizado. Pide a la administradora que lo registre.'
+      : friendlyAuthError(err.code);
+  }
+}
+
+async function resetPassword() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const errorEl = document.getElementById('loginErr');
+  if (!email) return errorEl.textContent = 'Escribe primero tu correo.';
+  try {
+    await auth.sendPasswordResetEmail(email);
+    errorEl.style.color = 'var(--sage-d)';
+    errorEl.textContent = 'Te enviamos un enlace para cambiar tu contraseña.';
+  } catch (err) {
+    errorEl.style.color = 'var(--danger)';
+    errorEl.textContent = friendlyAuthError(err.code);
+  }
+}
+
+function initPortal() {
+  document.getElementById('weekInput').value = dateStr(new Date());
+  if (unsubscribeCobros) unsubscribeCobros();
+  if (unsubscribeAppointments) unsubscribeAppointments();
+  if (unsubscribeClients) unsubscribeClients();
+  if (!currentArtist) {
+    cobros = [];
+    appointments = [];
+    clients = [];
+    renderPortal();
+    return;
+  }
+  unsubscribeCobros = db.collection('cobros').where('artistName','==',currentArtist).onSnapshot(snap => {
+    cobros = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderPortal();
+  });
+  unsubscribeAppointments = db.collection('appointments').where('artistName','==',currentArtist).onSnapshot(snap => {
+    appointments = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderPortal();
+  });
+  unsubscribeClients = db.collection('clients').onSnapshot(snap => {
+    clients = snap.docs.map(d => ({id:d.id, ...d.data()}));
+    renderPortal();
+  }, err => {
+    console.error('Client attributes lookup failed:', err);
+  });
+}
+
+function renderPortal() {
+  const selectedDate = parseLocalDate(document.getElementById('weekInput').value || dateStr(new Date()));
+  const start = startOfWeek(selectedDate);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+  const startStr = dateStr(start);
+  const endStr = dateStr(end);
+
+  let rows = cobros.filter(c => c.date >= startStr && c.date <= endStr);
+  rows.sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+  let appointmentRows = appointments.filter(a => a.date >= startStr && a.date <= endStr);
+  appointmentRows.sort((a,b) => `${a.date || ''} ${a.time || ''}`.localeCompare(`${b.date || ''} ${b.time || ''}`));
+
+  const total = rows.reduce((sum,c) => sum + (Number(c.amount) || 0), 0);
+  const grouped = groupByService(rows);
+  const top = grouped[0];
+
+  setText('totalAmount', '$' + fmt(total));
+  setText('totalServices', rows.length);
+  setText('weekRange', formatDate(start) + ' - ' + formatDate(end));
+  setText('topService', top ? top.name : '-');
+  setText('topServiceSub', top ? `${top.count} servicio${top.count !== 1 ? 's' : ''} · $${fmt(top.total)}` : 'Sin datos');
+  setText('serviceCountNote', grouped.length + ' tipo' + (grouped.length !== 1 ? 's' : ''));
+  setText('detailCountNote', `${rows.length} cobro${rows.length !== 1 ? 's' : ''} · ${appointmentRows.length} cita${appointmentRows.length !== 1 ? 's' : ''}`);
+  setText('agendaCountNote', `${appointmentRows.length} cita${appointmentRows.length !== 1 ? 's' : ''}`);
+
+  renderWeeklyAgenda(start, appointmentRows);
+  renderServices(grouped);
+  renderDetails(rows, appointmentRows);
+}
+
+function renderWeeklyAgenda(start, appointmentRows) {
+  const agenda = document.getElementById('weeklyAgenda');
+  const today = dateStr(new Date());
+  const appointmentsByDate = appointmentRows.reduce((grouped, appointment) => {
+    const key = appointment.date || '';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(appointment);
+    return grouped;
+  }, {});
+
+  agenda.innerHTML = Array.from({length:7}, (_, index) => {
+    const day = new Date(start);
+    day.setDate(start.getDate() + index);
+    const key = dateStr(day);
+    const dayAppointments = appointmentsByDate[key] || [];
+    const cards = dayAppointments.length ? dayAppointments.map(a => `
+      <div class="agenda-appt">
+        <div class="agenda-appt-time">${esc(a.time || 'Sin hora')}</div>
+        <div class="agenda-appt-summary">
+          <div class="agenda-appt-client${a.status === 'pending' ? ' needs-attention' : ''}">${esc(a.clientName || 'Cliente')}${clientEmojiMarkup(a)}</div>
+          <div class="agenda-appt-meta">
+            <div class="agenda-appt-service" title="${esc(a.serviceName || 'Servicio')}">${esc(a.serviceName || 'Servicio')}</div>
+            <div class="appointment-status agenda-appt-status status-${appointmentStatusKey(a.status)}">${appointmentStatusLabel(a.status)}</div>
+          </div>
+        </div>
+      </div>
+    `).join('') : '<div class="agenda-empty">Sin citas</div>';
+
+    return `
+      <article class="agenda-day${key === today ? ' today' : ''}">
+        <div class="agenda-day-name">${day.toLocaleDateString('es-MX',{weekday:'short'})}</div>
+        <div class="agenda-day-date">${day.toLocaleDateString('es-MX',{day:'numeric',month:'short'})}</div>
+        ${cards}
+      </article>
+    `;
+  }).join('');
+}
+
+function renderServices(grouped) {
+  const el = document.getElementById('serviceBreakdown');
+  if (!grouped.length) {
+    el.innerHTML = '<div class="empty">No hay servicios registrados para esta semana.</div>';
+    return;
+  }
+  el.innerHTML = grouped.map(item => `
+    <div class="service-row">
+      <div>
+        <div class="service-name">${esc(item.name)}</div>
+        <div class="service-meta">${item.count} realizado${item.count !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="service-total">$${fmt(item.total)}</div>
+    </div>
+  `).join('');
+}
+
+function renderDetails(rows, appointmentRows) {
+  const el = document.getElementById('cobroDetail');
+  if (!rows.length && !appointmentRows.length) {
+    el.innerHTML = '<div class="empty">Sin cobros ni citas para mostrar.</div>';
+    return;
+  }
+  const paymentRows = rows.length ? `
+    <div class="detail-section-label">Cobros realizados</div>
+    ${rows.map(c => `
+    <div class="cobro-row">
+      <div>
+        <div class="client">${esc(c.clientName || 'Cliente directo')}${clientEmojiMarkup(c)} <span class="tag">${esc(c.artistName || 'Sin asignar')}</span></div>
+        <div class="detail">${esc(c.serviceName || 'Servicio')} · ${formatDate(parseLocalDate(c.date))}${c.discountPercent ? ` · ${c.discountPercent}% desc.` : ''}</div>
+      </div>
+      <div>
+        <div class="amount">$${fmt(c.amount)}</div>
+        <div class="method">${esc(c.method || '')}</div>
+      </div>
+    </div>
+  `).join('')}` : '';
+
+  const appointmentRowsHtml = appointmentRows.length ? `
+    <div class="detail-section-label">Citas de la semana</div>
+    ${appointmentRows.map(a => `
+      <div class="cobro-row">
+        <div>
+          <div class="client appointment-client${a.status === 'pending' ? ' needs-attention' : ''}">${esc(a.clientName || 'Cliente')}${clientEmojiMarkup(a)}</div>
+          <div class="detail">${esc(a.serviceName || 'Servicio')} · ${formatDate(parseLocalDate(a.date))}${a.time ? ` · ${esc(a.time)}` : ''}${a.phone ? ` · ${esc(a.phone)}` : ''}</div>
+        </div>
+        <div class="appointment-status status-${appointmentStatusKey(a.status)}">${appointmentStatusLabel(a.status)}</div>
+      </div>
+    `).join('')}` : '';
+
+  el.innerHTML = appointmentRowsHtml + paymentRows;
+}
+
+function appointmentStatusKey(status) {
+  return ['pending','confirmed','completed','cancelled'].includes(status) ? status : 'pending';
+}
+
+function appointmentStatusLabel(status) {
+  return ({pending:'Pendiente', confirmed:'Confirmada', completed:'Completada', cancelled:'Cancelada'})[status] || 'Pendiente';
+}
+
+function clientAttributesFor(record) {
+  if (Array.isArray(record.clientAttributes) && record.clientAttributes.length) return record.clientAttributes;
+  let client = record.clientId ? clients.find(item => item.id === record.clientId) : null;
+  if (!client && record.phone) {
+    const phone = String(record.phone).replace(/\D/g, '');
+    if (phone) client = clients.find(item => String(item.phone || '').replace(/\D/g, '') === phone);
+  }
+  if (!client && record.clientName) {
+    const name = String(record.clientName).trim().toLocaleLowerCase('es-MX');
+    client = clients.find(item => String(item.name || '').trim().toLocaleLowerCase('es-MX') === name);
+  }
+  return Array.isArray(client?.attributes) ? client.attributes : [];
+}
+
+function clientEmojiMarkup(record) {
+  const attributes = clientAttributesFor(record);
+  return attributes.length ? `<span class="client-emojis">${attributes.map(esc).join(' ')}</span>` : '';
+}
+
+function groupByService(rows) {
+  const map = {};
+  rows.forEach(c => {
+    const name = c.serviceName || 'Servicio sin nombre';
+    if (!map[name]) map[name] = {name, count:0, total:0};
+    map[name].count += 1;
+    map[name].total += Number(c.amount) || 0;
+  });
+  return Object.values(map).sort((a,b) => b.total - a.total);
+}
+
+function moveWeek(delta) {
+  const input = document.getElementById('weekInput');
+  const date = parseLocalDate(input.value || dateStr(new Date()));
+  date.setDate(date.getDate() + delta * 7);
+  input.value = dateStr(date);
+  renderPortal();
+}
+
+async function resolveArtist(user) {
+  const email = String(user.email || '').trim().toLowerCase();
+  if (!email) return '';
+  try {
+    const doc = await db.collection('artistAccounts').doc(email).get();
+    const data = doc.exists ? doc.data() : null;
+    return data?.active !== false && ARTISTS.includes(data?.artistName) ? data.artistName : '';
+  } catch (err) {
+    console.error('Artist account lookup failed:', err);
+    return '';
+  }
+}
+
+function startOfWeek(date) {
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  d.setHours(0,0,0,0);
+  return d;
+}
+
+function parseLocalDate(str) {
+  if (!str) return new Date();
+  const [y,m,d] = str.split('-').map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
+
+function dateStr(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function formatDate(d) {
+  if (!d || isNaN(d.getTime())) return '-';
+  return d.toLocaleDateString('es-MX', {day:'numeric', month:'short'});
+}
+
+function fmt(n) {
+  return Math.round(Number(n) || 0).toLocaleString('es-MX');
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function friendlyAuthError(code) {
+  const map = {
+    'auth/user-not-found':'Correo no registrado.',
+    'auth/wrong-password':'Contraseña incorrecta.',
+    'auth/invalid-email':'Correo inválido.',
+    'auth/email-already-in-use':'Este correo ya tiene acceso. Inicia sesión o recupera tu contraseña.',
+    'auth/weak-password':'La contraseña debe tener al menos 6 caracteres.',
+    'auth/invalid-credential':'Correo o contraseña incorrectos.',
+    'auth/too-many-requests':'Demasiados intentos. Intenta más tarde.'
+  };
+  return map[code] || 'Error: ' + code;
+}
+</script>
+</body>
+</html>

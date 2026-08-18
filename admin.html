@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sakura Admin</title>
+<title>Diane Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -17,31 +17,31 @@
 html,body{height:100%;font-family:'Outfit',sans-serif}
 
 :root{
-  --void:#060105;
-  --plum:#100810;
-  --surface:#170c16;
-  --card:#1e1020;
-  --glass:rgba(255,255,255,.05);
-  --glass-b:rgba(255,255,255,.09);
-  --blossom:#f4b4c8;
-  --blossom-d:#e07898;
-  --blossom-v:#c03368;
-  --gold:#d4a574;
-  --gold-bg:rgba(212,165,116,.12);
-  --green:#34d399;
-  --green-bg:rgba(52,211,153,.1);
-  --yellow:#fbbf24;
-  --yellow-bg:rgba(251,191,36,.1);
-  --red:#f87171;
-  --red-bg:rgba(248,113,113,.1);
-  --text:#fdf0f6;
-  --text-d:rgba(253,240,246,.55);
-  --text-g:rgba(253,240,246,.25);
+  --void:#ead0cf;
+  --plum:rgba(255,248,246,.58);
+  --surface:#fff8f6;
+  --card:rgba(255,250,248,.5);
+  --glass:rgba(255,255,255,.34);
+  --glass-b:rgba(125,82,84,.16);
+  --blossom:#6f9785;
+  --blossom-d:#6f9785;
+  --blossom-v:#8c6b32;
+  --gold:#8c6b32;
+  --gold-bg:rgba(140,107,50,.1);
+  --green:#6f9785;
+  --green-bg:rgba(111,151,133,.12);
+  --yellow:#8c6b32;
+  --yellow-bg:rgba(140,107,50,.1);
+  --red:#b85b62;
+  --red-bg:rgba(184,91,98,.1);
+  --text:#342323;
+  --text-d:rgba(52,35,35,.62);
+  --text-g:rgba(52,35,35,.45);
   --ease:cubic-bezier(.16,1,.3,1);
   --sidebar-w:224px;
 }
 
-body{background:var(--void);color:var(--text);overflow:hidden}
+body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);color:var(--text);overflow:hidden}
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:5px}
@@ -52,13 +52,13 @@ body{background:var(--void);color:var(--text);overflow:hidden}
 #loginScreen{
   position:fixed;inset:0;z-index:9999;
   display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse 80% 70% at 60% 40%,#1e0418 0%,var(--void) 70%);
+  background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);
 }
 .login-card{
   width:100%;max-width:400px;padding:2.8rem 2.4rem;
   background:var(--surface);border:1px solid var(--glass-b);
   border-radius:24px;
-  box-shadow:0 32px 80px rgba(0,0,0,.6);
+  box-shadow:0 24px 70px rgba(52,35,35,.12);backdrop-filter:blur(18px);
 }
 .login-logo{
   display:flex;align-items:center;gap:.65rem;
@@ -88,18 +88,18 @@ body{background:var(--void);color:var(--text);overflow:hidden}
   font-size:.88rem;outline:none;margin-bottom:.75rem;
   transition:border-color .2s;
 }
-.lfield:focus{border-color:rgba(244,180,200,.4);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
+.lfield:focus{border-color:rgba(179,211,192,.9);box-shadow:0 0 0 3px rgba(179,211,192,.24)}
 .lfield::placeholder{color:var(--text-g)}
 .lbtn{
   width:100%;padding:.88rem;border-radius:10px;
-  background:linear-gradient(135deg,var(--blossom-v),#e0507a);
+  background:var(--gold);
   color:#fff;border:none;font-family:'Outfit',sans-serif;
   font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;
   font-weight:500;cursor:pointer;
-  box-shadow:0 4px 24px rgba(192,51,104,.35);
+  box-shadow:0 4px 20px rgba(140,107,50,.18);
   transition:transform .2s,box-shadow .2s;
 }
-.lbtn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(192,51,104,.45)}
+.lbtn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(140,107,50,.25)}
 .lerr{
   font-size:.78rem;color:var(--red);text-align:center;
   min-height:1.2rem;margin-top:.5rem;
@@ -166,12 +166,12 @@ body{background:var(--void);color:var(--text);overflow:hidden}
 .main{
   margin-left:var(--sidebar-w);
   height:100vh;overflow-y:auto;
-  background:var(--void);
+  background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);
 }
 .topbar{
   position:sticky;top:0;z-index:50;
   padding:1.1rem 2rem;
-  background:rgba(6,1,5,.88);backdrop-filter:blur(12px);
+  background:rgba(255,248,246,.72);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--glass-b);
   display:flex;align-items:center;justify-content:space-between;
 }
@@ -269,7 +269,7 @@ body{background:var(--void);color:var(--text);overflow:hidden}
 }
 .filter-input:focus{border-color:rgba(244,180,200,.35)}
 .filter-input::placeholder{color:var(--text-g)}
-.filter-input option{background:#170c16}
+.filter-input option{background:#fff8f6}
 .filter-spacer{flex:1}
 .btn-sm{
   padding:.6rem 1.2rem;border-radius:8px;
@@ -277,7 +277,7 @@ body{background:var(--void);color:var(--text);overflow:hidden}
   font-family:'Outfit',sans-serif;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
   font-weight:500;cursor:pointer;transition:background .2s,transform .15s;
 }
-.btn-sm:hover{background:#a02858;transform:translateY(-1px)}
+.btn-sm:hover{background:#755926;transform:translateY(-1px)}
 .btn-sm-ghost{
   padding:.6rem 1.2rem;border-radius:8px;
   background:transparent;color:var(--text-d);
@@ -325,6 +325,15 @@ body{background:var(--void);color:var(--text);overflow:hidden}
   font-size:.88rem;color:var(--text-g);
   border:1px dashed var(--glass-b);border-radius:12px;
 }
+
+/* ── REMINDERS ── */
+#reminderList{display:flex;flex-direction:column;gap:.75rem}
+.reminder-card{display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--glass-b);border-radius:12px}
+.reminder-card.sent{border-color:rgba(52,211,153,.22)}
+.reminder-when{font-size:.72rem;color:var(--gold);margin-top:.3rem}
+.reminder-actions{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;flex-wrap:wrap}
+.btn-action.whatsapp{border-color:rgba(52,211,153,.3);color:var(--green)}
+.btn-action.whatsapp:hover{background:var(--green-bg)}
 
 /* ── COBRO ROWS ── */
 .cobro-card{
@@ -374,10 +383,28 @@ body{background:var(--void);color:var(--text);overflow:hidden}
 }
 .svc-price-input:focus{border-color:rgba(212,165,116,.4)}
 
+/* ── CLIENT DIRECTORY ── */
+.client-form-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:.75rem}
+.client-field-label{font-size:.72rem;color:var(--text-g);margin-bottom:.35rem}
+.emoji-picker{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.85rem}
+.emoji-option{display:inline-flex;align-items:center;gap:.35rem;padding:.42rem .65rem;border-radius:999px;background:var(--glass);border:1px solid var(--glass-b);color:var(--text-d);font-family:'Outfit',sans-serif;font-size:.72rem;cursor:pointer;transition:all .15s}
+.emoji-option:hover,.emoji-option.active{border-color:rgba(244,180,200,.38);background:rgba(244,180,200,.09);color:var(--blossom)}
+.client-form-actions{display:flex;align-items:center;justify-content:flex-end;gap:.6rem;margin-top:1rem}
+.client-form-actions>span{margin-right:auto;font-size:.72rem;color:var(--text-g)}
+#clientList{display:flex;flex-direction:column;gap:.7rem}
+.client-card{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:.8rem 1rem;padding:1rem 1.2rem;background:var(--card);border:1px solid var(--glass-b);border-radius:12px;transition:border-color .2s}
+.client-card:hover{border-color:rgba(244,180,200,.18)}
+.client-name{font-size:.9rem;color:var(--text);font-weight:500}
+.client-phone{display:inline-block;margin-top:.2rem;font-size:.75rem;color:var(--text-g);text-decoration:none}
+.client-phone:hover{color:var(--green)}
+.client-attributes{display:flex;gap:.35rem;flex-wrap:wrap;justify-content:flex-end}
+.client-attribute{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;padding:0 .45rem;border-radius:999px;background:var(--glass);border:1px solid var(--glass-b);font-size:.95rem}
+.client-actions{display:flex;gap:.45rem}
+
 /* ── MODAL ── */
 .modal-overlay{
   position:fixed;inset:0;z-index:9000;
-  background:rgba(6,1,5,.8);backdrop-filter:blur(8px);
+  background:rgba(52,35,35,.28);backdrop-filter:blur(8px);
   display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .25s;
 }
@@ -385,7 +412,7 @@ body{background:var(--void);color:var(--text);overflow:hidden}
 .modal{
   background:var(--surface);border:1px solid var(--glass-b);
   border-radius:20px;padding:2rem;width:100%;max-width:440px;
-  box-shadow:0 24px 64px rgba(0,0,0,.5);
+  box-shadow:0 24px 64px rgba(52,35,35,.18);
   transform:translateY(16px);transition:transform .3s var(--ease);
 }
 .modal-overlay.open .modal{transform:translateY(0)}
@@ -402,8 +429,8 @@ body{background:var(--void);color:var(--text);overflow:hidden}
   color:var(--text);font-family:'Outfit',sans-serif;font-size:.88rem;
   outline:none;transition:border-color .2s;
 }
-.mfield:focus{border-color:rgba(244,180,200,.4);box-shadow:0 0 0 3px rgba(192,51,104,.1)}
-.mfield option{background:#170c16}
+.mfield:focus{border-color:rgba(179,211,192,.9);box-shadow:0 0 0 3px rgba(179,211,192,.24)}
+.mfield option{background:#fff8f6}
 .modal-actions{display:flex;gap:.7rem;margin-top:1.6rem;justify-content:flex-end}
 .modal-amount-preview{
   font-family:'Shippori Mincho B1',serif;
@@ -423,12 +450,20 @@ body{background:var(--void);color:var(--text);overflow:hidden}
   .grid2{grid-template-columns:1fr}
   .cobro-card{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
   .svc-edit-card{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
+  .client-form-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:640px){
   :root{--sidebar-w:0px}
   .sidebar{display:none}
   .main{margin-left:0}
   .stats-row{grid-template-columns:1fr 1fr}
+  .client-form-grid{grid-template-columns:1fr}
+  .client-card{grid-template-columns:1fr}
+  .reminder-card{grid-template-columns:1fr}
+  .reminder-actions{justify-content:flex-start}
+  .client-attributes{justify-content:flex-start}
+  .client-form-actions{align-items:stretch;flex-direction:column}
+  .client-form-actions>span{margin-right:0}
 }
 /* ── GALERÍA ── */
 .gal-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-top:.4rem}
@@ -440,6 +475,20 @@ body{background:var(--void);color:var(--text);overflow:hidden}
 .gal-del-btn{background:rgba(239,68,68,.8);border:none;color:#fff;border-radius:8px;padding:.35rem .8rem;font-size:.72rem;cursor:pointer;transition:background .15s}
 .gal-del-btn:hover{background:#dc2626}
 .gal-url-hint{font-size:.71rem;color:var(--text-g);margin-bottom:1.1rem;line-height:1.55}
+
+/* ── PALETA DEL PORTAL DE ARTISTAS ── */
+.login-card,.panel,.stat-card,.appt-card,.reminder-card,.cobro-card,.svc-edit-card,.client-card{
+  box-shadow:0 18px 55px rgba(52,35,35,.07);backdrop-filter:blur(18px);
+}
+.sb-item.active{background:rgba(179,211,192,.2);color:var(--sage-d,#6f9785);border-color:#6f9785}
+.stat-card:hover,.appt-card:hover,.svc-edit-card:hover,.client-card:hover{border-color:rgba(111,151,133,.34)}
+.panel-hd-action,.appt-time,.ac-svc{color:#6f9785}
+.panel-hd-action:hover,.btn-sm-ghost:hover,.btn-action:hover{color:#6f9785}
+.filter-input:focus,.svc-price-input:focus{border-color:rgba(111,151,133,.58)}
+.emoji-option:hover,.emoji-option.active{border-color:rgba(111,151,133,.46);background:rgba(179,211,192,.2);color:#6f9785}
+.badge-confirmed{background:rgba(76,120,164,.1);color:#4c78a4}
+.btn-action.confirm{border-color:rgba(76,120,164,.3);color:#4c78a4}
+.btn-action.confirm:hover{background:rgba(76,120,164,.08)}
 </style>
 </head>
 <body>
@@ -460,7 +509,7 @@ body{background:var(--void);color:var(--text);overflow:hidden}
           <circle r="1.2" fill="#c03368"/>
         </g>
       </svg>
-      Sakura Admin
+      Diane Admin
     </div>
     <div class="login-tabs">
       <div class="ltab active" data-tab="login" onclick="switchTab('login')">Iniciar sesión</div>
@@ -496,7 +545,7 @@ body{background:var(--void);color:var(--text);overflow:hidden}
           <circle r="1" fill="#c03368"/>
         </g>
       </svg>
-      Sakura Nails
+      Diane Nails
     </div>
     <div class="sb-section">Menú</div>
     <a class="sb-item active" data-page="dashboard" onclick="navTo('dashboard')">
@@ -505,17 +554,29 @@ body{background:var(--void);color:var(--text);overflow:hidden}
     <a class="sb-item" data-page="citas" onclick="navTo('citas')">
       <span class="sb-icon">◷</span> Citas
     </a>
+    <a class="sb-item" data-page="recordatorios" onclick="navTo('recordatorios')">
+      <span class="sb-icon">💬</span> Recordatorios
+    </a>
     <a class="sb-item" data-page="cobros" onclick="navTo('cobros')">
       <span class="sb-icon">◈</span> Cobros
     </a>
+    <a class="sb-item" data-page="clientes" onclick="navTo('clientes')">
+      <span class="sb-icon">♡</span> Clientes
+    </a>
     <a class="sb-item" data-page="servicios" onclick="navTo('servicios')">
       <span class="sb-icon">✦</span> Servicios
+    </a>
+    <a class="sb-item" data-page="artistas" onclick="navTo('artistas')">
+      <span class="sb-icon">◌</span> Artistas
     </a>
     <a class="sb-item" data-page="galeria" onclick="navTo('galeria')">
       <span class="sb-icon">🖼</span> Galería
     </a>
     <a class="sb-item" data-page="horario" onclick="navTo('horario')">
       <span class="sb-icon">🗓</span> Horario
+    </a>
+    <a class="sb-item" href="artistas.html">
+      <span class="sb-icon">◌</span> Portal artistas
     </a>
     <div class="sb-spacer"></div>
     <div class="sb-user">
@@ -610,6 +671,20 @@ body{background:var(--void);color:var(--text);overflow:hidden}
       <div id="apptList"><div class="list-empty">Cargando citas…</div></div>
     </section>
 
+    <!-- ── RECORDATORIOS PAGE ── -->
+    <section class="page" id="page-recordatorios">
+      <div class="panel" style="margin-bottom:1.2rem">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Recordatorios de las próximas 24 horas</span>
+          <span class="panel-hd-action" id="reminderCount">0 citas</span>
+        </div>
+        <div class="panel-body" style="font-size:.8rem;color:var(--text-d);line-height:1.55">
+          Abre WhatsApp con el mensaje preparado, envíalo y después marca el recordatorio como enviado. Esta opción no usa una API de pago. Envía mensajes únicamente a clientas que aceptaron recibirlos.
+        </div>
+      </div>
+      <div id="reminderList"><div class="list-empty">Cargando recordatorios…</div></div>
+    </section>
+
     <!-- ── COBROS PAGE ── -->
     <section class="page" id="page-cobros">
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.4rem">
@@ -641,6 +716,55 @@ body{background:var(--void);color:var(--text);overflow:hidden}
       <div id="cobroList"><div class="list-empty">Cargando cobros…</div></div>
     </section>
 
+    <!-- ── CLIENTES PAGE ── -->
+    <section class="page" id="page-clientes">
+      <div class="panel" style="margin-bottom:1.2rem">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Directorio de clientes</span>
+          <span style="font-size:.72rem;color:var(--text-g)">Guarda su WhatsApp y clasifícalas mediante emojis.</span>
+        </div>
+        <div class="panel-body">
+          <div class="client-form-grid">
+            <div>
+              <div class="client-field-label">Nombre completo</div>
+              <input class="filter-input" id="clientNameInput" type="text" placeholder="Alejandra López" style="width:100%">
+            </div>
+            <div>
+              <div class="client-field-label">Número de WhatsApp</div>
+              <input class="filter-input" id="clientPhoneInput" type="tel" placeholder="55 1234 5678" style="width:100%">
+            </div>
+            <div>
+              <div class="client-field-label">Atributos con emojis</div>
+              <input class="filter-input" id="clientAttributesInput" type="text" placeholder="⭐ 💖 🌸" oninput="syncClientAttributes()" style="width:100%">
+            </div>
+          </div>
+          <div class="emoji-picker" aria-label="Atributos rápidos">
+            <button class="emoji-option" type="button" data-emoji="⭐" onclick="toggleClientEmoji('⭐')" title="VIP">⭐ <span>VIP</span></button>
+            <button class="emoji-option" type="button" data-emoji="💖" onclick="toggleClientEmoji('💖')" title="Frecuente">💖 <span>Frecuente</span></button>
+            <button class="emoji-option" type="button" data-emoji="🌸" onclick="toggleClientEmoji('🌸')" title="Preferente">🌸 <span>Preferente</span></button>
+            <button class="emoji-option" type="button" data-emoji="🎂" onclick="toggleClientEmoji('🎂')" title="Cumpleaños">🎂 <span>Cumpleaños</span></button>
+            <button class="emoji-option" type="button" data-emoji="💬" onclick="toggleClientEmoji('💬')" title="Seguimiento">💬 <span>Seguimiento</span></button>
+            <button class="emoji-option" type="button" data-emoji="⚠️" onclick="toggleClientEmoji('⚠️')" title="Atención especial">⚠️ <span>Atención</span></button>
+            <button class="emoji-option" type="button" data-emoji="🎖" onclick="toggleClientEmoji('🎖')" title="Clienta distinguida">🎖 <span>Clienta distinguida</span></button>
+            <button class="emoji-option" type="button" data-emoji="📌" onclick="toggleClientEmoji('📌')" title="Clienta nueva">📌 <span>Clienta nueva</span></button>
+            <button class="emoji-option" type="button" data-emoji="🪄" onclick="toggleClientEmoji('🪄')" title="Clienta delicada">🪄 <span>Clienta delicada</span></button>
+            <button class="emoji-option" type="button" data-emoji="💰" onclick="toggleClientEmoji('💰')" title="Anticipo">💰 <span>Anticipo</span></button>
+          </div>
+          <div class="client-form-actions">
+            <span id="clientFormStatus">Selecciona atributos rápidos o escribe otros emojis separados por espacios.</span>
+            <button class="btn-sm-ghost" id="cancelClientEditButton" type="button" onclick="clearClientForm()" style="display:none">Cancelar edición</button>
+            <button class="btn-sm" id="saveClientButton" type="button" onclick="saveClient()">Guardar cliente</button>
+          </div>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <input class="filter-input" id="clientSearchInput" type="search" placeholder="Buscar por nombre, WhatsApp o emoji…" oninput="renderClients()" style="min-width:280px">
+        <span class="filter-spacer"></span>
+        <span id="clientCount" style="font-size:.75rem;color:var(--text-g)">0 clientes</span>
+      </div>
+      <div id="clientList"><div class="list-empty">Cargando clientes…</div></div>
+    </section>
+
     <!-- ── SERVICIOS PAGE ── -->
     <section class="page" id="page-servicios">
       <div class="filter-bar">
@@ -649,6 +773,51 @@ body{background:var(--void);color:var(--text);overflow:hidden}
         <button class="btn-sm" onclick="openNewSvcModal()">+ Agregar servicio</button>
       </div>
       <div id="svcList"><div class="list-empty">Cargando servicios…</div></div>
+    </section>
+
+    <!-- ── ARTISTAS PAGE ── -->
+    <section class="page" id="page-artistas">
+      <div class="panel" style="margin-bottom:1.2rem">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Artistas guardadas</span>
+          <span style="font-size:.72rem;color:var(--text-g)">Registra aquí a cada artista para poder seleccionarla al autorizar su correo.</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:1;min-width:220px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">Nombre de la artista</div>
+              <input class="filter-input" id="artistNameInput" type="text" placeholder="Nombre completo" style="width:100%">
+            </div>
+            <button class="btn-sm" id="artistSaveButton" type="button" onclick="saveArtist()">Guardar artista</button>
+          </div>
+          <div id="artistSaveStatus" style="min-height:1.1rem;margin-top:.75rem;font-size:.75rem;color:var(--text-d)">Las artistas guardadas aparecerán en el selector de autorización.</div>
+        </div>
+      </div>
+      <div id="artistDirectoryList" style="display:flex;flex-direction:column;gap:.8rem;margin-bottom:1.2rem"><div class="list-empty">Cargando artistas…</div></div>
+
+      <div class="panel" style="margin-bottom:1.2rem">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Cuentas de artistas</span>
+          <span style="font-size:.72rem;color:var(--text-g)">Autoriza el correo; después la artista creará su propia contraseña en el portal.</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:2;min-width:220px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">Correo de acceso</div>
+              <input class="filter-input" id="aaEmailInput" type="email" placeholder="ana@dianenails.com" style="width:100%">
+            </div>
+            <div style="flex:1;min-width:160px">
+              <div style="font-size:.72rem;color:var(--text-g);margin-bottom:.35rem">Artista</div>
+              <select class="filter-input" id="aaArtistInput" style="width:100%">
+                <option value="">Selecciona una artista</option>
+              </select>
+            </div>
+            <button class="btn-sm" id="aaSaveButton" onclick="saveArtistAccount()">Autorizar correo</button>
+          </div>
+          <div id="aaStatus" style="min-height:1.1rem;margin-top:.75rem;font-size:.75rem;color:var(--text-d)">Comparte el enlace de Portal artistas para que ella active su acceso.</div>
+        </div>
+      </div>
+      <div id="artistAccountList"><div class="list-empty">Cargando cuentas…</div></div>
     </section>
 
     <!-- ── HORARIO PAGE ── -->
@@ -730,6 +899,11 @@ body{background:var(--void);color:var(--text);overflow:hidden}
       </select>
     </div>
 
+    <div class="mfield-group">
+      <label class="mfield-label">Artista</label>
+      <select class="mfield" id="mc-artist"></select>
+    </div>
+
     <!-- Precio sugerido -->
     <div id="mc-price-hint" style="display:none;margin:-0.5rem 0 .9rem;font-size:.75rem;color:var(--gold);padding:0 .2rem">
       Precio sugerido: <span id="mc-price-hint-val"></span>
@@ -785,6 +959,13 @@ body{background:var(--void);color:var(--text);overflow:hidden}
     <div class="modal-title">Nueva cita</div>
     <p class="modal-subtitle">Agrega una cita manualmente para la agenda.</p>
     <div class="mfield-group">
+      <label class="mfield-label">Elegir cliente guardado</label>
+      <select class="mfield" id="na-client" onchange="selectAppointmentClient()">
+        <option value="">— Clienta nueva / captura manual —</option>
+      </select>
+      <div id="na-client-attributes" style="display:none;margin-top:.45rem;font-size:.78rem;color:var(--text-d)"></div>
+    </div>
+    <div class="mfield-group">
       <label class="mfield-label">Nombre de la clienta</label>
       <input class="mfield" id="na-name" type="text" placeholder="Ana Laura M.">
     </div>
@@ -805,6 +986,10 @@ body{background:var(--void);color:var(--text);overflow:hidden}
     <div class="mfield-group">
       <label class="mfield-label">Servicio</label>
       <select class="mfield" id="na-service"></select>
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Artista</label>
+      <select class="mfield" id="na-artist"></select>
     </div>
     <div class="modal-actions">
       <button class="btn-sm-ghost" onclick="closeModal('modalNewAppt')">Cancelar</button>
@@ -855,11 +1040,16 @@ const DEFAULT_SERVICES = [
   {name:'Nail Art 3D',      price:900, description:'Flores, cristales Swarovski y figuras',       icon:'🦋', order:5},
   {name:'Pedicura de Lujo', price:520, description:'Sales, masaje y esmaltado semipermanente',    icon:'🌿', order:6},
 ];
+const DEFAULT_ARTISTS = ['Diane Gómez', 'Verónica Godínez', 'Bety Ávila', 'Briscia Gómez', 'Itzel', 'Jaqueline', 'Nancy'];
 
 /* ══════════════ GLOBAL STATE ══════════════ */
 let appointments = [];
 let cobros       = [];
 let services     = [];
+let artistAccounts = [];
+let artistDirectory = [];
+let clients = [];
+let editingClientId = null;
 let currentPage  = 'dashboard';
 let pendingCobroAppt = null;
 let revenueChart  = null;
@@ -921,6 +1111,9 @@ async function initApp() {
   listenAppointments();
   listenCobros();
   listenServices();
+  listenArtists();
+  listenArtistAccounts();
+  listenClients();
   listenGallery();
   listenClosedDays();
   navTo('dashboard');
@@ -951,6 +1144,7 @@ function listenAppointments() {
         return (a.time||'') < (b.time||'') ? -1 : 1;
       });
       renderAppts();
+      renderReminders();
       renderDashboard();
     });
 }
@@ -973,13 +1167,50 @@ function listenServices() {
     });
 }
 
+function listenArtistAccounts() {
+  db.collection('artistAccounts').orderBy('email')
+    .onSnapshot(snap => {
+      artistAccounts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderArtistAccounts();
+      populateArtistSelectors();
+    });
+}
+
+function listenArtists() {
+  db.collection('artists').orderBy('name')
+    .onSnapshot(snap => {
+      artistDirectory = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      renderArtistDirectory();
+      populateArtistSelectors();
+    }, err => {
+      console.error('Artist directory listener failed:', err);
+      const el = document.getElementById('artistDirectoryList');
+      if (el) el.innerHTML = '<div class="list-empty">No fue posible cargar las artistas guardadas.</div>';
+      populateArtistSelectors();
+    });
+}
+
+function listenClients() {
+  db.collection('clients').orderBy('name')
+    .onSnapshot(snap => {
+      clients = snap.docs.map(d => ({id:d.id, ...d.data()}));
+      renderClients();
+      populateAppointmentClientSelect();
+    }, err => {
+      console.error('Client directory listener failed:', err);
+      const el = document.getElementById('clientList');
+      if (el) el.innerHTML = '<div class="list-empty">No fue posible cargar los clientes.</div>';
+    });
+}
+
 /* ══════════════ NAVIGATION ══════════════ */
 function navTo(page) {
   currentPage = page;
   document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
-  const titles = {dashboard:'Dashboard', citas:'Citas', cobros:'Cobros', servicios:'Servicios', galeria:'Galería', horario:'Horario'};
+  const titles = {dashboard:'Dashboard', citas:'Citas', recordatorios:'Recordatorios', cobros:'Cobros', clientes:'Clientes', servicios:'Servicios', artistas:'Artistas', galeria:'Galería', horario:'Horario'};
   document.getElementById('topbarTitle').textContent = titles[page] || page;
+  if (page === 'recordatorios') renderReminders();
 }
 
 /* ══════════════ DASHBOARD ══════════════ */
@@ -1120,11 +1351,14 @@ function renderAppts() {
         </div>
         <div class="ac-mid">
           <span class="ac-svc">${esc(a.serviceName)}</span>
+          ${a.artistName ? `<span class="ac-date">✦ ${esc(a.artistName)}</span>` : ''}
           <span class="ac-date">📅 ${a.date || '–'} ${a.time ? '· ' + a.time : ''}</span>
           ${a.servicePrice ? `<span class="ac-price">$${fmt(a.servicePrice)}</span>` : ''}
         </div>
       </div>
       <div class="ac-actions">
+        ${a.phone && (a.status === 'pending' || a.status === 'confirmed')
+          ? `<button class="btn-action whatsapp" onclick="openReminderWhatsApp('${a.id}')">💬 WhatsApp</button>` : ''}
         ${a.status === 'pending'   ? `<button class="btn-action confirm"  onclick="updateStatus('${a.id}','confirmed')">Confirmar</button>` : ''}
         ${a.status === 'confirmed' ? `<button class="btn-action complete" onclick="updateStatus('${a.id}','completed')">Completar</button>` : ''}
         ${a.status !== 'cancelled' && !a.paid
@@ -1140,6 +1374,96 @@ function renderAppts() {
 
 async function updateStatus(id, status) {
   await db.collection('appointments').doc(id).update({ status });
+}
+
+/* ══════════════ FREE WHATSAPP REMINDERS ══════════════ */
+function appointmentDateTime(appointment) {
+  if (!appointment.date || !appointment.time) return null;
+  const [year, month, day] = appointment.date.split('-').map(Number);
+  const [hour, minute] = appointment.time.split(':').map(Number);
+  const value = new Date(year, (month || 1) - 1, day || 1, hour || 0, minute || 0);
+  return isNaN(value.getTime()) ? null : value;
+}
+
+function appointmentsNeedingReminder() {
+  const now = new Date();
+  const limit = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  return appointments.filter(appointment => {
+    const scheduled = appointmentDateTime(appointment);
+    return scheduled && scheduled > now && scheduled <= limit &&
+      (appointment.status === 'pending' || appointment.status === 'confirmed');
+  }).sort((a,b) => appointmentDateTime(a) - appointmentDateTime(b));
+}
+
+function renderReminders() {
+  const el = document.getElementById('reminderList');
+  if (!el) return;
+  const due = appointmentsNeedingReminder();
+  setText('reminderCount', `${due.length} cita${due.length !== 1 ? 's' : ''}`);
+  if (!due.length) {
+    el.innerHTML = '<div class="list-empty">No hay citas pendientes o confirmadas durante las próximas 24 horas.</div>';
+    return;
+  }
+
+  el.innerHTML = due.map(appointment => {
+    const scheduled = appointmentDateTime(appointment);
+    const sent = Boolean(appointment.reminderSentAt);
+    return `
+      <article class="reminder-card${sent ? ' sent' : ''}">
+        <div>
+          <div class="ac-top">
+            <span class="ac-name">${esc(appointment.clientName || 'Cliente')}</span>
+            ${statusBadge(appointment.status)}
+            ${sent ? '<span class="badge badge-completed">Recordatorio enviado</span>' : ''}
+          </div>
+          <div class="ac-mid">
+            <span class="ac-svc">${esc(appointment.serviceName || 'Servicio')}</span>
+            ${appointment.artistName ? `<span class="ac-date">✦ ${esc(appointment.artistName)}</span>` : ''}
+            <span class="ac-phone">📱 ${esc(appointment.phone || 'Sin WhatsApp')}</span>
+          </div>
+          <div class="reminder-when">${scheduled.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})} · ${esc(appointment.time)}</div>
+        </div>
+        <div class="reminder-actions">
+          ${appointment.phone ? `<button class="btn-action whatsapp" onclick="openReminderWhatsApp('${appointment.id}')">💬 ${sent ? 'Abrir de nuevo' : 'Abrir WhatsApp'}</button>` : '<span class="badge badge-cancelled">Sin número</span>'}
+          ${appointment.phone && !sent ? `<button class="btn-action complete" onclick="markReminderSent('${appointment.id}')">✓ Marcar enviado</button>` : ''}
+        </div>
+      </article>`;
+  }).join('');
+}
+
+function normalizeWhatsAppPhone(phone) {
+  let digits = String(phone || '').replace(/\D/g, '');
+  if (digits.length === 10) digits = '52' + digits;
+  if (digits.length === 13 && digits.startsWith('521')) digits = '52' + digits.slice(3);
+  return digits;
+}
+
+function reminderMessage(appointment) {
+  const scheduled = appointmentDateTime(appointment);
+  const date = scheduled
+    ? scheduled.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})
+    : appointment.date;
+  const artist = appointment.artistName && appointment.artistName !== 'Sin asignar'
+    ? ` con ${appointment.artistName}` : '';
+  return `Hola, ${appointment.clientName || 'clienta'} 🌸\n\nTe recordamos tu cita en Diane Nails el ${date} a las ${appointment.time || ''} para ${appointment.serviceName || 'tu servicio'}${artist}.\n\n¿Nos confirmas tu asistencia? Gracias.`;
+}
+
+function openReminderWhatsApp(id) {
+  const appointment = appointments.find(item => item.id === id);
+  if (!appointment) return;
+  const phone = normalizeWhatsAppPhone(appointment.phone);
+  if (!phone) return alert('Esta cita no tiene un número de WhatsApp válido.');
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(reminderMessage(appointment))}`;
+  window.open(url, '_blank', 'noopener');
+  db.collection('appointments').doc(id).update({
+    reminderOpenedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(err => console.error('Reminder open tracking failed:', err));
+}
+
+async function markReminderSent(id) {
+  await db.collection('appointments').doc(id).update({
+    reminderSentAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
 }
 
 /* ══════════════ COBROS ══════════════ */
@@ -1161,7 +1485,7 @@ function renderCobros() {
     <div class="cobro-card">
       <div>
         <div class="cc-name">${esc(c.clientName)}</div>
-        <div class="cc-svc">${esc(c.serviceName)}${c.discountPercent ? ` · ${c.discountPercent}% desc.` : ''}</div>
+        <div class="cc-svc">${esc(c.serviceName)}${c.artistName ? ` · ${esc(c.artistName)}` : ''}${c.discountPercent ? ` · ${c.discountPercent}% desc.` : ''}</div>
       </div>
       <div class="cc-date">${c.date || '–'}</div>
       <div>
@@ -1187,6 +1511,7 @@ function openCobroModal(apptId) {
     + (pendingCobroAppt.date  ? ` · 📅 ${pendingCobroAppt.date}` : '');
 
   fillCobroServiceSelect(pendingCobroAppt.serviceName, pendingCobroAppt.servicePrice);
+  fillArtistSelect('mc-artist', pendingCobroAppt.artistName || '');
   document.getElementById('mc-discount').value = '0';
   recalculateCobroAmount();
   document.getElementById('mc-notes').value = '';
@@ -1203,6 +1528,7 @@ function openDirectCobroModal() {
   document.getElementById('mc-appt-info').style.display = 'none';
 
   fillCobroServiceSelect('', 0);
+  fillArtistSelect('mc-artist', '');
   document.getElementById('mc-amount').value = '';
   document.getElementById('mc-discount').value = '0';
   clearCobroBaseAmount();
@@ -1224,6 +1550,15 @@ function fillCobroServiceSelect(preselect, prePrice) {
   setCobroBaseAmount(prePrice || getCobroSelectedServicePrice());
   updatePriceHint();
   recalculateCobroAmount();
+}
+
+function fillArtistSelect(id, preselect) {
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  const names = getAvailableArtistNames();
+  sel.innerHTML = '<option value="">Sin asignar</option>'
+    + names.map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
+  if (preselect && names.includes(preselect)) sel.value = preselect;
 }
 
 /* Cuando cambia el servicio en el modal → actualiza precio sugerido y monto */
@@ -1299,6 +1634,7 @@ async function saveCobro() {
   const today      = dateStr(new Date());
   const svcSel     = document.getElementById('mc-service');
   const serviceName= svcSel.value;
+  const artistName = document.getElementById('mc-artist').value || 'Sin asignar';
 
   if (!serviceName) { alert('Selecciona el servicio realizado.'); return; }
   if (!amount)      { alert('Ingresa el monto cobrado.'); return; }
@@ -1309,7 +1645,9 @@ async function saveCobro() {
     const batch = db.batch();
     batch.set(db.collection('cobros').doc(), {
       appointmentId: pendingCobroAppt.id,
-      clientName, serviceName,
+      clientId: pendingCobroAppt.clientId || null,
+      clientAttributes: pendingCobroAppt.clientAttributes || [],
+      clientName, serviceName, artistName,
       subtotalAmount: calc.base,
       discountPercent: calc.percent,
       discountAmount: calc.amount,
@@ -1318,6 +1656,7 @@ async function saveCobro() {
     });
     batch.update(db.collection('appointments').doc(pendingCobroAppt.id), {
       serviceName,                        // actualiza el servicio si fue cambiado
+      artistName,
       paid: true, paidAt: today,
       subtotalAmount: calc.base,
       discountPercent: calc.percent,
@@ -1332,7 +1671,7 @@ async function saveCobro() {
     const clientName = document.getElementById('mc-client-name').value.trim() || 'Cliente directo';
     await db.collection('cobros').add({
       appointmentId: null,
-      clientName, serviceName,
+      clientName, serviceName, artistName,
       subtotalAmount: calc.base,
       discountPercent: calc.percent,
       discountAmount: calc.amount,
@@ -1413,6 +1752,258 @@ async function saveNewSvc() {
   closeModal('modalNewSvc');
 }
 
+/* ══════════════ CLIENT DIRECTORY ══════════════ */
+function parseClientAttributes(value) {
+  return [...new Set(String(value || '').trim().split(/[\s,]+/).filter(Boolean))];
+}
+
+function syncClientAttributes() {
+  const selected = parseClientAttributes(document.getElementById('clientAttributesInput').value);
+  document.querySelectorAll('.emoji-option').forEach(button => {
+    button.classList.toggle('active', selected.includes(button.dataset.emoji));
+  });
+}
+
+function toggleClientEmoji(emoji) {
+  const input = document.getElementById('clientAttributesInput');
+  const selected = parseClientAttributes(input.value);
+  const index = selected.indexOf(emoji);
+  if (index >= 0) selected.splice(index, 1);
+  else selected.push(emoji);
+  input.value = selected.join(' ');
+  syncClientAttributes();
+}
+
+function renderClients() {
+  const el = document.getElementById('clientList');
+  if (!el) return;
+  const query = (document.getElementById('clientSearchInput')?.value || '').trim().toLowerCase();
+  const filtered = clients.filter(client => {
+    const searchable = [client.name, client.phone, ...(client.attributes || [])].join(' ').toLowerCase();
+    return !query || searchable.includes(query);
+  });
+  setText('clientCount', `${filtered.length} cliente${filtered.length !== 1 ? 's' : ''}`);
+
+  if (!filtered.length) {
+    el.innerHTML = `<div class="list-empty">${clients.length ? 'No hay clientes que coincidan con la búsqueda.' : 'Aún no hay clientes guardados.'}</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map(client => {
+    const digits = String(client.phone || '').replace(/\D/g, '');
+    const attributes = (client.attributes || []).map(attribute =>
+      `<span class="client-attribute" title="Atributo">${esc(attribute)}</span>`
+    ).join('');
+    return `
+      <article class="client-card">
+        <div>
+          <div class="client-name">${esc(client.name || 'Cliente')}</div>
+          ${digits ? `<a class="client-phone" href="https://wa.me/${digits}" target="_blank" rel="noopener">WhatsApp · ${esc(client.phone)}</a>` : '<span class="client-phone">Sin WhatsApp</span>'}
+        </div>
+        <div class="client-attributes">${attributes || '<span style="font-size:.72rem;color:var(--text-g)">Sin atributos</span>'}</div>
+        <div class="client-actions">
+          <button class="btn-action" type="button" onclick="editClient('${client.id}')">Editar</button>
+          <button class="btn-action cancel" type="button" onclick="deleteClient('${client.id}')">Eliminar</button>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+async function saveClient() {
+  const name = document.getElementById('clientNameInput').value.trim();
+  const phone = document.getElementById('clientPhoneInput').value.trim();
+  const attributes = parseClientAttributes(document.getElementById('clientAttributesInput').value);
+  const status = document.getElementById('clientFormStatus');
+  const button = document.getElementById('saveClientButton');
+  if (!name || !phone) return alert('Agrega el nombre y número de WhatsApp.');
+
+  button.disabled = true;
+  status.style.color = 'var(--text-g)';
+  status.textContent = editingClientId ? 'Actualizando cliente…' : 'Guardando cliente…';
+  try {
+    const payload = {
+      name,
+      phone,
+      attributes,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    if (editingClientId) {
+      await db.collection('clients').doc(editingClientId).set(payload, {merge:true});
+    } else {
+      payload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('clients').add(payload);
+    }
+    clearClientForm();
+    status.style.color = 'var(--green)';
+    status.textContent = 'Cliente guardado correctamente.';
+  } catch (err) {
+    console.error('Client save failed:', err);
+    status.style.color = 'var(--red)';
+    status.textContent = 'No fue posible guardar el cliente.';
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function editClient(id) {
+  const client = clients.find(item => item.id === id);
+  if (!client) return;
+  editingClientId = id;
+  document.getElementById('clientNameInput').value = client.name || '';
+  document.getElementById('clientPhoneInput').value = client.phone || '';
+  document.getElementById('clientAttributesInput').value = (client.attributes || []).join(' ');
+  document.getElementById('saveClientButton').textContent = 'Actualizar cliente';
+  document.getElementById('cancelClientEditButton').style.display = '';
+  document.getElementById('clientFormStatus').textContent = `Editando a ${client.name || 'cliente'}.`;
+  syncClientAttributes();
+  document.getElementById('clientNameInput').focus();
+}
+
+function clearClientForm() {
+  editingClientId = null;
+  document.getElementById('clientNameInput').value = '';
+  document.getElementById('clientPhoneInput').value = '';
+  document.getElementById('clientAttributesInput').value = '';
+  document.getElementById('saveClientButton').textContent = 'Guardar cliente';
+  document.getElementById('cancelClientEditButton').style.display = 'none';
+  document.getElementById('clientFormStatus').textContent = 'Selecciona atributos rápidos o escribe otros emojis separados por espacios.';
+  syncClientAttributes();
+}
+
+async function deleteClient(id) {
+  const client = clients.find(item => item.id === id);
+  if (!confirm(`¿Eliminar a ${client?.name || 'esta cliente'} del directorio?`)) return;
+  await db.collection('clients').doc(id).delete();
+  if (editingClientId === id) clearClientForm();
+}
+
+function renderArtistDirectory() {
+  const el = document.getElementById('artistDirectoryList');
+  if (!el) return;
+  if (!artistDirectory.length) {
+    el.innerHTML = '<div class="list-empty">Aún no hay artistas guardadas.</div>';
+    return;
+  }
+  el.innerHTML = artistDirectory.map(artist => `
+    <div class="svc-edit-card">
+      <div class="svc-icon-box">✦</div>
+      <div class="svc-info">
+        <div class="svc-edit-name">${esc(artist.name)}</div>
+        <div class="svc-edit-desc">Disponible para autorizar correos y asignar citas</div>
+      </div>
+      <div class="badge badge-completed">Guardada</div>
+      <button class="btn-action cancel" type="button" onclick="deleteArtist('${artist.id}')" aria-label="Eliminar a ${esc(artist.name)}">✕</button>
+    </div>`).join('');
+}
+
+function populateArtistSelectors() {
+  const accountSelect = document.getElementById('aaArtistInput');
+  if (accountSelect) {
+    const current = accountSelect.value;
+    const names = getAvailableArtistNames(false);
+    accountSelect.innerHTML = '<option value="">Selecciona una artista</option>'
+      + names.map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
+    if (names.includes(current)) accountSelect.value = current;
+  }
+}
+
+function getAvailableArtistNames(includeDefaults = true) {
+  const savedNames = artistDirectory.map(artist => artist.name).filter(Boolean);
+  const accountNames = artistAccounts.map(account => account.artistName).filter(Boolean);
+  const names = [...new Set([...savedNames, ...accountNames])]
+    .sort((a, b) => a.localeCompare(b, 'es'));
+  return names.length || !includeDefaults ? names : DEFAULT_ARTISTS;
+}
+
+async function saveArtist() {
+  const input = document.getElementById('artistNameInput');
+  const status = document.getElementById('artistSaveStatus');
+  const button = document.getElementById('artistSaveButton');
+  const name = input.value.trim().replace(/\s+/g, ' ');
+  if (!name) return alert('Agrega el nombre de la artista.');
+  if (artistDirectory.some(artist => artist.name.toLocaleLowerCase('es') === name.toLocaleLowerCase('es'))) {
+    status.style.color = 'var(--red)';
+    status.textContent = 'Esta artista ya está guardada.';
+    return;
+  }
+  button.disabled = true;
+  status.style.color = 'var(--text-d)';
+  status.textContent = 'Guardando artista…';
+  try {
+    await db.collection('artists').add({
+      name,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    input.value = '';
+    status.style.color = 'var(--green)';
+    status.textContent = `${name} quedó guardada y ya puede seleccionarse.`;
+  } catch (err) {
+    status.style.color = 'var(--red)';
+    status.textContent = 'No fue posible guardar la artista.';
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function deleteArtist(id) {
+  const artist = artistDirectory.find(item => item.id === id);
+  if (!confirm(`¿Eliminar a ${artist?.name || 'esta artista'} de la lista?`)) return;
+  await db.collection('artists').doc(id).delete();
+}
+
+function renderArtistAccounts() {
+  const el = document.getElementById('artistAccountList');
+  if (!el) return;
+  if (!artistAccounts.length) {
+    el.innerHTML = '<div class="list-empty">Sin cuentas de artistas configuradas</div>';
+    return;
+  }
+  el.innerHTML = artistAccounts.map(a => `
+    <div class="svc-edit-card">
+      <div class="svc-icon-box">◌</div>
+      <div class="svc-info">
+        <div class="svc-edit-name">${esc(a.artistName)}</div>
+        <div class="svc-edit-desc">${esc(a.email)}</div>
+      </div>
+      <div class="badge badge-completed">Activo</div>
+      <button class="btn-action cancel" onclick="deleteArtistAccount('${a.id}')">✕</button>
+    </div>`).join('');
+}
+
+async function saveArtistAccount() {
+  const email = document.getElementById('aaEmailInput').value.trim().toLowerCase();
+  const artistName = document.getElementById('aaArtistInput').value;
+  const status = document.getElementById('aaStatus');
+  const button = document.getElementById('aaSaveButton');
+  if (!email || !artistName) return alert('Agrega correo y artista.');
+
+  button.disabled = true;
+  status.style.color = 'var(--text-d)';
+  status.textContent = 'Autorizando correo…';
+  try {
+    await db.collection('artistAccounts').doc(email).set({
+      email,
+      artistName,
+      active: true,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, {merge:true});
+    document.getElementById('aaEmailInput').value = '';
+    status.style.color = 'var(--green)';
+    status.textContent = `${artistName} ya puede crear su contraseña en Portal artistas.`;
+  } catch (err) {
+    status.style.color = 'var(--red)';
+    status.textContent = friendlyAuthError(err.code);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function deleteArtistAccount(id) {
+  if (!confirm('¿Eliminar este acceso de artista?')) return;
+  await db.collection('artistAccounts').doc(id).delete();
+}
+
 function populateServiceSelect() {
   /* Select de nueva cita */
   const sel = document.getElementById('na-service');
@@ -1426,16 +2017,52 @@ function populateServiceSelect() {
   if (mc && mc.options.length <= 1) fillCobroServiceSelect('', 0);
 }
 
+function populateAppointmentClientSelect(preselect) {
+  const select = document.getElementById('na-client');
+  if (!select) return;
+  const selectedId = preselect !== undefined ? preselect : select.value;
+  select.innerHTML = '<option value="">— Clienta nueva / captura manual —</option>' + clients.map(client => {
+    const attributes = (client.attributes || []).join(' ');
+    const label = `${attributes ? attributes + ' ' : ''}${client.name || 'Cliente'}${client.phone ? ' — ' + client.phone : ''}`;
+    return `<option value="${client.id}">${esc(label)}</option>`;
+  }).join('');
+  if (selectedId && clients.some(client => client.id === selectedId)) select.value = selectedId;
+}
+
+function selectAppointmentClient() {
+  const clientId = document.getElementById('na-client').value;
+  const attributesEl = document.getElementById('na-client-attributes');
+  if (!clientId) {
+    document.getElementById('na-name').value = '';
+    document.getElementById('na-phone').value = '';
+    attributesEl.style.display = 'none';
+    attributesEl.textContent = '';
+    return;
+  }
+  const client = clients.find(item => item.id === clientId);
+  if (!client) return;
+  document.getElementById('na-name').value = client.name || '';
+  document.getElementById('na-phone').value = client.phone || '';
+  const attributes = (client.attributes || []).join(' ');
+  attributesEl.textContent = attributes ? `Atributos: ${attributes}` : 'Sin atributos registrados';
+  attributesEl.style.display = 'block';
+}
+
 /* ══════════════ NEW APPOINTMENT MODAL ══════════════ */
 function openNewApptModal() {
+  populateAppointmentClientSelect('');
   document.getElementById('na-name').value  = '';
   document.getElementById('na-phone').value = '';
+  document.getElementById('na-client-attributes').style.display = 'none';
   document.getElementById('na-date').value  = dateStr(new Date());
   document.getElementById('na-time').value  = '';
+  fillArtistSelect('na-artist', '');
   openModal('modalNewAppt');
 }
 
 async function saveNewAppt() {
+  const clientId = document.getElementById('na-client').value || null;
+  const selectedClient = clientId ? clients.find(client => client.id === clientId) : null;
   const name = document.getElementById('na-name').value.trim();
   const phone= document.getElementById('na-phone').value.trim();
   const date = document.getElementById('na-date').value;
@@ -1443,10 +2070,13 @@ async function saveNewAppt() {
   const sel  = document.getElementById('na-service');
   const svcName  = sel.value;
   const svcPrice = parseFloat(sel.options[sel.selectedIndex]?.dataset.price) || 0;
+  const artistName = document.getElementById('na-artist').value || 'Sin asignar';
   if (!name || !date) return;
   await db.collection('appointments').add({
+    clientId,
+    clientAttributes: selectedClient?.attributes || [],
     clientName: name, phone, date, time,
-    serviceName: svcName, servicePrice: svcPrice,
+    serviceName: svcName, servicePrice: svcPrice, artistName,
     status: 'pending',
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
