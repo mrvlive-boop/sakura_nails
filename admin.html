@@ -11,6 +11,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="firebase-config.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -300,10 +302,31 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
 .ac-top{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
 .ac-name{font-size:.9rem;font-weight:500;color:var(--text)}
 .ac-phone{font-size:.75rem;color:var(--text-g)}
+.protected-phone{
+  display:inline-flex;align-items:center;gap:.38rem;
+  color:var(--text-g);font-size:.75rem;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+}
+.protected-phone-value{letter-spacing:.04em;white-space:nowrap}
+.phone-reveal-btn{
+  border:1px solid var(--glass-b);border-radius:999px;padding:.2rem .48rem;
+  background:rgba(179,211,192,.12);color:#6f9785;
+  font:500 .62rem 'Outfit',sans-serif;cursor:pointer;touch-action:none;
+}
+.phone-reveal-btn:active{background:rgba(179,211,192,.26)}
+.phone-reveal-btn.unlocked{
+  background:rgba(179,211,192,.22);border-color:rgba(111,151,133,.34);color:#527b69;
+}
+.phone-input-protected{-webkit-text-security:disc;user-select:none;-webkit-user-select:none}
 .ac-mid{display:flex;gap:1.2rem;margin-top:.4rem;flex-wrap:wrap}
 .ac-svc{font-size:.8rem;color:var(--blossom-d);font-weight:500}
 .ac-date{font-size:.78rem;color:var(--text-d)}
 .ac-price{font-size:.78rem;color:var(--gold)}
+.appt-artist-control{display:flex;align-items:center;gap:.5rem;margin-top:.65rem;max-width:270px}
+.appt-artist-label{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-g);white-space:nowrap}
+.appt-artist-select{min-width:0;flex:1;padding:.42rem .65rem;border-radius:7px;background:rgba(179,211,192,.12);border:1px solid rgba(111,151,133,.24);color:var(--text);font:500 .72rem 'Outfit',sans-serif;outline:none;cursor:pointer}
+.appt-artist-select:focus{border-color:rgba(111,151,133,.58)}
+.appt-artist-select:disabled{opacity:.58;cursor:wait}
 .ac-actions{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .btn-action{
   padding:.38rem .85rem;border-radius:7px;
@@ -357,10 +380,19 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
 
 /* ── SERVICES EDITOR ── */
 #svcList{display:flex;flex-direction:column;gap:.8rem}
+.svc-category-group{display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.3rem}
+.svc-category-group:last-child{margin-bottom:0}
+.svc-category-title{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.72rem 1rem;border-radius:11px;background:rgba(179,211,192,.16);
+  border:1px solid rgba(111,151,133,.22);color:var(--text);
+  font-family:'Shippori Mincho B1',serif;font-size:1rem;font-weight:600;
+}
+.svc-category-count{font:500 .66rem 'Outfit',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--text-g)}
 .svc-edit-card{
   background:var(--card);border:1px solid var(--glass-b);
   border-radius:12px;padding:1.1rem 1.3rem;
-  display:grid;grid-template-columns:auto 1fr auto auto;
+  display:grid;grid-template-columns:auto 1fr auto auto auto;
   gap:.8rem 1rem;align-items:center;
   transition:border-color .2s;
 }
@@ -382,6 +414,11 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
   transition:border-color .2s;
 }
 .svc-price-input:focus{border-color:rgba(212,165,116,.4)}
+.svc-duration-select{
+  padding:.5rem .65rem;border-radius:7px;background:var(--glass);border:1px solid var(--glass-b);
+  color:var(--text-d);font:500 .72rem 'Outfit',sans-serif;outline:none;cursor:pointer;
+}
+.svc-duration-select:focus{border-color:rgba(111,151,133,.58)}
 
 /* ── CLIENT DIRECTORY ── */
 .client-form-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:.75rem}
@@ -437,6 +474,20 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
   font-size:2.2rem;font-weight:600;color:var(--gold);
   text-align:center;padding:.8rem 0;letter-spacing:.02em;
 }
+.artist-income-filters{display:grid;grid-template-columns:1.2fr .8fr 1fr;gap:.8rem;margin-bottom:1rem}
+.artist-income-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin-bottom:1rem}
+.artist-income-metric{padding:1rem;border-radius:12px;border:1px solid var(--glass-b);background:var(--glass)}
+.artist-income-value{font-family:'Shippori Mincho B1',serif;font-size:1.75rem;color:var(--gold);line-height:1.1}
+.artist-income-label{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-g);margin-bottom:.45rem}
+.time-availability-hint{font-size:.68rem;color:var(--text-g);line-height:1.35;margin-top:.4rem}
+#na-time.time-slot-occupied{font-weight:600;box-shadow:0 0 0 3px rgba(179,211,192,.24)}
+.dashboard-period-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1rem;padding:1rem 1.15rem;border:1px solid var(--glass-b);border-radius:14px;background:var(--glass)}
+.dashboard-period-copy{min-width:180px}
+.dashboard-period-title{font-size:.82rem;font-weight:500;color:var(--text)}
+.dashboard-period-subtitle{font-size:.7rem;color:var(--text-g);margin-top:.2rem}
+.dashboard-chart-filters{display:grid;grid-template-columns:.8fr 1fr;gap:.65rem;width:min(100%,380px)}
+.dashboard-period-actions{display:flex;align-items:flex-end;justify-content:flex-end;gap:.7rem;flex:1}
+.dashboard-pdf-button{white-space:nowrap;min-height:38px}
 
 /* ── NEW APPOINTMENT MODAL extras ── */
 .modal-subtitle{font-size:.78rem;color:var(--text-g);margin-bottom:1.4rem}
@@ -464,6 +515,19 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
   .client-attributes{justify-content:flex-start}
   .client-form-actions{align-items:stretch;flex-direction:column}
   .client-form-actions>span{margin-right:0}
+  .dashboard-period-toolbar{align-items:stretch;flex-direction:column}
+  .dashboard-period-actions{align-items:stretch;flex-direction:column}
+  .dashboard-chart-filters{grid-template-columns:1fr;width:100%}
+  .artist-income-filters,.artist-income-summary{grid-template-columns:1fr}
+  .appt-card{grid-template-columns:1fr}
+  .ac-actions{justify-content:flex-start}
+}
+@media print{
+  body>*{display:none!important}
+  body::before{
+    content:'Contenido confidencial — los datos de clientes no se pueden imprimir.';
+    display:block!important;padding:3rem;font:600 18px 'Outfit',sans-serif;color:#5f3f43;
+  }
 }
 /* ── GALERÍA ── */
 .gal-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-top:.4rem}
@@ -548,10 +612,10 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
       Diane Nails
     </div>
     <div class="sb-section">Menú</div>
-    <a class="sb-item active" data-page="dashboard" onclick="navTo('dashboard')">
-      <span class="sb-icon">◈</span> Dashboard
+    <a class="sb-item" data-page="dashboard" onclick="navTo('dashboard')">
+      <span class="sb-icon">🔒</span> Dashboard
     </a>
-    <a class="sb-item" data-page="citas" onclick="navTo('citas')">
+    <a class="sb-item active" data-page="citas" onclick="navTo('citas')">
       <span class="sb-icon">◷</span> Citas
     </a>
     <a class="sb-item" data-page="recordatorios" onclick="navTo('recordatorios')">
@@ -591,32 +655,55 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
   <!-- MAIN -->
   <main class="main">
     <div class="topbar">
-      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      <span class="topbar-title" id="topbarTitle">Citas</span>
       <span class="topbar-date" id="topbarDate"></span>
     </div>
 
     <!-- ── DASHBOARD PAGE ── -->
-    <section class="page active" id="page-dashboard">
+    <section class="page" id="page-dashboard">
+      <div class="dashboard-period-toolbar">
+        <div class="dashboard-period-copy">
+          <div class="dashboard-period-title">Consultar ingresos generales</div>
+          <div class="dashboard-period-subtitle">Elige una semana o un mes, anterior o próximo.</div>
+        </div>
+        <div class="dashboard-period-actions">
+          <div class="dashboard-chart-filters">
+            <div>
+              <label class="mfield-label" for="dashRevenuePeriodSelect">Periodo</label>
+              <select class="filter-input" id="dashRevenuePeriodSelect" onchange="changeDashboardRevenuePeriod()" style="width:100%">
+                <option value="week">Semana</option>
+                <option value="month">Mes</option>
+              </select>
+            </div>
+            <div>
+              <label class="mfield-label" for="dashRevenuePeriodInput" id="dashRevenuePeriodLabel">Semana</label>
+              <input class="filter-input" id="dashRevenuePeriodInput" type="date" onchange="renderDashboardRevenuePeriod()" style="width:100%">
+            </div>
+          </div>
+          <button class="btn-sm dashboard-pdf-button" id="monthlyReportPdfButton" type="button" onclick="generateMonthlyIncomePdf()">⬇ Reporte mensual PDF</button>
+        </div>
+      </div>
+
       <div class="stats-row">
         <div class="stat-card">
-          <div class="sc-label">Ingresos hoy</div>
+          <div class="sc-label">Ingresos del periodo</div>
           <div class="sc-value" id="sc-hoy">$0</div>
           <div class="sc-sub" id="sc-hoy-n">0 cobros</div>
         </div>
         <div class="stat-card">
-          <div class="sc-label">Esta semana</div>
+          <div class="sc-label">Ingresos en efectivo</div>
           <div class="sc-value" id="sc-sem">$0</div>
           <div class="sc-sub" id="sc-sem-n">0 cobros</div>
         </div>
         <div class="stat-card">
-          <div class="sc-label">Este mes</div>
+          <div class="sc-label">Ingresos digitales</div>
           <div class="sc-value" id="sc-mes">$0</div>
           <div class="sc-sub" id="sc-mes-n">0 cobros</div>
         </div>
         <div class="stat-card">
-          <div class="sc-label">Citas pendientes</div>
+          <div class="sc-label">Citas del periodo</div>
           <div class="sc-value" id="sc-pend" style="color:var(--blossom)">0</div>
-          <div class="sc-sub">Para hoy y próximas</div>
+          <div class="sc-sub" id="sc-pend-n">0 registradas</div>
         </div>
       </div>
 
@@ -624,7 +711,8 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
         <!-- Revenue chart -->
         <div class="panel">
           <div class="panel-hd">
-            <span class="panel-hd-title">Ingresos — últimos 7 días</span>
+            <span class="panel-hd-title">Ingresos generales</span>
+            <span class="panel-hd-action" id="dashRevenueRange"></span>
           </div>
           <div class="panel-body">
             <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
@@ -642,8 +730,47 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
         </div>
       </div>
 
+      <!-- Income by artist and period -->
+      <div class="panel" style="margin-top:1.2rem">
+        <div class="panel-hd">
+          <span class="panel-hd-title">Ingresos por artista</span>
+          <span class="panel-hd-action" id="dashArtistIncomeRange">Selecciona una artista</span>
+        </div>
+        <div class="panel-body">
+          <div class="artist-income-filters">
+            <div>
+              <label class="mfield-label" for="dashArtistIncomeSelect">Artista</label>
+              <select class="filter-input" id="dashArtistIncomeSelect" onchange="renderArtistWeeklyIncome()" style="width:100%">
+                <option value="">Selecciona una artista</option>
+              </select>
+            </div>
+            <div>
+              <label class="mfield-label" for="dashArtistPeriodSelect">Periodo</label>
+              <select class="filter-input" id="dashArtistPeriodSelect" onchange="changeDashboardIncomePeriod()" style="width:100%">
+                <option value="week">Semana</option>
+                <option value="month">Mes</option>
+              </select>
+            </div>
+            <div>
+              <label class="mfield-label" for="dashArtistPeriodInput" id="dashArtistPeriodLabel">Semana</label>
+              <input class="filter-input" id="dashArtistPeriodInput" type="date" onchange="renderArtistWeeklyIncome()" style="width:100%">
+            </div>
+          </div>
+          <div class="artist-income-summary">
+            <div class="artist-income-metric">
+              <div class="artist-income-label" id="dashArtistIncomeTotalLabel">Ingresos de la semana</div>
+              <div class="artist-income-value" id="dashArtistIncomeTotal">$0</div>
+            </div>
+            <div class="artist-income-metric">
+              <div class="artist-income-label">Servicios cobrados</div>
+              <div class="artist-income-value" id="dashArtistIncomeCount">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Service popularity -->
-      <div class="panel">
+      <div class="panel" style="margin-top:1.2rem">
         <div class="panel-hd">
           <span class="panel-hd-title">Servicios más solicitados</span>
         </div>
@@ -654,7 +781,7 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
     </section>
 
     <!-- ── CITAS PAGE ── -->
-    <section class="page" id="page-citas">
+    <section class="page active" id="page-citas">
       <div class="filter-bar">
         <input class="filter-input" type="date" id="fDate" onchange="renderAppts()">
         <select class="filter-input" id="fStatus" onchange="renderAppts()" style="min-width:140px">
@@ -731,7 +858,7 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
             </div>
             <div>
               <div class="client-field-label">Número de WhatsApp</div>
-              <input class="filter-input" id="clientPhoneInput" type="tel" placeholder="55 1234 5678" style="width:100%">
+              <input class="filter-input phone-input-protected" id="clientPhoneInput" type="tel" inputmode="numeric" autocomplete="off" placeholder="55 1234 5678" oncopy="return false" oncut="return false" style="width:100%">
             </div>
             <div>
               <div class="client-field-label">Atributos con emojis</div>
@@ -769,9 +896,14 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
     <section class="page" id="page-servicios">
       <div class="filter-bar">
         <span style="font-size:.82rem;color:var(--text-d)">Edita los precios directamente — se guardan automáticamente.</span>
+        <select class="filter-input" id="svcCategoryFilter" onchange="renderServices()" aria-label="Filtrar servicios por categoría">
+          <option value="">Todas las categorías</option>
+        </select>
         <span class="filter-spacer"></span>
+        <button class="btn-sm-ghost" id="svcCatalogImportButton" type="button" onclick="importServiceCatalog()">Cargar catálogo completo</button>
         <button class="btn-sm" onclick="openNewSvcModal()">+ Agregar servicio</button>
       </div>
+      <div id="svcCatalogStatus" style="min-height:1.1rem;margin-bottom:.7rem;font-size:.75rem;color:var(--text-d)"></div>
       <div id="svcList"><div class="list-empty">Cargando servicios…</div></div>
     </section>
 
@@ -877,6 +1009,63 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
   </main>
 </div>
 
+<!-- ══════════════ MODAL CLAVE TELÉFONOS ══════════════ -->
+<div class="modal-overlay" id="modalPhonePin">
+  <div class="modal" style="max-width:390px">
+    <div style="font-size:2rem;margin-bottom:.65rem">📱</div>
+    <div class="modal-title">Teléfonos protegidos</div>
+    <p class="modal-subtitle">Escribe la clave exclusiva para mostrar los teléfonos durante 5 minutos.</p>
+    <div class="mfield-group">
+      <label class="mfield-label" for="phonePinInput">Clave de teléfonos</label>
+      <input class="mfield" id="phonePinInput" type="password" inputmode="numeric" maxlength="3"
+        autocomplete="off" placeholder="•••" onkeydown="if(event.key==='Enter') unlockProtectedPhones()">
+    </div>
+    <div id="phonePinError" role="alert" style="min-height:1.1rem;font-size:.75rem;color:var(--red)"></div>
+    <div class="modal-actions">
+      <button class="btn-sm-ghost" type="button" onclick="closePhonePin()">Cancelar</button>
+      <button class="btn-sm" type="button" onclick="unlockProtectedPhones()">Mostrar teléfonos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL CLAVE DASHBOARD ══════════════ -->
+<div class="modal-overlay" id="modalDashboardPin">
+  <div class="modal" style="max-width:390px">
+    <div style="font-size:2rem;margin-bottom:.65rem">🔒</div>
+    <div class="modal-title">Dashboard protegido</div>
+    <p class="modal-subtitle">Escribe la clave para consultar ingresos, estadísticas y próximas citas.</p>
+    <div class="mfield-group">
+      <label class="mfield-label" for="dashboardPinInput">Clave de acceso</label>
+      <input class="mfield" id="dashboardPinInput" type="password" inputmode="numeric" maxlength="3"
+        autocomplete="off" placeholder="•••" onkeydown="if(event.key==='Enter') unlockDashboard()">
+    </div>
+    <div id="dashboardPinError" role="alert" style="min-height:1.1rem;font-size:.75rem;color:var(--red)"></div>
+    <div class="modal-actions">
+      <button class="btn-sm-ghost" type="button" onclick="closeDashboardPin()">Cancelar</button>
+      <button class="btn-sm" type="button" onclick="unlockDashboard()">Entrar al Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MODAL AUTORIZAR ELIMINACIÓN DE COBRO ══════════════ -->
+<div class="modal-overlay" id="modalDeleteCobroAuth">
+  <div class="modal" style="max-width:390px">
+    <div style="font-size:2rem;margin-bottom:.65rem">🔐</div>
+    <div class="modal-title">Autorizar eliminación</div>
+    <p class="modal-subtitle">Ingresa la clave de administración para eliminar este cobro.</p>
+    <div class="mfield-group">
+      <label class="mfield-label" for="deleteCobroPinInput">Clave de autorización</label>
+      <input class="mfield" id="deleteCobroPinInput" type="password" inputmode="numeric" maxlength="3"
+        autocomplete="off" placeholder="•••" onkeydown="if(event.key==='Enter') confirmCobroDeletion()">
+    </div>
+    <div id="deleteCobroPinError" role="alert" style="min-height:1.1rem;font-size:.75rem;color:var(--red)"></div>
+    <div class="modal-actions">
+      <button class="btn-sm-ghost" type="button" onclick="cancelCobroDeletion()">Cancelar</button>
+      <button class="btn-sm" id="deleteCobroConfirmButton" type="button" onclick="confirmCobroDeletion()">Autorizar</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ MODAL COBRO ══════════════ -->
 <div class="modal-overlay" id="modalCobro">
   <div class="modal">
@@ -971,29 +1160,46 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
     </div>
     <div class="mfield-group">
       <label class="mfield-label">WhatsApp</label>
-      <input class="mfield" id="na-phone" type="tel" placeholder="55 1234 5678">
+      <input class="mfield phone-input-protected" id="na-phone" type="tel" inputmode="numeric" autocomplete="off" placeholder="55 1234 5678" oncopy="return false" oncut="return false">
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Artista</label>
+      <select class="mfield" id="na-artist" onchange="updateAppointmentTimeAvailability()"></select>
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Servicio</label>
+      <select class="mfield" id="na-service" onchange="syncAppointmentDurationFromService()"></select>
+    </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Duración reservada</label>
+      <select class="mfield" id="na-duration" onchange="updateAppointmentTimeAvailability()">
+        <option value="30">30 minutos</option>
+        <option value="60">1 hora</option>
+        <option value="90" selected>1 hora 30 minutos</option>
+        <option value="120">2 horas</option>
+        <option value="150">2 horas 30 minutos</option>
+        <option value="180">3 horas</option>
+        <option value="210">3 horas 30 minutos</option>
+        <option value="240">4 horas</option>
+        <option value="270">4 horas 30 minutos</option>
+      </select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
       <div class="mfield-group">
         <label class="mfield-label">Fecha</label>
-        <input class="mfield" id="na-date" type="date">
+        <input class="mfield" id="na-date" type="date" onchange="updateAppointmentTimeAvailability()">
       </div>
       <div class="mfield-group">
         <label class="mfield-label">Hora</label>
-        <input class="mfield" id="na-time" type="time">
+        <select class="mfield" id="na-time" required onchange="updateSelectedAppointmentTimeStyle()">
+          <option value="">Selecciona una hora</option>
+        </select>
+        <div class="time-availability-hint" id="na-time-hint">Los horarios con color ya tienen una cita.</div>
       </div>
-    </div>
-    <div class="mfield-group">
-      <label class="mfield-label">Servicio</label>
-      <select class="mfield" id="na-service"></select>
-    </div>
-    <div class="mfield-group">
-      <label class="mfield-label">Artista</label>
-      <select class="mfield" id="na-artist"></select>
     </div>
     <div class="modal-actions">
       <button class="btn-sm-ghost" onclick="closeModal('modalNewAppt')">Cancelar</button>
-      <button class="btn-sm" onclick="saveNewAppt()">Guardar cita</button>
+      <button class="btn-sm" id="na-save-button" onclick="saveNewAppt()">Guardar cita</button>
     </div>
   </div>
 </div>
@@ -1002,6 +1208,10 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
 <div class="modal-overlay" id="modalNewSvc">
   <div class="modal">
     <div class="modal-title">Nuevo servicio</div>
+    <div class="mfield-group">
+      <label class="mfield-label">Categoría</label>
+      <select class="mfield" id="ns-category"></select>
+    </div>
     <div class="mfield-group">
       <label class="mfield-label">Emoji / Ícono</label>
       <input class="mfield" id="ns-icon" type="text" placeholder="🌸" maxlength="4" style="font-size:1.4rem;text-align:center">
@@ -1018,6 +1228,20 @@ body{background:linear-gradient(135deg,#ead0cf 0%,#f3dddc 55%,#dfc0be 100%);colo
       <label class="mfield-label">Precio base ($)</label>
       <input class="mfield" id="ns-price" type="number" min="0" step="10" placeholder="0">
     </div>
+    <div class="mfield-group">
+      <label class="mfield-label">Duración para agenda</label>
+      <select class="mfield" id="ns-duration">
+        <option value="30">30 minutos</option>
+        <option value="60">1 hora</option>
+        <option value="90" selected>1 hora 30 minutos</option>
+        <option value="120">2 horas</option>
+        <option value="150">2 horas 30 minutos</option>
+        <option value="180">3 horas</option>
+        <option value="210">3 horas 30 minutos</option>
+        <option value="240">4 horas</option>
+        <option value="270">4 horas 30 minutos</option>
+      </select>
+    </div>
     <div class="modal-actions">
       <button class="btn-sm-ghost" onclick="closeModal('modalNewSvc')">Cancelar</button>
       <button class="btn-sm" onclick="saveNewSvc()">Crear servicio</button>
@@ -1032,15 +1256,160 @@ const db      = firebase.firestore();
 const auth    = firebase.auth();
 
 /* ── SERVICES DEFAULT DATA ── */
-const DEFAULT_SERVICES = [
-  {name:'Sakura Art',       price:650, description:'Cerezos pintados a mano, técnica japonesa',   icon:'🌸', order:1},
-  {name:'Gel Premium',      price:450, description:'Gel larga duración, espejo/mate/glitter',      icon:'💅', order:2},
-  {name:'Escultura Acrílica',price:780,description:'Extensiones modeladas a mano',                icon:'✨', order:3},
-  {name:'Manicura Spa',     price:380, description:'Exfoliación, hidratación y masaje',            icon:'🛁', order:4},
-  {name:'Nail Art 3D',      price:900, description:'Flores, cristales Swarovski y figuras',       icon:'🦋', order:5},
-  {name:'Pedicura de Lujo', price:520, description:'Sales, masaje y esmaltado semipermanente',    icon:'🌿', order:6},
+const SERVICE_CATEGORIES = [
+  {key:'nails',label:'Nails',icon:'💅',order:1},
+  {key:'complementos',label:'Complementos',icon:'✨',order:2},
+  {key:'paquetes',label:'Paquetes todo el año',icon:'🎁',order:3},
+  {key:'lashes',label:'Lashes',icon:'👁️',order:4},
+  {key:'cejas',label:'Cejas',icon:'🪄',order:5},
+  {key:'cabina-spa',label:'Cabina Spa',icon:'💆🏻‍♀️',order:6},
+  {key:'cabello',label:'Cabello',icon:'💇🏻‍♀️',order:7},
+  {key:'depilacion-hilo',label:'Depilación con hilo',icon:'🧵',order:8},
+  {key:'cursos-unas',label:'Cursos de uñas',icon:'🎓',order:9},
 ];
+
+const SERVICE_CATALOG_ROWS = [
+  ['nails','Uñas Esculturales · Largo #1',350],
+  ['nails','Uñas Esculturales · Largo #2',400],
+  ['nails','Uñas Esculturales · Largo #3',450],
+  ['nails','Uñas Esculturales · Largo #4',500],
+  ['nails','Uñas Esculturales · Largo #5',550],
+  ['nails','Uñas Esculturales · Largo #6',600],
+  ['nails','Retoque acrílico · Largo #1/#2',320],
+  ['nails','Retoque acrílico · Largo #3',400],
+  ['nails','Retoque acrílico · Largo #4',450],
+  ['nails','Retoque acrílico · Largo #5',500],
+  ['nails','Retoque acrílico · Largo #6',550],
+  ['nails','Reconstrucción',100,'Costo adicional'],
+  ['nails','Pedicura Spa',450],
+  ['nails','Pedicura Spa sin gel',400],
+  ['nails','Pedicura Spa Élite',550],
+  ['nails','Manicura Spa',350],
+  ['nails','Manicura Spa sin gel',300],
+  ['nails','Remoción de Callos',270],
+  ['nails','Rubber manos',300],
+  ['nails','Rubber pies',190],
+  ['nails','Baño acrílico',350],
+  ['nails','Acripie completo',350],
+  ['nails','Acripie pulgares',100],
+  ['nails','Gelish manos',150],
+  ['nails','Gelish pies',150],
+
+  ['complementos','Cambio de forma de uñas',100],
+  ['complementos','Reposición de uña',30],
+  ['complementos','Retiro de gel',60],
+  ['complementos','Retiro de acrílico',130],
+  ['complementos','Retiro de Rubber',130],
+  ['complementos','Efectos',120],
+  ['complementos','Diseño individual · Básico',20],
+  ['complementos','Diseño individual · Intermedio',25],
+  ['complementos','Diseño individual · Especial',35],
+  ['complementos','Diseños 10 dedos · Opción 1',150],
+  ['complementos','Diseños 10 dedos · Opción 2',180],
+  ['complementos','Diseños 10 dedos · Opción 3',200],
+  ['complementos','Diseños 10 dedos · Opción 4',250],
+  ['complementos','Francés',100],
+  ['complementos','Francés doble',150],
+  ['complementos','Baby Boomer',150],
+  ['complementos','Acabado mate',100],
+
+  ['paquetes','Remoción de Callos con Gelish',350],
+  ['paquetes','Uñas #2 o Rubber + Pedicura Spa',650],
+  ['paquetes','Manicura Spa + Pedicura Spa',599],
+  ['paquetes','Gelish manos y pies',270,'Incluye retiros de gel'],
+  ['paquetes','Pestañas Clásicas + Laminado',989],
+  ['paquetes','Lifting + Laminado',750],
+  ['paquetes','Botox Capilar + Despunte',750,'Cualquier largo'],
+  ['paquetes','Alaciado Progresivo · Promoción',2299,'Paquete eventual por temporada'],
+
+  ['lashes','Lifting',470],
+  ['lashes','Pestañas Clásicas',499],
+  ['lashes','Retoque · Pestañas Clásicas',380],
+  ['lashes','Efecto rímel',499],
+  ['lashes','Retoque · Efecto rímel',380],
+  ['lashes','Hawaianas',550],
+  ['lashes','Retoque · Hawaianas',400],
+  ['lashes','Híbridas',550],
+  ['lashes','Retoque · Híbridas',400],
+  ['lashes','Aura',550],
+  ['lashes','Retoque · Aura',400],
+  ['lashes','Volumen',700],
+  ['lashes','Retoque · Volumen',550],
+  ['lashes','Fibras Tecnológicas',600],
+  ['lashes','Retoque · Fibras Tecnológicas',450],
+  ['lashes','Coffee',600],
+  ['lashes','Retoque · Coffee',450],
+  ['lashes','Mojado',650],
+  ['lashes','Retoque · Mojado',500],
+  ['lashes','Wispy',650],
+  ['lashes','Retoque · Wispy',500],
+  ['lashes','Retiro de lashes',130],
+
+  ['cejas','Laminado de cejas',470],
+  ['cejas','Laminado de cejas con henna',650],
+  ['cejas','Microblading',4500],
+  ['cejas','Sombreado de cejas',4500],
+  ['cejas','Cejas híbridas',5000],
+  ['cejas','Retoque de cejas · 2 meses',1800],
+
+  ['cabina-spa','Facial · Limpieza profunda',450],
+  ['cabina-spa','Facial con aparatología',550],
+  ['cabina-spa','Dermapen',600],
+  ['cabina-spa','Microdermoabrasión',450],
+
+  ['cabello','Alaciado Progresivo',1500],
+  ['cabello','Botox Capilar',500],
+  ['cabello','Extra por cabello largo',350],
+  ['cabello','Extra por volumen',350],
+  ['cabello','Shampoo para alaciado',300,'Producto para venta'],
+  ['cabello','Acondicionador para alaciado',300,'Producto para venta'],
+  ['cabello','Mascarilla para alaciado',450,'Producto para venta'],
+  ['cabello','Planchado Express',270],
+  ['cabello','Ondas',270],
+  ['cabello','Corte recto / Despunte',270],
+
+  ['depilacion-hilo','Depilación con hilo · Rostro completo',750],
+  ['depilacion-hilo','Depilación con hilo · Cejas',200],
+  ['depilacion-hilo','Depilación con hilo · Bigote',120],
+  ['depilacion-hilo','Depilación con hilo · Frente',150],
+  ['depilacion-hilo','Depilación con hilo · Mentón',100],
+  ['depilacion-hilo','Depilación con hilo · Mejillas',200],
+  ['depilacion-hilo','Depilación con hilo · Patilla',150],
+
+  ['cursos-unas','Curso de uñas · Paquete 1',4500],
+  ['cursos-unas','Curso de uñas · Paquete 2',5500],
+];
+
+function catalogServiceDuration(category,name) {
+  const normalized = String(name || '').toLocaleLowerCase('es-MX');
+  if (normalized.includes('botox capilar')) return 270;
+  if (normalized.includes('microblading')) return 120;
+  if (normalized.includes('uñas esculturales') && (normalized.includes('diseño') || normalized.includes('retiro'))) return 120;
+  if (normalized.includes('diseño')) return 120;
+  if (normalized.includes('remoción de callos con gelish')) return 90;
+  if (normalized.includes('remoción de callos')) return 60;
+  if (normalized.includes('retiro de gel') || normalized.includes('retiro de acrílico') || normalized.includes('retiro de rubber')) return 30;
+  return 90;
+}
+
+const DEFAULT_SERVICES = SERVICE_CATALOG_ROWS.map(([category,name,price,description=''],index) => {
+  const categoryInfo = SERVICE_CATEGORIES.find(item => item.key === category);
+  return {
+    category,
+    categoryOrder:categoryInfo?.order || 99,
+    icon:categoryInfo?.icon || '✦',
+    name,
+    price,
+    durationMinutes:catalogServiceDuration(category,name),
+    description,
+    order:index + 1,
+    catalogKey:`${category}:${name}`.toLocaleLowerCase('es-MX')
+  };
+});
 const DEFAULT_ARTISTS = ['Diane Gómez', 'Verónica Godínez', 'Bety Ávila', 'Briscia Gómez', 'Itzel', 'Jaqueline', 'Nancy'];
+const ADMIN_AUTH_PIN = '889';
+const PHONE_AUTH_PIN = '776';
+const PHONE_UNLOCK_DURATION_MS = 5 * 60 * 1000;
 
 /* ══════════════ GLOBAL STATE ══════════════ */
 let appointments = [];
@@ -1050,8 +1419,12 @@ let artistAccounts = [];
 let artistDirectory = [];
 let clients = [];
 let editingClientId = null;
-let currentPage  = 'dashboard';
+let currentPage  = 'citas';
+let dashboardUnlocked = false;
+let phonesUnlockedUntil = 0;
+let phoneUnlockTimer = null;
 let pendingCobroAppt = null;
+let pendingCobroDelete = null;
 let revenueChart  = null;
 
 /* ══════════════ AUTH ══════════════ */
@@ -1077,6 +1450,7 @@ async function doRegister() {
 }
 
 async function doLogout() {
+  dashboardUnlocked = false;
   await auth.signOut();
 }
 
@@ -1099,6 +1473,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById('sbEmail').textContent = user.email;
     initApp();
   } else {
+    dashboardUnlocked = false;
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
   }
@@ -1116,7 +1491,7 @@ async function initApp() {
   listenClients();
   listenGallery();
   listenClosedDays();
-  navTo('dashboard');
+  navTo('citas');
 }
 
 function setTopbarDate() {
@@ -1146,6 +1521,7 @@ function listenAppointments() {
       renderAppts();
       renderReminders();
       renderDashboard();
+      updateAppointmentTimeAvailability();
     });
 }
 
@@ -1155,6 +1531,7 @@ function listenCobros() {
       cobros = snap.docs.map(d => ({id: d.id, ...d.data()}));
       renderCobros();
       renderDashboardStats();
+      populateDashboardArtistSelect();
     });
 }
 
@@ -1162,6 +1539,7 @@ function listenServices() {
   db.collection('services').orderBy('order')
     .onSnapshot(snap => {
       services = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      populateServiceCategoryFilter();
       renderServices();
       populateServiceSelect();
     });
@@ -1205,6 +1583,15 @@ function listenClients() {
 
 /* ══════════════ NAVIGATION ══════════════ */
 function navTo(page) {
+  if (page !== currentPage) lockProtectedPhones();
+  if (page === 'dashboard' && !dashboardUnlocked) {
+    openDashboardPin();
+    return;
+  }
+  activatePage(page);
+}
+
+function activatePage(page) {
   currentPage = page;
   document.querySelectorAll('.sb-item').forEach(i => i.classList.toggle('active', i.dataset.page === page));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page));
@@ -1213,33 +1600,328 @@ function navTo(page) {
   if (page === 'recordatorios') renderReminders();
 }
 
+function openDashboardPin() {
+  const input = document.getElementById('dashboardPinInput');
+  const error = document.getElementById('dashboardPinError');
+  input.value = '';
+  error.textContent = '';
+  openModal('modalDashboardPin');
+  setTimeout(() => input.focus(), 80);
+}
+
+function closeDashboardPin() {
+  document.getElementById('dashboardPinInput').value = '';
+  document.getElementById('dashboardPinError').textContent = '';
+  closeModal('modalDashboardPin');
+}
+
+function unlockDashboard() {
+  const input = document.getElementById('dashboardPinInput');
+  const error = document.getElementById('dashboardPinError');
+  if (input.value !== ADMIN_AUTH_PIN) {
+    error.textContent = 'Clave incorrecta.';
+    input.value = '';
+    input.focus();
+    return;
+  }
+  dashboardUnlocked = true;
+  closeDashboardPin();
+  activatePage('dashboard');
+}
+
 /* ══════════════ DASHBOARD ══════════════ */
 function renderDashboard() {
   renderDashboardStats();
   renderTodayAppts();
   renderServicePopularity();
   renderRevenueChart();
+  renderArtistWeeklyIncome();
+}
+
+function dashboardWeekStart(value) {
+  const parts = String(value || dateStr(new Date())).split('-').map(Number);
+  const date = new Date(parts[0], (parts[1] || 1) - 1, parts[2] || 1);
+  const daysSinceMonday = (date.getDay() + 6) % 7;
+  date.setDate(date.getDate() - daysSinceMonday);
+  return date;
+}
+
+function dashboardRangeLabel(start, end, period) {
+  if (period === 'month') {
+    return start.toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+  }
+  const format = date => date.toLocaleDateString('es-MX',{day:'numeric',month:'short'});
+  return `${format(start)} – ${format(end)} ${end.getFullYear()}`;
+}
+
+function selectedDashboardReportMonth() {
+  const periodSelect = document.getElementById('dashRevenuePeriodSelect');
+  const periodInput = document.getElementById('dashRevenuePeriodInput');
+  const now = new Date();
+  if (periodSelect?.value === 'month' && /^\d{4}-\d{2}$/.test(periodInput?.value || '')) {
+    return periodInput.value;
+  }
+  const value = periodInput?.value || dateStr(now);
+  const [year,month] = value.split('-').map(Number);
+  return `${year || now.getFullYear()}-${String(month || now.getMonth()+1).padStart(2,'0')}`;
+}
+
+function generateMonthlyIncomePdf() {
+  const button = document.getElementById('monthlyReportPdfButton');
+  if (!window.jspdf?.jsPDF) {
+    alert('No fue posible cargar el generador de PDF. Revisa tu conexión e intenta nuevamente.');
+    return;
+  }
+  button.disabled = true;
+  button.textContent = 'Generando PDF…';
+  try {
+    const monthValue = selectedDashboardReportMonth();
+    const [year,month] = monthValue.split('-').map(Number);
+    const start = new Date(year,month-1,1);
+    const end = new Date(year,month,0);
+    const startStr = dateStr(start);
+    const endStr = dateStr(end);
+    const rows = cobros
+      .filter(cobro => cobro.date >= startStr && cobro.date <= endStr)
+      .sort((a,b) => `${a.date || ''}${a.clientName || ''}`.localeCompare(`${b.date || ''}${b.clientName || ''}`,'es'));
+    const sum = items => items.reduce((total,item) => total + (Number(item.amount) || 0),0);
+    const cashRows = rows.filter(row => row.method === 'efectivo');
+    const digitalRows = rows.filter(row => row.method !== 'efectivo');
+    const grouped = {};
+    rows.forEach(row => {
+      const artist = row.artistName || 'Sin asignar';
+      if (!grouped[artist]) grouped[artist] = [];
+      grouped[artist].push(row);
+    });
+    const artists = Object.entries(grouped).sort((a,b) => sum(b[1]) - sum(a[1]));
+    const monthRaw = start.toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+    const monthLabel = monthRaw.charAt(0).toUpperCase() + monthRaw.slice(1);
+    const {jsPDF} = window.jspdf;
+    const doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const colors = {
+      ink:[52,35,35], muted:[111,92,92], rose:[234,208,207], roseLight:[251,242,240],
+      sage:[111,151,133], sageLight:[229,239,233], gold:[140,107,50], white:[255,255,255]
+    };
+    const money = value => '$' + fmt(Number(value) || 0);
+    const shortDate = value => {
+      const [dateYear,dateMonth,dateDay] = String(value || '').split('-').map(Number);
+      return dateDay ? new Date(dateYear,dateMonth-1,dateDay).toLocaleDateString('es-MX',{day:'2-digit',month:'short'}) : '-';
+    };
+    const methodLabel = value => ({efectivo:'Efectivo',transferencia:'Transferencia',tarjeta:'Tarjeta'}[value] || value || '-');
+    const drawHeader = () => {
+      doc.setFillColor(...colors.rose);
+      doc.rect(0,0,pageWidth,31,'F');
+      doc.setTextColor(...colors.ink);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(16);
+      doc.text('Diane Nails and Beauty',14,13);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(10);
+      doc.text('Reporte mensual de ingresos',14,20);
+      doc.setTextColor(...colors.gold);
+      doc.setFont('helvetica','bold');
+      doc.text(monthLabel,pageWidth-14,17,{align:'right'});
+    };
+    drawHeader();
+
+    const metrics = [
+      ['Ingresos totales',money(sum(rows))],
+      ['Efectivo',money(sum(cashRows))],
+      ['Ingresos digitales',money(sum(digitalRows))],
+      ['Cobros realizados',String(rows.length)],
+    ];
+    const metricGap = 3;
+    const metricWidth = (pageWidth-28-metricGap*3)/4;
+    metrics.forEach(([label,value],index) => {
+      const x = 14 + index*(metricWidth+metricGap);
+      doc.setFillColor(...colors.roseLight);
+      doc.setDrawColor(...colors.rose);
+      doc.roundedRect(x,38,metricWidth,22,2,2,'FD');
+      doc.setTextColor(...colors.muted);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7.5);
+      doc.text(label,x+3,45);
+      doc.setTextColor(...colors.gold);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(12);
+      doc.text(value,x+3,54);
+    });
+
+    doc.setTextColor(...colors.ink);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('Resumen por artista',14,72);
+    if (artists.length) {
+      doc.autoTable({
+        startY:77,
+        margin:{left:14,right:14},
+        head:[['Artista','Servicios cobrados','Ingresos']],
+        body:artists.map(([artist,items]) => [artist,String(items.length),money(sum(items))]),
+        theme:'grid',
+        styles:{font:'helvetica',fontSize:8.5,textColor:colors.ink,cellPadding:2.5,lineColor:colors.rose},
+        headStyles:{fillColor:colors.sage,textColor:colors.white,fontStyle:'bold'},
+        columnStyles:{1:{halign:'center',cellWidth:38},2:{halign:'right',cellWidth:38}},
+      });
+    } else {
+      doc.setFillColor(...colors.roseLight);
+      doc.roundedRect(14,78,pageWidth-28,20,2,2,'F');
+      doc.setTextColor(...colors.muted);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9);
+      doc.text('No hay cobros registrados durante este mes.',pageWidth/2,90,{align:'center'});
+    }
+
+    let cursorY = artists.length ? doc.lastAutoTable.finalY + 10 : 108;
+    artists.forEach(([artist,items]) => {
+      if (cursorY > 245) {
+        doc.addPage();
+        drawHeader();
+        cursorY = 39;
+      }
+      doc.setFillColor(...colors.sageLight);
+      doc.roundedRect(14,cursorY,pageWidth-28,12,2,2,'F');
+      doc.setTextColor(...colors.ink);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(10);
+      doc.text(artist,18,cursorY+7.5);
+      doc.setTextColor(...colors.gold);
+      doc.text(`${items.length} servicio${items.length!==1?'s':''} - ${money(sum(items))}`,pageWidth-18,cursorY+7.5,{align:'right'});
+      doc.autoTable({
+        startY:cursorY+15,
+        margin:{left:14,right:14,top:50,bottom:18},
+        head:[['Fecha','Clienta','Servicio','Método','Importe']],
+        body:items.map(item => [shortDate(item.date),item.clientName || '-',item.serviceName || '-',methodLabel(item.method),money(item.amount)]),
+        theme:'striped',
+        showHead:'everyPage',
+        styles:{font:'helvetica',fontSize:7.7,textColor:colors.ink,cellPadding:2.2,overflow:'linebreak'},
+        headStyles:{fillColor:colors.rose,textColor:colors.ink,fontStyle:'bold'},
+        alternateRowStyles:{fillColor:colors.roseLight},
+        columnStyles:{0:{cellWidth:22},1:{cellWidth:39},2:{cellWidth:52},3:{cellWidth:33},4:{cellWidth:27,halign:'right'}},
+        rowPageBreak:'avoid',
+        didDrawPage:data => {
+          if (data.pageNumber <= 1) return;
+          drawHeader();
+          doc.setFillColor(...colors.sageLight);
+          doc.roundedRect(14,35,pageWidth-28,10,2,2,'F');
+          doc.setTextColor(...colors.ink);
+          doc.setFont('helvetica','bold');
+          doc.setFontSize(9);
+          doc.text(`${artist} - continuación`,18,41.5);
+          doc.setTextColor(...colors.gold);
+          doc.text(money(sum(items)),pageWidth-18,41.5,{align:'right'});
+        },
+      });
+      cursorY = doc.lastAutoTable.finalY + 9;
+    });
+
+    const pageCount = doc.getNumberOfPages();
+    for (let page = 1; page <= pageCount; page++) {
+      doc.setPage(page);
+      doc.setDrawColor(...colors.rose);
+      doc.line(14,284,pageWidth-14,284);
+      doc.setTextColor(...colors.muted);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7);
+      doc.text(`Generado el ${new Date().toLocaleDateString('es-MX')}`,14,289);
+      doc.text(`Página ${page} de ${pageCount}`,pageWidth-14,289,{align:'right'});
+    }
+    doc.save(`reporte-ingresos-${monthValue}.pdf`);
+  } catch (error) {
+    console.error('PDF report failed:',error);
+    alert('No fue posible generar el reporte PDF. Intenta nuevamente.');
+  } finally {
+    button.disabled = false;
+    button.textContent = '⬇ Reporte mensual PDF';
+  }
+}
+
+function changeDashboardIncomePeriod() {
+  const periodSelect = document.getElementById('dashArtistPeriodSelect');
+  const periodInput = document.getElementById('dashArtistPeriodInput');
+  if (!periodSelect || !periodInput) return;
+  const isMonth = periodSelect.value === 'month';
+  const now = new Date();
+  periodInput.type = isMonth ? 'month' : 'date';
+  periodInput.value = isMonth
+    ? `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
+    : dateStr(now);
+  setText('dashArtistPeriodLabel', isMonth ? 'Mes' : 'Semana');
+  renderArtistWeeklyIncome();
+}
+
+function populateDashboardArtistSelect() {
+  const select = document.getElementById('dashArtistIncomeSelect');
+  if (!select) return;
+  const current = select.value;
+  const paymentNames = cobros.map(cobro => cobro.artistName).filter(name => name && name !== 'Sin asignar');
+  const names = [...new Set([...getAvailableArtistNames(false), ...paymentNames])]
+    .sort((a,b) => a.localeCompare(b,'es'));
+  select.innerHTML = '<option value="">Selecciona una artista</option>'
+    + names.map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
+  select.value = names.includes(current) ? current : (names[0] || '');
+  renderArtistWeeklyIncome();
+}
+
+function renderArtistWeeklyIncome() {
+  const artistSelect = document.getElementById('dashArtistIncomeSelect');
+  const periodSelect = document.getElementById('dashArtistPeriodSelect');
+  const periodInput = document.getElementById('dashArtistPeriodInput');
+  if (!artistSelect || !periodSelect || !periodInput) return;
+  const period = periodSelect.value === 'month' ? 'month' : 'week';
+  if (!periodInput.value) {
+    const now = new Date();
+    periodInput.value = period === 'month'
+      ? `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
+      : dateStr(now);
+  }
+
+  let start;
+  let end;
+  if (period === 'month') {
+    const [year,month] = periodInput.value.split('-').map(Number);
+    start = new Date(year,month-1,1);
+    end = new Date(year,month,0);
+  } else {
+    start = dashboardWeekStart(periodInput.value);
+    end = new Date(start);
+    end.setDate(start.getDate() + 6);
+  }
+  const startStr = dateStr(start);
+  const endStr = dateStr(end);
+  const artistName = artistSelect.value;
+  const normalizedArtist = artistName.toLocaleLowerCase('es-MX');
+  const rows = artistName ? cobros.filter(cobro =>
+    cobro.date >= startStr && cobro.date <= endStr &&
+    String(cobro.artistName || '').toLocaleLowerCase('es-MX') === normalizedArtist
+  ) : [];
+  const total = rows.reduce((sum,row) => sum + (Number(row.amount) || 0), 0);
+
+  setText('dashArtistIncomeRange', dashboardRangeLabel(start,end,period));
+  setText('dashArtistIncomeTotalLabel', period === 'month' ? 'Ingresos del mes' : 'Ingresos de la semana');
+  setText('dashArtistPeriodLabel', period === 'month' ? 'Mes' : 'Semana');
+  setText('dashArtistIncomeTotal', '$' + fmt(total));
+  setText('dashArtistIncomeCount', rows.length);
+
 }
 
 function renderDashboardStats() {
-  const today = dateStr(new Date());
-  const weekStart = (() => { const d = new Date(); d.setDate(d.getDate() - d.getDay()); return dateStr(d); })();
-  const monthStart = dateStr(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
-
-  const todayCobros  = cobros.filter(c => c.date === today);
-  const weekCobros   = cobros.filter(c => c.date >= weekStart);
-  const monthCobros  = cobros.filter(c => c.date >= monthStart);
-  const pendingCount = appointments.filter(a => a.status === 'pending' || a.status === 'confirmed').length;
-
   const sum = arr => arr.reduce((s, c) => s + (c.amount||0), 0);
+  const range = getDashboardRevenuePeriodRange();
+  const periodCobros = cobros.filter(c => c.date >= range.startStr && c.date <= range.endStr);
+  const cashCobros = periodCobros.filter(c => c.method === 'efectivo');
+  const digitalCobros = periodCobros.filter(c => c.method !== 'efectivo');
+  const periodAppointments = appointments.filter(a => a.date >= range.startStr && a.date <= range.endStr);
+  const cobroText = count => count + ' cobro' + (count!==1?'s':'');
 
-  setText('sc-hoy',   '$' + fmt(sum(todayCobros)));
-  setText('sc-hoy-n', todayCobros.length + ' cobro' + (todayCobros.length!==1?'s':''));
-  setText('sc-sem',   '$' + fmt(sum(weekCobros)));
-  setText('sc-sem-n', weekCobros.length + ' cobros');
-  setText('sc-mes',   '$' + fmt(sum(monthCobros)));
-  setText('sc-mes-n', monthCobros.length + ' cobros');
-  setText('sc-pend',  pendingCount);
+  setText('sc-hoy',   '$' + fmt(sum(periodCobros)));
+  setText('sc-hoy-n', cobroText(periodCobros.length));
+  setText('sc-sem',   '$' + fmt(sum(cashCobros)));
+  setText('sc-sem-n', cobroText(cashCobros.length));
+  setText('sc-mes',   '$' + fmt(sum(digitalCobros)));
+  setText('sc-mes-n', cobroText(digitalCobros.length));
+  setText('sc-pend',  periodAppointments.length);
+  setText('sc-pend-n', periodAppointments.length + ' registrada' + (periodAppointments.length!==1?'s':''));
 
   const total   = sum(cobros);
   const cash    = sum(cobros.filter(c => c.method === 'efectivo'));
@@ -1282,18 +1964,73 @@ function renderServicePopularity() {
     </div>`).join('');
 }
 
+function changeDashboardRevenuePeriod() {
+  const periodSelect = document.getElementById('dashRevenuePeriodSelect');
+  const periodInput = document.getElementById('dashRevenuePeriodInput');
+  if (!periodSelect || !periodInput) return;
+  const isMonth = periodSelect.value === 'month';
+  const now = new Date();
+  periodInput.type = isMonth ? 'month' : 'date';
+  periodInput.value = isMonth
+    ? `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
+    : dateStr(now);
+  setText('dashRevenuePeriodLabel', isMonth ? 'Mes' : 'Semana');
+  renderDashboardRevenuePeriod();
+}
+
+function renderDashboardRevenuePeriod() {
+  renderDashboardStats();
+  renderRevenueChart();
+}
+
+function getDashboardRevenuePeriodRange() {
+  const periodSelect = document.getElementById('dashRevenuePeriodSelect');
+  const periodInput = document.getElementById('dashRevenuePeriodInput');
+  const period = periodSelect?.value === 'month' ? 'month' : 'week';
+  if (periodInput && !periodInput.value) {
+    const now = new Date();
+    periodInput.value = period === 'month'
+      ? `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`
+      : dateStr(now);
+  }
+  const value = periodInput?.value || dateStr(new Date());
+  let start;
+  let end;
+  if (period === 'month') {
+    const [year,month] = value.split('-').map(Number);
+    start = new Date(year,month-1,1);
+    end = new Date(year,month,0);
+  } else {
+    start = dashboardWeekStart(value);
+    end = new Date(start);
+    end.setDate(start.getDate()+6);
+  }
+  return {period,start,end,startStr:dateStr(start),endStr:dateStr(end)};
+}
+
 function renderRevenueChart() {
+  const periodSelect = document.getElementById('dashRevenuePeriodSelect');
+  const periodInput = document.getElementById('dashRevenuePeriodInput');
+  const canvas = document.getElementById('revenueChart');
+  if (!periodSelect || !periodInput || !canvas) return;
+  const {period,start,end} = getDashboardRevenuePeriodRange();
+
   const days = [];
   const labels = [];
   const data = [];
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
     const ds = dateStr(d);
     days.push(ds);
-    labels.push(d.toLocaleDateString('es-MX', {weekday:'short'}));
+    labels.push(period === 'month'
+      ? d.toLocaleDateString('es-MX',{day:'numeric'})
+      : d.toLocaleDateString('es-MX',{weekday:'short',day:'numeric'}));
     data.push(cobros.filter(c => c.date === ds).reduce((s,c) => s+(c.amount||0), 0));
   }
-  const ctx = document.getElementById('revenueChart').getContext('2d');
+  setText('dashRevenueRange', dashboardRangeLabel(start,end,period));
+  setText('dashRevenuePeriodLabel', period === 'month' ? 'Mes' : 'Semana');
+
+  const today = dateStr(new Date());
+  const ctx = canvas.getContext('2d');
   if (revenueChart) revenueChart.destroy();
   revenueChart = new Chart(ctx, {
     type: 'bar',
@@ -1301,7 +2038,7 @@ function renderRevenueChart() {
       labels,
       datasets: [{
         data,
-        backgroundColor: data.map((v,i) => i===6 ? 'rgba(192,51,104,.8)' : 'rgba(244,180,200,.25)'),
+        backgroundColor: days.map(day => day===today ? 'rgba(111,151,133,.85)' : 'rgba(179,211,192,.45)'),
         borderRadius: 6,
         borderSkipped: false,
       }]
@@ -1323,6 +2060,107 @@ function renderRevenueChart() {
     }
   });
 }
+
+/* ══════════════ PROTECCIÓN DE TELÉFONOS ══════════════ */
+function getProtectedPhone(kind, id) {
+  if (kind === 'client') return clients.find(item => item.id === id)?.phone || '';
+  if (kind === 'appointment') return appointments.find(item => item.id === id)?.phone || '';
+  return '';
+}
+
+function protectedPhoneMarkup(kind, id, phone, prefix = '📱') {
+  if (!phone) return '<span class="protected-phone">Sin WhatsApp</span>';
+  const unlocked = areProtectedPhonesUnlocked();
+  const displayValue = unlocked ? `${prefix} ${esc(phone)}` : `${prefix} •• •••• ••••`;
+  return `<span class="protected-phone" data-phone-kind="${esc(kind)}" data-phone-id="${esc(id)}">
+    <span class="protected-phone-value" data-phone-prefix="${esc(prefix)}">${displayValue}</span>
+    <button class="phone-reveal-btn${unlocked ? ' unlocked' : ''}" type="button"
+      aria-label="${unlocked ? 'Ocultar teléfonos' : 'Desbloquear teléfonos'}"
+      onclick="handleProtectedPhoneButton()">${unlocked ? 'Ocultar' : '🔒 Ver teléfono'}</button>
+  </span>`;
+}
+
+function areProtectedPhonesUnlocked() {
+  return phonesUnlockedUntil > Date.now();
+}
+
+function handleProtectedPhoneButton() {
+  if (areProtectedPhonesUnlocked()) {
+    lockProtectedPhones();
+    return;
+  }
+  openPhonePin();
+}
+
+function openPhonePin() {
+  const input = document.getElementById('phonePinInput');
+  const error = document.getElementById('phonePinError');
+  input.value = '';
+  error.textContent = '';
+  openModal('modalPhonePin');
+  setTimeout(() => input.focus(), 80);
+}
+
+function closePhonePin() {
+  document.getElementById('phonePinInput').value = '';
+  document.getElementById('phonePinError').textContent = '';
+  closeModal('modalPhonePin');
+}
+
+function unlockProtectedPhones() {
+  const input = document.getElementById('phonePinInput');
+  const error = document.getElementById('phonePinError');
+  if (input.value !== PHONE_AUTH_PIN) {
+    error.textContent = 'Clave incorrecta. Los teléfonos siguen protegidos.';
+    input.value = '';
+    input.focus();
+    return;
+  }
+  phonesUnlockedUntil = Date.now() + PHONE_UNLOCK_DURATION_MS;
+  clearTimeout(phoneUnlockTimer);
+  phoneUnlockTimer = setTimeout(lockProtectedPhones, PHONE_UNLOCK_DURATION_MS);
+  closePhonePin();
+  refreshProtectedPhoneDisplays();
+}
+
+function refreshProtectedPhoneDisplays() {
+  const unlocked = areProtectedPhonesUnlocked();
+  document.querySelectorAll('.protected-phone').forEach(container => {
+    const kind = container.dataset.phoneKind;
+    const id = container.dataset.phoneId;
+    const value = container.querySelector('.protected-phone-value');
+    const button = container.querySelector('.phone-reveal-btn');
+    if (!value || !button) return;
+    const prefix = value.dataset.phonePrefix || '📱';
+    const phone = unlocked ? getProtectedPhone(kind, id) : '';
+    value.textContent = phone ? `${prefix} ${phone}` : `${prefix} •• •••• ••••`;
+    button.textContent = unlocked ? 'Ocultar' : '🔒 Ver teléfono';
+    button.setAttribute('aria-label', unlocked ? 'Ocultar teléfonos' : 'Desbloquear teléfonos');
+    button.classList.toggle('unlocked', unlocked);
+  });
+}
+
+function lockProtectedPhones() {
+  phonesUnlockedUntil = 0;
+  clearTimeout(phoneUnlockTimer);
+  phoneUnlockTimer = null;
+  refreshProtectedPhoneDisplays();
+}
+
+function isProtectedPhoneEvent(event) {
+  const target = event.target instanceof Element ? event.target : null;
+  if (target?.closest('.protected-phone,.phone-input-protected')) return true;
+  const node = window.getSelection()?.anchorNode;
+  const selectionElement = node instanceof Element ? node : node?.parentElement;
+  return Boolean(selectionElement?.closest?.('.protected-phone'));
+}
+
+document.addEventListener('copy', event => { if (isProtectedPhoneEvent(event)) event.preventDefault(); });
+document.addEventListener('cut', event => { if (isProtectedPhoneEvent(event)) event.preventDefault(); });
+document.addEventListener('contextmenu', event => { if (isProtectedPhoneEvent(event)) event.preventDefault(); });
+document.addEventListener('dragstart', event => { if (isProtectedPhoneEvent(event)) event.preventDefault(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) lockProtectedPhones(); });
+window.addEventListener('blur', lockProtectedPhones);
 
 /* ══════════════ APPOINTMENTS ══════════════ */
 function renderAppts() {
@@ -1346,14 +2184,20 @@ function renderAppts() {
       <div>
         <div class="ac-top">
           <span class="ac-name">${esc(a.clientName)}</span>
-          ${a.phone ? `<span class="ac-phone">📱 ${esc(a.phone)}</span>` : ''}
+          ${a.phone ? protectedPhoneMarkup('appointment', a.id, a.phone) : ''}
           ${statusBadge(a.status)}
         </div>
         <div class="ac-mid">
           <span class="ac-svc">${esc(a.serviceName)}</span>
-          ${a.artistName ? `<span class="ac-date">✦ ${esc(a.artistName)}</span>` : ''}
           <span class="ac-date">📅 ${a.date || '–'} ${a.time ? '· ' + a.time : ''}</span>
+          <span class="ac-date">⏱ ${serviceDurationLabel(appointmentDurationMinutes(a))}</span>
           ${a.servicePrice ? `<span class="ac-price">$${fmt(a.servicePrice)}</span>` : ''}
+        </div>
+        <div class="appt-artist-control">
+          <span class="appt-artist-label">Artista</span>
+          <select class="appt-artist-select" aria-label="Cambiar artista de ${esc(a.clientName)}" onchange="reassignAppointmentArtist('${a.id}',this)">
+            ${appointmentArtistOptions(a)}
+          </select>
         </div>
       </div>
       <div class="ac-actions">
@@ -1374,6 +2218,89 @@ function renderAppts() {
 
 async function updateStatus(id, status) {
   await db.collection('appointments').doc(id).update({ status });
+}
+
+function normalizedArtistName(value) {
+  return String(value || 'Sin asignar').toLocaleLowerCase('es-MX').trim();
+}
+
+function serviceDurationByName(serviceName) {
+  const service = services.find(item => item.name === serviceName);
+  return Number(service?.durationMinutes) || 90;
+}
+
+function appointmentDurationMinutes(appointment) {
+  return Number(appointment?.durationMinutes) || serviceDurationByName(appointment?.serviceName);
+}
+
+function appointmentRangesOverlap(firstTime,firstDuration,secondTime,secondDuration) {
+  const firstStart = appointmentTimeToMinutes(firstTime);
+  const secondStart = appointmentTimeToMinutes(secondTime);
+  if (!Number.isFinite(firstStart) || !Number.isFinite(secondStart)) return firstTime === secondTime;
+  return firstStart < secondStart + (Number(secondDuration)||90) && secondStart < firstStart + (Number(firstDuration)||90);
+}
+
+function hasAppointmentConflictInMemory(date,time,artistName,durationMinutes = 90,excludeId = '') {
+  const normalizedArtist = normalizedArtistName(artistName);
+  return appointments.some(item => item.id !== excludeId && item.status !== 'cancelled' &&
+    item.date === date && normalizedArtistName(item.artistName) === normalizedArtist &&
+    appointmentRangesOverlap(time,durationMinutes,item.time,appointmentDurationMinutes(item)));
+}
+
+async function findAppointmentConflict(date,time,artistName,durationMinutes = 90,excludeId = '') {
+  const snapshot = await db.collection('appointments').where('date','==',date).get();
+  const normalizedArtist = normalizedArtistName(artistName);
+  return snapshot.docs.find(doc => {
+    const item = doc.data();
+    return doc.id !== excludeId && item.status !== 'cancelled' && normalizedArtistName(item.artistName) === normalizedArtist &&
+      appointmentRangesOverlap(time,durationMinutes,item.time,appointmentDurationMinutes(item));
+  }) || null;
+}
+
+function appointmentArtistOptions(appointment) {
+  const current = appointment.artistName || 'Sin asignar';
+  const names = getAvailableArtistNames(false);
+  if (current !== 'Sin asignar' && !names.includes(current)) names.push(current);
+  names.sort((a,b) => a.localeCompare(b,'es'));
+  const optionMarkup = name => {
+    const selected = name === current;
+    const occupied = !selected && hasAppointmentConflictInMemory(
+      appointment.date,appointment.time,name,appointmentDurationMinutes(appointment),appointment.id
+    );
+    const value = name === 'Sin asignar' ? '' : esc(name);
+    return `<option value="${value}"${selected ? ' selected' : ''}${occupied ? ' disabled' : ''}>${esc(name)}${occupied ? ' — Ocupada' : ''}</option>`;
+  };
+  return [optionMarkup('Sin asignar'),...names.map(optionMarkup)].join('');
+}
+
+async function reassignAppointmentArtist(id, select) {
+  const appointment = appointments.find(item => item.id === id);
+  if (!appointment || !select) return;
+  const previousArtist = appointment.artistName || 'Sin asignar';
+  const nextArtist = select.value || 'Sin asignar';
+  if (nextArtist === previousArtist) return;
+
+  select.disabled = true;
+  try {
+    const conflict = await findAppointmentConflict(
+      appointment.date,appointment.time,nextArtist,appointmentDurationMinutes(appointment),id
+    );
+    if (conflict) {
+      select.value = previousArtist === 'Sin asignar' ? '' : previousArtist;
+      alert(`${nextArtist} ya tiene una cita que se empalma con ese horario. El cambio no se guardó.`);
+      return;
+    }
+    const linkedCobros = await db.collection('cobros').where('appointmentId','==',id).get();
+    const batch = db.batch();
+    batch.update(db.collection('appointments').doc(id), {artistName: nextArtist});
+    linkedCobros.forEach(doc => batch.update(doc.ref, {artistName: nextArtist}));
+    await batch.commit();
+  } catch (error) {
+    select.value = previousArtist === 'Sin asignar' ? '' : previousArtist;
+    alert('No se pudo cambiar la artista. Intenta nuevamente.');
+  } finally {
+    select.disabled = false;
+  }
 }
 
 /* ══════════════ FREE WHATSAPP REMINDERS ══════════════ */
@@ -1419,7 +2346,7 @@ function renderReminders() {
           <div class="ac-mid">
             <span class="ac-svc">${esc(appointment.serviceName || 'Servicio')}</span>
             ${appointment.artistName ? `<span class="ac-date">✦ ${esc(appointment.artistName)}</span>` : ''}
-            <span class="ac-phone">📱 ${esc(appointment.phone || 'Sin WhatsApp')}</span>
+            ${appointment.phone ? protectedPhoneMarkup('appointment', appointment.id, appointment.phone) : '<span class="ac-phone">Sin WhatsApp</span>'}
           </div>
           <div class="reminder-when">${scheduled.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})} · ${esc(appointment.time)}</div>
         </div>
@@ -1436,6 +2363,13 @@ function normalizeWhatsAppPhone(phone) {
   if (digits.length === 10) digits = '52' + digits;
   if (digits.length === 13 && digits.startsWith('521')) digits = '52' + digits.slice(3);
   return digits;
+}
+
+function openClientWhatsApp(id) {
+  const client = clients.find(item => item.id === id);
+  const phone = normalizeWhatsAppPhone(client?.phone);
+  if (!phone) return alert('Esta clienta no tiene un número de WhatsApp válido.');
+  window.open(`https://wa.me/${phone}`, '_blank', 'noopener');
 }
 
 function reminderMessage(appointment) {
@@ -1492,7 +2426,7 @@ function renderCobros() {
         <div class="cc-amount">$${fmt(c.amount)}</div>
         <div class="cc-method">${methodIcon[c.method]||''} ${c.method||''}</div>
       </div>
-      <button class="btn-action cancel" style="font-size:.68rem;padding:.3rem .6rem" onclick="deleteCobro('${c.id}','${c.appointmentId}')">✕</button>
+      <button class="btn-action cancel" style="font-size:.68rem;padding:.3rem .6rem" onclick="deleteCobro('${c.id}','${c.appointmentId || ''}')">✕</button>
     </div>`).join('');
 }
 
@@ -1507,7 +2441,7 @@ function openCobroModal(apptId) {
   const infoEl = document.getElementById('mc-appt-info');
   infoEl.style.display = 'block';
   infoEl.innerHTML = `<b>${esc(pendingCobroAppt.clientName)}</b>`
-    + (pendingCobroAppt.phone ? ` · 📱 ${esc(pendingCobroAppt.phone)}` : '')
+    + (pendingCobroAppt.phone ? ` · ${protectedPhoneMarkup('appointment', pendingCobroAppt.id, pendingCobroAppt.phone)}` : '')
     + (pendingCobroAppt.date  ? ` · 📅 ${pendingCobroAppt.date}` : '');
 
   fillCobroServiceSelect(pendingCobroAppt.serviceName, pendingCobroAppt.servicePrice);
@@ -1539,10 +2473,7 @@ function openDirectCobroModal() {
 /* Llena el selector de servicios en el modal de cobro */
 function fillCobroServiceSelect(preselect, prePrice) {
   const sel = document.getElementById('mc-service');
-  sel.innerHTML = '<option value="">— Selecciona el servicio realizado —</option>'
-    + services.map(s =>
-        `<option value="${esc(s.name)}" data-price="${s.price}">${s.icon||''} ${esc(s.name)} — $${fmt(s.price)}</option>`
-      ).join('');
+  sel.innerHTML = '<option value="">— Selecciona el servicio realizado —</option>' + groupedServiceOptionsMarkup();
   if (preselect) {
     const opt = [...sel.options].find(o => o.value === preselect);
     if (opt) sel.value = preselect;
@@ -1639,6 +2570,14 @@ async function saveCobro() {
   if (!serviceName) { alert('Selecciona el servicio realizado.'); return; }
   if (!amount)      { alert('Ingresa el monto cobrado.'); return; }
 
+  const methodLabel = ({
+    efectivo:'Efectivo',
+    transferencia:'Transferencia',
+    tarjeta:'Tarjeta'
+  })[method] || method;
+  if (!confirm(`Método de pago seleccionado: ${methodLabel}.\n\n¿Es correcto?`)) return;
+  if (!confirm(`Segunda confirmación:\n\n¿Confirmas que el cobro de $${fmt(amount)} fue pagado por ${methodLabel}?`)) return;
+
   /* Cobro vinculado a una cita */
   if (pendingCobroAppt) {
     const clientName = pendingCobroAppt.clientName;
@@ -1685,40 +2624,149 @@ async function saveCobro() {
 }
 
 async function deleteCobro(cobroId, apptId) {
-  if (!confirm('¿Eliminar este cobro?')) return;
-  const batch = db.batch();
-  batch.delete(db.collection('cobros').doc(cobroId));
-  if (apptId) batch.update(db.collection('appointments').doc(apptId), {
-    paid: false,
-    paidAt: null,
-    subtotalAmount: null,
-    discountPercent: null,
-    discountAmount: null,
-    amountPaid: null,
-    paymentMethod: null
-  });
-  await batch.commit();
+  pendingCobroDelete = {cobroId,apptId};
+  document.getElementById('deleteCobroPinInput').value = '';
+  document.getElementById('deleteCobroPinError').textContent = '';
+  openModal('modalDeleteCobroAuth');
+  setTimeout(() => document.getElementById('deleteCobroPinInput').focus(),50);
+}
+
+function cancelCobroDeletion() {
+  pendingCobroDelete = null;
+  document.getElementById('deleteCobroPinInput').value = '';
+  document.getElementById('deleteCobroPinError').textContent = '';
+  closeModal('modalDeleteCobroAuth');
+}
+
+async function confirmCobroDeletion() {
+  if (!pendingCobroDelete) return cancelCobroDeletion();
+  const input = document.getElementById('deleteCobroPinInput');
+  const error = document.getElementById('deleteCobroPinError');
+  if (input.value !== ADMIN_AUTH_PIN) {
+    error.textContent = 'Clave incorrecta. El cobro no fue eliminado.';
+    input.value = '';
+    input.focus();
+    return;
+  }
+  const request = pendingCobroDelete;
+  cancelCobroDeletion();
+  if (!confirm('Autorización correcta. ¿Confirmas que deseas eliminar definitivamente este cobro?')) return;
+
+  const button = document.getElementById('deleteCobroConfirmButton');
+  button.disabled = true;
+  try {
+    const batch = db.batch();
+    batch.delete(db.collection('cobros').doc(request.cobroId));
+    if (request.apptId) batch.update(db.collection('appointments').doc(request.apptId), {
+      paid: false,
+      paidAt: null,
+      subtotalAmount: null,
+      discountPercent: null,
+      discountAmount: null,
+      amountPaid: null,
+      paymentMethod: null
+    });
+    await batch.commit();
+  } catch (error) {
+    alert('No se pudo eliminar el cobro. Intenta nuevamente.');
+  } finally {
+    button.disabled = false;
+  }
 }
 
 /* ══════════════ SERVICES ══════════════ */
+function serviceCategoryInfo(key) {
+  return SERVICE_CATEGORIES.find(item => item.key === key) || {key:'otros',label:'Otros servicios',icon:'✦',order:99};
+}
+
+const SERVICE_DURATION_OPTIONS = [30,60,90,120,150,180,210,240,270];
+
+function serviceDurationLabel(minutes) {
+  const value = Number(minutes) || 90;
+  const hours = Math.floor(value / 60);
+  const mins = value % 60;
+  if (!hours) return `${mins} min`;
+  return `${hours} h${mins ? ` ${mins} min` : ''}`;
+}
+
+function serviceDurationOptionsMarkup(selectedMinutes) {
+  const selected = Number(selectedMinutes) || 90;
+  return SERVICE_DURATION_OPTIONS.map(minutes =>
+    `<option value="${minutes}"${minutes===selected?' selected':''}>${serviceDurationLabel(minutes)}</option>`
+  ).join('');
+}
+
+function sortedServices(list = services) {
+  return [...list].sort((a,b) => {
+    const categoryDiff = (a.categoryOrder ?? serviceCategoryInfo(a.category).order) - (b.categoryOrder ?? serviceCategoryInfo(b.category).order);
+    if (categoryDiff) return categoryDiff;
+    const orderDiff = (a.order || 9999) - (b.order || 9999);
+    return orderDiff || String(a.name || '').localeCompare(String(b.name || ''),'es-MX');
+  });
+}
+
+function groupedServiceOptionsMarkup() {
+  const groups = new Map();
+  sortedServices().forEach(service => {
+    const info = serviceCategoryInfo(service.category);
+    if (!groups.has(info.key)) groups.set(info.key,{info,items:[]});
+    groups.get(info.key).items.push(service);
+  });
+  return [...groups.values()].map(({info,items}) => `
+    <optgroup label="${esc(`${info.icon} ${info.label}`)}">
+      ${items.map(service => `<option value="${esc(service.name)}" data-price="${Number(service.price)||0}" data-duration="${Number(service.durationMinutes)||90}">${esc(service.name)} — $${fmt(service.price)} · ${serviceDurationLabel(service.durationMinutes)}</option>`).join('')}
+    </optgroup>`).join('');
+}
+
+function populateServiceCategoryFilter() {
+  const select = document.getElementById('svcCategoryFilter');
+  if (!select) return;
+  const selected = select.value;
+  const available = new Set(services.map(service => service.category || 'otros'));
+  const categories = SERVICE_CATEGORIES.filter(category => available.has(category.key));
+  if (available.has('otros')) categories.push(serviceCategoryInfo('otros'));
+  select.innerHTML = '<option value="">Todas las categorías</option>'
+    + categories.map(category => `<option value="${esc(category.key)}">${category.icon} ${esc(category.label)}</option>`).join('');
+  if ([...select.options].some(option => option.value === selected)) select.value = selected;
+}
+
 function renderServices() {
   const el = document.getElementById('svcList');
   if (!services.length) { el.innerHTML = '<div class="list-empty">Sin servicios configurados</div>'; return; }
-  el.innerHTML = services.map(s => `
-    <div class="svc-edit-card">
-      <div class="svc-icon-box">${s.icon||'✦'}</div>
-      <div class="svc-info">
-        <div class="svc-edit-name">${esc(s.name)}</div>
-        <div class="svc-edit-desc">${esc(s.description||'')}</div>
+  const selectedCategory = document.getElementById('svcCategoryFilter')?.value || '';
+  const filtered = sortedServices(services.filter(service => !selectedCategory || (service.category || 'otros') === selectedCategory));
+  const groups = new Map();
+  filtered.forEach(service => {
+    const info = serviceCategoryInfo(service.category);
+    if (!groups.has(info.key)) groups.set(info.key,{info,items:[]});
+    groups.get(info.key).items.push(service);
+  });
+  if (!groups.size) { el.innerHTML = '<div class="list-empty">No hay servicios en esta categoría</div>'; return; }
+  el.innerHTML = [...groups.values()].map(({info,items}) => `
+    <section class="svc-category-group">
+      <div class="svc-category-title">
+        <span>${info.icon} ${esc(info.label)}</span>
+        <span class="svc-category-count">${items.length} servicio${items.length===1?'':'s'}</span>
       </div>
-      <div class="svc-price-wrap">
-        <span style="font-size:.72rem;color:var(--text-g);margin-right:.2rem">$</span>
-        <input class="svc-price-input" type="number" value="${s.price||0}"
-          onchange="updateSvcPrice('${s.id}', this.value)"
-          onblur="updateSvcPrice('${s.id}', this.value)">
-      </div>
-      <button class="btn-action cancel" onclick="deleteSvc('${s.id}')">✕</button>
-    </div>`).join('');
+      ${items.map(service => `
+        <div class="svc-edit-card">
+          <div class="svc-icon-box">${service.icon||info.icon||'✦'}</div>
+          <div class="svc-info">
+            <div class="svc-edit-name">${esc(service.name)}</div>
+            <div class="svc-edit-desc">${esc(service.description||'')}</div>
+          </div>
+          <div class="svc-price-wrap">
+            <span style="font-size:.72rem;color:var(--text-g);margin-right:.2rem">$</span>
+            <input class="svc-price-input" type="number" value="${service.price||0}"
+              onchange="updateSvcPrice('${service.id}', this.value)"
+              onblur="updateSvcPrice('${service.id}', this.value)">
+          </div>
+          <select class="svc-duration-select" aria-label="Duración de ${esc(service.name)}" onchange="updateSvcDuration('${service.id}',this.value)">
+            ${serviceDurationOptionsMarkup(service.durationMinutes)}
+          </select>
+          <button class="btn-action cancel" onclick="deleteSvc('${service.id}')">✕</button>
+        </div>`).join('')}
+    </section>`).join('');
 }
 
 let priceDebounce = {};
@@ -1729,27 +2777,78 @@ function updateSvcPrice(id, val) {
   }, 600);
 }
 
+function updateSvcDuration(id,val) {
+  db.collection('services').doc(id).update({durationMinutes:Number(val)||90});
+}
+
 async function deleteSvc(id) {
   if (!confirm('¿Eliminar este servicio?')) return;
   await db.collection('services').doc(id).delete();
 }
 
 function openNewSvcModal() {
+  document.getElementById('ns-category').innerHTML = SERVICE_CATEGORIES.map(category =>
+    `<option value="${category.key}">${category.icon} ${esc(category.label)}</option>`
+  ).join('');
   document.getElementById('ns-icon').value = '';
   document.getElementById('ns-name').value = '';
   document.getElementById('ns-desc').value = '';
   document.getElementById('ns-price').value = '';
+  document.getElementById('ns-duration').value = '90';
   openModal('modalNewSvc');
 }
 
 async function saveNewSvc() {
-  const icon  = document.getElementById('ns-icon').value.trim() || '✦';
+  const category = document.getElementById('ns-category').value || 'nails';
+  const categoryInfo = serviceCategoryInfo(category);
+  const icon  = document.getElementById('ns-icon').value.trim() || categoryInfo.icon || '✦';
   const name  = document.getElementById('ns-name').value.trim();
   const desc  = document.getElementById('ns-desc').value.trim();
   const price = parseFloat(document.getElementById('ns-price').value) || 0;
+  const durationMinutes = Number(document.getElementById('ns-duration').value) || 90;
   if (!name) return;
-  await db.collection('services').add({ icon, name, description: desc, price, order: services.length + 1 });
+  await db.collection('services').add({
+    category,
+    categoryOrder:categoryInfo.order,
+    icon,
+    name,
+    description:desc,
+    price,
+    durationMinutes,
+    order:services.length + 1
+  });
   closeModal('modalNewSvc');
+}
+
+async function importServiceCatalog() {
+  if (!confirm('¿Cargar el catálogo completo? Se agregarán los servicios faltantes y se actualizarán categorías y precios de los que ya existan.')) return;
+  const button = document.getElementById('svcCatalogImportButton');
+  const status = document.getElementById('svcCatalogStatus');
+  button.disabled = true;
+  status.textContent = 'Actualizando catálogo…';
+  try {
+    const snap = await db.collection('services').get();
+    const current = snap.docs.map(doc => ({id:doc.id,...doc.data()}));
+    const byCatalogKey = new Map(current.filter(item => item.catalogKey).map(item => [item.catalogKey,item]));
+    const byName = new Map(current.map(item => [String(item.name || '').toLocaleLowerCase('es-MX').trim(),item]));
+    const batch = db.batch();
+    let added = 0;
+    let updated = 0;
+    DEFAULT_SERVICES.forEach(service => {
+      const existing = byCatalogKey.get(service.catalogKey) || byName.get(service.name.toLocaleLowerCase('es-MX').trim());
+      const ref = existing ? db.collection('services').doc(existing.id) : db.collection('services').doc();
+      batch.set(ref,service,{merge:true});
+      if (existing) updated += 1;
+      else added += 1;
+    });
+    await batch.commit();
+    status.textContent = `Catálogo listo: ${added} servicio${added===1?'':'s'} agregado${added===1?'':'s'} y ${updated} actualizado${updated===1?'':'s'}.`;
+  } catch (error) {
+    console.error('No se pudo importar el catálogo:',error);
+    status.textContent = 'No se pudo cargar el catálogo. Revisa tu conexión e inténtalo nuevamente.';
+  } finally {
+    button.disabled = false;
+  }
 }
 
 /* ══════════════ CLIENT DIRECTORY ══════════════ */
@@ -1798,10 +2897,11 @@ function renderClients() {
       <article class="client-card">
         <div>
           <div class="client-name">${esc(client.name || 'Cliente')}</div>
-          ${digits ? `<a class="client-phone" href="https://wa.me/${digits}" target="_blank" rel="noopener">WhatsApp · ${esc(client.phone)}</a>` : '<span class="client-phone">Sin WhatsApp</span>'}
+          ${digits ? protectedPhoneMarkup('client', client.id, client.phone, 'WhatsApp ·') : '<span class="client-phone">Sin WhatsApp</span>'}
         </div>
         <div class="client-attributes">${attributes || '<span style="font-size:.72rem;color:var(--text-g)">Sin atributos</span>'}</div>
         <div class="client-actions">
+          ${digits ? `<button class="btn-action whatsapp" type="button" onclick="openClientWhatsApp('${client.id}')">WhatsApp</button>` : ''}
           <button class="btn-action" type="button" onclick="editClient('${client.id}')">Editar</button>
           <button class="btn-action cancel" type="button" onclick="deleteClient('${client.id}')">Eliminar</button>
         </div>
@@ -1905,6 +3005,8 @@ function populateArtistSelectors() {
       + names.map(name => `<option value="${esc(name)}">${esc(name)}</option>`).join('');
     if (names.includes(current)) accountSelect.value = current;
   }
+  populateDashboardArtistSelect();
+  renderAppts();
 }
 
 function getAvailableArtistNames(includeDefaults = true) {
@@ -2008,9 +3110,7 @@ function populateServiceSelect() {
   /* Select de nueva cita */
   const sel = document.getElementById('na-service');
   if (sel) {
-    sel.innerHTML = services.map(s =>
-      `<option value="${esc(s.name)}" data-price="${s.price}">${s.icon||''} ${esc(s.name)} — $${fmt(s.price)}</option>`
-    ).join('');
+    sel.innerHTML = groupedServiceOptionsMarkup();
   }
   /* Si el modal de cobro está abierto, también actualiza su select */
   const mc = document.getElementById('mc-service');
@@ -2023,7 +3123,7 @@ function populateAppointmentClientSelect(preselect) {
   const selectedId = preselect !== undefined ? preselect : select.value;
   select.innerHTML = '<option value="">— Clienta nueva / captura manual —</option>' + clients.map(client => {
     const attributes = (client.attributes || []).join(' ');
-    const label = `${attributes ? attributes + ' ' : ''}${client.name || 'Cliente'}${client.phone ? ' — ' + client.phone : ''}`;
+    const label = `${attributes ? attributes + ' ' : ''}${client.name || 'Cliente'}`;
     return `<option value="${client.id}">${esc(label)}</option>`;
   }).join('');
   if (selectedId && clients.some(client => client.id === selectedId)) select.value = selectedId;
@@ -2049,14 +3149,142 @@ function selectAppointmentClient() {
 }
 
 /* ══════════════ NEW APPOINTMENT MODAL ══════════════ */
+const APPOINTMENT_TIME_SLOTS = {
+  0:{slots:['10:00','11:30','13:00'],close:15 * 60,label:'Domingo · 10:00 a.m., 11:30 a.m. y 1:00 p.m.'},
+  1:{slots:['10:00','11:30','13:00','15:00','16:30','18:00','18:30'],close:20 * 60,label:'Lunes · horarios fijos de 10:00 a.m. a 6:30 p.m.'},
+  2:{slots:['10:00','11:30','13:00','15:00','16:30','18:00','18:30'],close:20 * 60,label:'Martes · horarios fijos de 10:00 a.m. a 6:30 p.m.'},
+  3:{slots:['10:00','11:30','13:00','15:00','16:30','18:00','18:30'],close:20 * 60,label:'Miércoles · horarios fijos de 10:00 a.m. a 6:30 p.m.'},
+  4:{slots:['10:00','11:30','13:00','15:00','16:30','18:00','18:30'],close:20 * 60,label:'Jueves · horarios fijos de 10:00 a.m. a 6:30 p.m.'},
+  5:{slots:['10:00','11:30','13:00','15:00','16:30','18:00','18:30'],close:20 * 60,label:'Viernes · horarios fijos de 10:00 a.m. a 6:30 p.m.'},
+  6:{slots:['09:00','10:30','12:00','13:30','14:00','15:30','17:00'],close:19 * 60,label:'Sábado · horarios fijos de 9:00 a.m. a 5:00 p.m.'},
+};
+
+function appointmentScheduleForDate(date) {
+  const parsed = /^\d{4}-\d{2}-\d{2}$/.test(date || '') ? new Date(`${date}T12:00:00`) : new Date();
+  return APPOINTMENT_TIME_SLOTS[parsed.getDay()];
+}
+
+function appointmentTimeToMinutes(time) {
+  const match = /^(\d{2}):(\d{2})$/.exec(time || '');
+  return match ? Number(match[1]) * 60 + Number(match[2]) : NaN;
+}
+
+function isAppointmentTimeAllowed(date,time) {
+  return appointmentScheduleForDate(date).slots.includes(time);
+}
+
+function appointmentFitsSchedule(date,time,durationMinutes) {
+  const schedule = appointmentScheduleForDate(date);
+  const start = appointmentTimeToMinutes(time);
+  return isAppointmentTimeAllowed(date,time) && Number.isFinite(start) && start + (Number(durationMinutes)||90) <= schedule.close;
+}
+
+function populateAppointmentTimeSelect(selectedTime = '', date = document.getElementById('na-date')?.value || '') {
+  const select = document.getElementById('na-time');
+  if (!select) return;
+  const schedule = appointmentScheduleForDate(date);
+  const slots = schedule.slots.map(value => {
+    const minutes = appointmentTimeToMinutes(value);
+    const hour = Math.floor(minutes / 60);
+    const minute = minutes % 60;
+    const displayHour = hour % 12 || 12;
+    const period = hour < 12 ? 'a.m.' : 'p.m.';
+    return {value,label:`${displayHour}:${String(minute).padStart(2,'0')} ${period}`};
+  });
+  select.innerHTML = '<option value="">Selecciona una hora</option>' + slots.map(slot =>
+    `<option value="${slot.value}">${slot.label}</option>`
+  ).join('');
+  select.value = slots.some(slot => slot.value === selectedTime) ? selectedTime : '';
+}
+
+function selectedAppointmentDuration() {
+  return Number(document.getElementById('na-duration')?.value) || 90;
+}
+
+function syncAppointmentDurationFromService() {
+  const serviceSelect = document.getElementById('na-service');
+  const durationSelect = document.getElementById('na-duration');
+  if (!serviceSelect || !durationSelect) return;
+  const option = serviceSelect.options[serviceSelect.selectedIndex];
+  const duration = Number(option?.dataset.duration) || 90;
+  durationSelect.value = String(duration);
+  updateAppointmentTimeAvailability();
+}
+
+const APPOINTMENT_SLOT_COLORS = [
+  {background:'#f4dce3',color:'#874c60',border:'#d9a9b8'},
+  {background:'#dfece4',color:'#47705f',border:'#a9c8b6'},
+  {background:'#f3e7cc',color:'#83652e',border:'#d8bf88'},
+  {background:'#e9e0f1',color:'#68517c',border:'#c5afd8'},
+  {background:'#f5dfd5',color:'#865342',border:'#ddb5a4'},
+];
+
+function appointmentSlotColor(artistName) {
+  const name = String(artistName || 'Sin asignar');
+  const hash = [...name].reduce((sum,char) => sum + char.charCodeAt(0),0);
+  return APPOINTMENT_SLOT_COLORS[hash % APPOINTMENT_SLOT_COLORS.length];
+}
+
+function updateAppointmentTimeAvailability() {
+  const timeSelect = document.getElementById('na-time');
+  const date = document.getElementById('na-date')?.value || '';
+  const artistName = document.getElementById('na-artist')?.value || 'Sin asignar';
+  const hint = document.getElementById('na-time-hint');
+  if (!timeSelect) return;
+
+  const selectedTime = timeSelect.value;
+  const schedule = appointmentScheduleForDate(date);
+  const selectedDuration = selectedAppointmentDuration();
+  populateAppointmentTimeSelect(selectedTime,date);
+  const normalizedArtist = artistName.toLocaleLowerCase('es-MX').trim();
+  const artistAppointments = appointments
+    .filter(appointment => appointment.date === date && appointment.status !== 'cancelled')
+    .filter(appointment => String(appointment.artistName || 'Sin asignar').toLocaleLowerCase('es-MX').trim() === normalizedArtist);
+  const occupiedTimes = new Set([...timeSelect.options]
+    .filter(option => option.value)
+    .filter(option => !appointmentFitsSchedule(date,option.value,selectedDuration) || artistAppointments.some(appointment =>
+      appointmentRangesOverlap(option.value,selectedDuration,appointment.time,appointmentDurationMinutes(appointment))))
+    .map(option => option.value));
+  const palette = appointmentSlotColor(artistName);
+
+  [...timeSelect.options].forEach(option => {
+    if (!option.value || !occupiedTimes.has(option.value)) return;
+    option.textContent += ' — No disponible';
+    option.dataset.occupied = 'true';
+    option.disabled = true;
+    option.style.backgroundColor = palette.background;
+    option.style.color = palette.color;
+    option.style.fontWeight = '600';
+  });
+  if (hint) {
+    hint.textContent = occupiedTimes.size
+      ? `${schedule.label}. Duración: ${serviceDurationLabel(selectedDuration)}. ${occupiedTimes.size} horario${occupiedTimes.size!==1?'s':''} no disponible${occupiedTimes.size!==1?'s':''} para ${artistName}.`
+      : `${schedule.label}. Duración: ${serviceDurationLabel(selectedDuration)}. Sin empalmes para ${artistName}.`;
+  }
+  if (selectedTime && occupiedTimes.has(selectedTime)) timeSelect.value = '';
+  updateSelectedAppointmentTimeStyle();
+}
+
+function updateSelectedAppointmentTimeStyle() {
+  const select = document.getElementById('na-time');
+  if (!select) return;
+  const option = select.options[select.selectedIndex];
+  const occupied = option?.dataset.occupied === 'true';
+  const palette = appointmentSlotColor(document.getElementById('na-artist')?.value || 'Sin asignar');
+  select.classList.toggle('time-slot-occupied', occupied);
+  select.style.backgroundColor = occupied ? palette.background : '';
+  select.style.color = occupied ? palette.color : '';
+  select.style.borderColor = occupied ? palette.border : '';
+}
+
 function openNewApptModal() {
   populateAppointmentClientSelect('');
   document.getElementById('na-name').value  = '';
   document.getElementById('na-phone').value = '';
   document.getElementById('na-client-attributes').style.display = 'none';
   document.getElementById('na-date').value  = dateStr(new Date());
-  document.getElementById('na-time').value  = '';
   fillArtistSelect('na-artist', '');
+  syncAppointmentDurationFromService();
   openModal('modalNewAppt');
 }
 
@@ -2070,17 +3298,45 @@ async function saveNewAppt() {
   const sel  = document.getElementById('na-service');
   const svcName  = sel.value;
   const svcPrice = parseFloat(sel.options[sel.selectedIndex]?.dataset.price) || 0;
+  const durationMinutes = selectedAppointmentDuration();
   const artistName = document.getElementById('na-artist').value || 'Sin asignar';
-  if (!name || !date) return;
-  await db.collection('appointments').add({
-    clientId,
-    clientAttributes: selectedClient?.attributes || [],
-    clientName: name, phone, date, time,
-    serviceName: svcName, servicePrice: svcPrice, artistName,
-    status: 'pending',
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-  closeModal('modalNewAppt');
+  const saveButton = document.getElementById('na-save-button');
+  if (!name || !date || !time) {
+    if (!time) {
+      alert('Selecciona una hora para la cita.');
+      document.getElementById('na-time').focus();
+    }
+    return;
+  }
+  if (!appointmentFitsSchedule(date,time,durationMinutes)) {
+    alert(`La cita no cabe completa en el horario de atención. Selecciona un horario anterior o reduce la duración.`);
+    updateAppointmentTimeAvailability();
+    document.getElementById('na-time').focus();
+    return;
+  }
+  saveButton.disabled = true;
+  try {
+    const conflict = await findAppointmentConflict(date,time,artistName,durationMinutes);
+    if (conflict) {
+      updateAppointmentTimeAvailability();
+      alert(`${artistName} ya tiene una cita que se empalma con ese horario. Selecciona otro horario, duración o artista.`);
+      document.getElementById('na-time').focus();
+      return;
+    }
+    await db.collection('appointments').add({
+      clientId,
+      clientAttributes: selectedClient?.attributes || [],
+      clientName: name, phone, date, time,
+      serviceName: svcName, servicePrice: svcPrice, durationMinutes, artistName,
+      status: 'pending',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('modalNewAppt');
+  } catch (error) {
+    alert('No se pudo comprobar el horario. Intenta nuevamente.');
+  } finally {
+    saveButton.disabled = false;
+  }
 }
 
 /* ══════════════ MODAL HELPERS ══════════════ */
